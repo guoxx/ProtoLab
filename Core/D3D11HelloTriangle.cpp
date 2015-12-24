@@ -76,6 +76,63 @@ void D3D11HelloTriangle::LoadPipeline()
 // Load the sample assets.
 void D3D11HelloTriangle::LoadAssets()
 {
+	struct SimpleVertex
+	{
+		XMFLOAT3 position;
+		XMFLOAT3 color;
+	};
+	
+	static SimpleVertex vertexDatas[3]= {
+		XMFLOAT3(-0.5, -0.5, 0), XMFLOAT3(1, 0, 0),
+		XMFLOAT3( 0.5, -0.5, 0), XMFLOAT3(0, 1, 0),
+		XMFLOAT3(-0.5,  0.5, 0), XMFLOAT3(0, 0, 1),
+	};
+
+	// Fill in a buffer description.
+	D3D11_BUFFER_DESC bufferDesc;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(vertexDatas);
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+
+	// Fill in the subresource data.
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = vertexDatas;
+	InitData.SysMemPitch = 0;
+	InitData.SysMemSlicePitch = 0;
+
+	m_device->CreateBuffer(&bufferDesc, &InitData, &_vbuffer);
+
+	static uint32_t indexDatas[] = {0, 2, 1};
+
+	D3D11_BUFFER_DESC indexBufferDesc;
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(indexDatas);
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA IndexInitData;
+	IndexInitData.pSysMem = indexDatas;
+	IndexInitData.SysMemPitch = 0;
+	IndexInitData.SysMemSlicePitch = 0;
+	m_device->CreateBuffer(&indexBufferDesc, &IndexInitData, &_ibuffer);
+
+	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+	ID3DBlob* vexBlob;
+	ID3DBlob* pixBlob;
+	D3DCompileFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), nullptr, nullptr, "VSMain", "vs_4_0", compileFlags, 0, &vexBlob, nullptr);
+	D3DCompileFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), nullptr, nullptr, "PSMain", "ps_4_0", compileFlags, 0, &pixBlob, nullptr);
+
+	m_device->CreateVertexShader(vexBlob->GetBufferPointer(), vexBlob->GetBufferSize(), nullptr, &_vexShader);
+	m_device->CreatePixelShader(pixBlob->GetBufferPointer(), pixBlob->GetBufferSize(), nullptr, &_pixShader);
+
+	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3), D3D11_INPUT_PER_VERTEX_DATA, 0},
+	};
+	m_device->CreateInputLayout(inputDesc, sizeof(inputDesc)/sizeof(inputDesc[0]), vexBlob->GetBufferPointer(), vexBlob->GetBufferSize(), &_vlayout);
 }
 
 // Update frame-based values.
@@ -86,6 +143,27 @@ void D3D11HelloTriangle::OnUpdate()
 // Render the scene.
 void D3D11HelloTriangle::OnRender()
 {
+	float clearColor[] = {0, 0, 0, 0};
+	m_context->ClearRenderTargetView(rtvHanble.Get(), clearColor);
+
+	ID3D11Buffer* buffers[] = {_vbuffer, _vbuffer};
+	uint32_t strides[] = {sizeof(XMFLOAT3)*2, sizeof(XMFLOAT3)*2};
+	uint32_t offsets[] = {0, sizeof(XMFLOAT3)*2};
+	ID3D11RenderTargetView* rtvs[] = {rtvHanble.Get()};
+	//ID3D11Buffer* buffers[] = {_vbuffer};
+	//uint32_t strides[] = {sizeof(XMFLOAT3)*2};
+	//uint32_t offsets[] = {0};
+	//ID3D11RenderTargetView* rtvs[] = {rtvHanble.Get()};
+
+	m_context->RSSetViewports(1, &m_viewport);
+	m_context->IASetInputLayout(_vlayout);
+	m_context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+	m_context->IASetIndexBuffer(_ibuffer, DXGI_FORMAT_R32_UINT, 0);
+	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_context->VSSetShader(_vexShader, 0, 0);
+	m_context->PSSetShader(_pixShader, 0, 0);
+	m_context->OMSetRenderTargets(1, rtvs, nullptr);
+	m_context->DrawIndexed(3, 0, 0);
 }
 
 void D3D11HelloTriangle::OnPresent()

@@ -35,6 +35,13 @@ private:
 	ComPtr<ID3D11Texture2D> m_renderTargets;
 	ComPtr<ID3D11RenderTargetView> rtvHanble;
 
+	ID3D11Buffer* _vbuffer;
+	ID3D11Buffer* _ibuffer;
+	ID3D11InputLayout* _vlayout;
+
+	ID3D11VertexShader* _vexShader;
+	ID3D11PixelShader* _pixShader;
+
 	// Synchronization objects.
 	UINT m_frameIndex;
 	HANDLE m_fenceEvent;
