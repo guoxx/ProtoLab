@@ -33,6 +33,9 @@
     <ClCompile Include="DirectXMeshVBReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClInclude Include="..\Utilities\WaveFrontReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXMeshAdjacency.cpp">

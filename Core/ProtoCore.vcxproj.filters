@@ -47,8 +47,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Shaders\hello_triangle.hlsl">
+    <FxCompile Include="Shaders\hello_triangle.hlsl">
       <Filter>Shaders</Filter>
-    </CustomBuild>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@
 #include <D3Dcompiler.h>
 #include <DirectXMath.h>
 
+#include <memory>
 #include <string>
 #include <wrl.h>
 #include <shellapi.h>
