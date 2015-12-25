@@ -76,6 +76,15 @@ void D3D11HelloTriangle::LoadPipeline()
 // Load the sample assets.
 void D3D11HelloTriangle::LoadAssets()
 {
+	_camera = std::make_shared<Camera>();
+	_camera->lookAt(DirectX::XMVECTOR{1, 1, 1}, DirectX::XMVECTOR{0, 0, 0}, DirectX::XMVECTOR{0, 1, 0});
+	_camera->setViewParams(60, m_width * 1.0f / m_height, 0.1f, 1000.0f);
+
+	_dragonMesh = std::make_shared<Mesh>();
+	_dragonMesh->LoadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
+	_dragonMesh->LoadMaterielFromFile(GetAssetFullPath(L"CornellBox-Original.mtl").c_str());
+
+
 	struct SimpleVertex
 	{
 		XMFLOAT3 position;

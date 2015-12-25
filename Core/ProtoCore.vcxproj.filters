@@ -28,6 +28,15 @@
     <ClInclude Include="Sources/Win32Application.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Camera.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Actor.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Mesh.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/D3D11HelloTriangle.cpp">
@@ -43,6 +52,15 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Sources/Win32Application.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Camera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Actor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Mesh.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

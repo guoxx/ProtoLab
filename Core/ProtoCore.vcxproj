@@ -94,6 +94,9 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources/stdafx.h" />
     <ClInclude Include="Sources/targetver.h" />
     <ClInclude Include="Sources/Win32Application.h" />
+    <ClInclude Include="Sources\Actor.h" />
+    <ClInclude Include="Sources\Camera.h" />
+    <ClInclude Include="Sources\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/D3D11HelloTriangle.cpp" />
@@ -103,6 +106,9 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sources/Win32Application.cpp" />
+    <ClCompile Include="Sources\Actor.cpp" />
+    <ClCompile Include="Sources\Camera.cpp" />
+    <ClCompile Include="Sources\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\hello_triangle.hlsl">

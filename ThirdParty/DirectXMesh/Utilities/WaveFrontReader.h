@@ -144,7 +144,16 @@ public:
                     memset( &vertex, 0, sizeof( vertex ) );
 
                     // OBJ format uses 1-based arrays
-                    InFile >> iPosition;
+					INT ReadedPosition = 0;
+                    InFile >> ReadedPosition;
+					if (ReadedPosition >= 0)
+					{
+						iPosition = ReadedPosition;
+					}
+					else
+					{
+						iPosition = positions.size() + ReadedPosition + 1;
+					}
                     if ( iPosition > positions.size() )
                         return E_FAIL;
 

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "DXSample.h"
-#include <DirectXMesh/Utilities/WaveFrontReader.h>
+#include "Mesh.h"
+#include "Camera.h"
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
@@ -24,7 +25,8 @@ private:
 	D3D11_VIEWPORT m_viewport;
 	D3D11_RECT m_scissorRect;
 
-	std::shared_ptr<WaveFrontReader<uint32_t>> _rawMeshData;
+	std::shared_ptr<Camera> _camera;
+	std::shared_ptr<Mesh> _dragonMesh;
 
 	ComPtr<ID3D11Device> m_device;
 	ComPtr<ID3D11DeviceContext> m_context;
