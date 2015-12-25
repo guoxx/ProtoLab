@@ -122,8 +122,8 @@ void D3D11HelloTriangle::LoadAssets()
 	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	ID3DBlob* vexBlob;
 	ID3DBlob* pixBlob;
-	D3DCompileFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), nullptr, nullptr, "VSMain", "vs_4_0", compileFlags, 0, &vexBlob, nullptr);
-	D3DCompileFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), nullptr, nullptr, "PSMain", "ps_4_0", compileFlags, 0, &pixBlob, nullptr);
+	D3DCompileFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), nullptr, nullptr, "VSMain", "vs_5_0", compileFlags, 0, &vexBlob, nullptr);
+	D3DCompileFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), nullptr, nullptr, "PSMain", "ps_5_0", compileFlags, 0, &pixBlob, nullptr);
 
 	m_device->CreateVertexShader(vexBlob->GetBufferPointer(), vexBlob->GetBufferSize(), nullptr, &_vexShader);
 	m_device->CreatePixelShader(pixBlob->GetBufferPointer(), pixBlob->GetBufferSize(), nullptr, &_pixShader);
@@ -175,7 +175,5 @@ void D3D11HelloTriangle::OnDestroy()
 {
 	// Ensure that the GPU is no longer referencing resources that are about to be
 	// cleaned up by the destructor.
-
-	CloseHandle(m_fenceEvent);
 }
 

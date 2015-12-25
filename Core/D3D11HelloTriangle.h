@@ -19,12 +19,6 @@ public:
 private:
 	static const UINT FrameCount = 2;
 
-	struct Vertex
-	{
-		XMFLOAT3 position;
-		XMFLOAT4 color;
-	};
-
 	// Pipeline objects.
 	D3D11_VIEWPORT m_viewport;
 	D3D11_RECT m_scissorRect;
@@ -44,8 +38,6 @@ private:
 
 	// Synchronization objects.
 	UINT m_frameIndex;
-	HANDLE m_fenceEvent;
-	UINT64 m_fenceValue;
 
 	void LoadPipeline();
 	void LoadAssets();
