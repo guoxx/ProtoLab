@@ -78,21 +78,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="D3D11HelloTriangle.h" />
-    <ClInclude Include="DXSample.h" />
-    <ClInclude Include="DXSampleHelper.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Win32Application.h" />
+    <ClInclude Include="Sources/D3D11HelloTriangle.h" />
+    <ClInclude Include="Sources/DXSample.h" />
+    <ClInclude Include="Sources/DXSampleHelper.h" />
+    <ClInclude Include="Sources/stdafx.h" />
+    <ClInclude Include="Sources/targetver.h" />
+    <ClInclude Include="Sources/Win32Application.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="D3D11HelloTriangle.cpp" />
-    <ClCompile Include="DXSample.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Sources/D3D11HelloTriangle.cpp" />
+    <ClCompile Include="Sources/DXSample.cpp" />
+    <ClCompile Include="Sources/main.cpp" />
+    <ClCompile Include="Sources/stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Win32Application.cpp" />
+    <ClCompile Include="Sources/Win32Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Shaders\hello_triangle.hlsl">

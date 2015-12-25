@@ -15,39 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="Sources/stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="d3dx12.h">
+    <ClInclude Include="Sources/d3dx12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DXSample.h">
+    <ClInclude Include="Sources/DXSample.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DXSampleHelper.h">
+    <ClInclude Include="Sources/DXSampleHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D3D12HelloTriangle.h">
+    <ClInclude Include="Sources/D3D12HelloTriangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Win32Application.h">
+    <ClInclude Include="Sources/Win32Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Sources/stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="Sources/Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DXSample.cpp">
+    <ClCompile Include="Sources/DXSample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D12HelloTriangle.cpp">
+    <ClCompile Include="Sources/D3D12HelloTriangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Win32Application.cpp">
+    <ClCompile Include="Sources/Win32Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

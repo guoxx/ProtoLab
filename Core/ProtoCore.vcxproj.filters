@@ -10,45 +10,45 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="Sources/D3D11HelloTriangle.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="Sources/DXSample.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11HelloTriangle.h">
+    <ClInclude Include="Sources/DXSampleHelper.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="DXSample.h">
+    <ClInclude Include="Sources/stdafx.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="DXSampleHelper.h">
+    <ClInclude Include="Sources/targetver.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="Win32Application.h">
+    <ClInclude Include="Sources/Win32Application.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Sources/D3D11HelloTriangle.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Sources/DXSample.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11HelloTriangle.cpp">
+    <ClCompile Include="Sources/main.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="DXSample.cpp">
+    <ClCompile Include="Sources/stdafx.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Win32Application.cpp">
+    <ClCompile Include="Sources/Win32Application.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\hello_triangle.hlsl">
+    <CustomBuild Include="Shaders\hello_triangle.hlsl">
       <Filter>Shaders</Filter>
-    </FxCompile>
+    </CustomBuild>
   </ItemGroup>
 </Project>
