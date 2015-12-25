@@ -80,53 +80,96 @@ void D3D11HelloTriangle::LoadAssets()
 	_camera->lookAt(DirectX::XMVECTOR{1, 1, 1}, DirectX::XMVECTOR{0, 0, 0}, DirectX::XMVECTOR{0, 1, 0});
 	_camera->setViewParams(60, m_width * 1.0f / m_height, 0.1f, 1000.0f);
 
-	_dragonMesh = std::make_shared<Mesh>();
-	_dragonMesh->LoadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
-	_dragonMesh->LoadMaterielFromFile(GetAssetFullPath(L"CornellBox-Original.mtl").c_str());
+	_mesh = std::make_shared<Mesh>();
+	_mesh->LoadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str(), false);
+	_mesh->LoadMaterielFromFile(GetAssetFullPath(L"CornellBox-Original.mtl").c_str());
 
-
-	struct SimpleVertex
-	{
-		XMFLOAT3 position;
-		XMFLOAT3 color;
-	};
-	
-	static SimpleVertex vertexDatas[3]= {
-		XMFLOAT3(-0.5, -0.5, 0), XMFLOAT3(1, 0, 0),
-		XMFLOAT3( 0.5, -0.5, 0), XMFLOAT3(0, 1, 0),
-		XMFLOAT3(-0.5,  0.5, 0), XMFLOAT3(0, 0, 1),
-	};
-
-	// Fill in a buffer description.
-	D3D11_BUFFER_DESC bufferDesc;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(vertexDatas);
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
+	D3D11_BUFFER_DESC meshVexBufferDesc;	
+	meshVexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	meshVexBufferDesc.ByteWidth = _mesh->_rawMeshData->vertices.size() * sizeof(decltype(_mesh->_rawMeshData->vertices.data()));
+	meshVexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	meshVexBufferDesc.CPUAccessFlags = 0;
+	meshVexBufferDesc.MiscFlags = 0;
 
 	// Fill in the subresource data.
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = vertexDatas;
-	InitData.SysMemPitch = 0;
-	InitData.SysMemSlicePitch = 0;
+	D3D11_SUBRESOURCE_DATA meshVexBufferInitData;
+	meshVexBufferInitData.pSysMem = _mesh->_rawMeshData->vertices.data();
+	meshVexBufferInitData.SysMemPitch = 0;
+	meshVexBufferInitData.SysMemSlicePitch = 0;
 
-	m_device->CreateBuffer(&bufferDesc, &InitData, &_vbuffer);
+	m_device->CreateBuffer(&meshVexBufferDesc, &meshVexBufferInitData, &_meshVexBuffer);
 
-	static uint32_t indexDatas[] = {0, 2, 1};
+	D3D11_BUFFER_DESC meshIndexBufferDesc;	
+	meshIndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	meshIndexBufferDesc.ByteWidth = _mesh->_rawMeshData->indices.size() * sizeof(decltype(_mesh->_rawMeshData->indices.data()));
+	meshIndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	meshIndexBufferDesc.CPUAccessFlags = 0;
+	meshIndexBufferDesc.MiscFlags = 0;
 
-	D3D11_BUFFER_DESC indexBufferDesc;
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(indexDatas);
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA meshIdxBufferInitData;
+	meshIdxBufferInitData.pSysMem = _mesh->_rawMeshData->indices.data();
+	meshIdxBufferInitData.SysMemPitch = 0;
+	meshIdxBufferInitData.SysMemSlicePitch = 0;
+	
+	m_device->CreateBuffer(&meshIndexBufferDesc, &meshIdxBufferInitData, &_meshIdxBuffer);
 
-	D3D11_SUBRESOURCE_DATA IndexInitData;
-	IndexInitData.pSysMem = indexDatas;
-	IndexInitData.SysMemPitch = 0;
-	IndexInitData.SysMemSlicePitch = 0;
-	m_device->CreateBuffer(&indexBufferDesc, &IndexInitData, &_ibuffer);
+	D3D11_BUFFER_DESC vsConstantBufferDesc;
+	vsConstantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vsConstantBufferDesc.ByteWidth = sizeof(TransformMatrixs);
+	vsConstantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	vsConstantBufferDesc.CPUAccessFlags = 0;
+	vsConstantBufferDesc.MiscFlags = 0;
+
+	_transformMatrixsBuffer.modelViewProjMatrix = _camera->getViewProjectionMatrix();
+	D3D11_SUBRESOURCE_DATA vsConstantBufferInitData;
+	vsConstantBufferInitData.pSysMem = &_transformMatrixsBuffer;
+	vsConstantBufferInitData.SysMemPitch = 0;
+	vsConstantBufferInitData.SysMemSlicePitch = 0;
+
+	m_device->CreateBuffer(&vsConstantBufferDesc, &vsConstantBufferInitData, &_vsConstantBuffer);
+
+	//struct SimpleVertex
+	//{
+	//	XMFLOAT3 position;
+	//	XMFLOAT3 color;
+	//};
+	//
+	//static SimpleVertex vertexDatas[3]= {
+	//	XMFLOAT3(-0.5, -0.5, 0), XMFLOAT3(1, 0, 0),
+	//	XMFLOAT3( 0.5, -0.5, 0), XMFLOAT3(0, 1, 0),
+	//	XMFLOAT3(-0.5,  0.5, 0), XMFLOAT3(0, 0, 1),
+	//};
+
+	//// Fill in a buffer description.
+	//D3D11_BUFFER_DESC bufferDesc;
+	//bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//bufferDesc.ByteWidth = sizeof(vertexDatas);
+	//bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	//bufferDesc.CPUAccessFlags = 0;
+	//bufferDesc.MiscFlags = 0;
+
+	//// Fill in the subresource data.
+	//D3D11_SUBRESOURCE_DATA InitData;
+	//InitData.pSysMem = vertexDatas;
+	//InitData.SysMemPitch = 0;
+	//InitData.SysMemSlicePitch = 0;
+
+	//m_device->CreateBuffer(&bufferDesc, &InitData, &_vbuffer);
+
+	//static uint32_t indexDatas[] = {0, 2, 1};
+
+	//D3D11_BUFFER_DESC indexBufferDesc;
+	//indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	//indexBufferDesc.ByteWidth = sizeof(indexDatas);
+	//indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	//indexBufferDesc.CPUAccessFlags = 0;
+	//indexBufferDesc.MiscFlags = 0;
+
+	//D3D11_SUBRESOURCE_DATA IndexInitData;
+	//IndexInitData.pSysMem = indexDatas;
+	//IndexInitData.SysMemPitch = 0;
+	//IndexInitData.SysMemSlicePitch = 0;
+	//m_device->CreateBuffer(&indexBufferDesc, &IndexInitData, &_ibuffer);
 
 	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	ID3DBlob* vexBlob;
@@ -139,9 +182,15 @@ void D3D11HelloTriangle::LoadAssets()
 
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(XMFLOAT3)*2, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	m_device->CreateInputLayout(inputDesc, sizeof(inputDesc)/sizeof(inputDesc[0]), vexBlob->GetBufferPointer(), vexBlob->GetBufferSize(), &_vlayout);
+	m_device->CreateInputLayout(inputDesc, sizeof(inputDesc)/sizeof(inputDesc[0]), vexBlob->GetBufferPointer(), vexBlob->GetBufferSize(), &_meshLayoutBuffer);
+
+
+	CD3D11_RASTERIZER_DESC rasterizerDesc{CD3D11_DEFAULT{}};	
+	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	m_device->CreateRasterizerState(&rasterizerDesc, &_defaultRasterizerState);
 }
 
 // Update frame-based values.
@@ -155,24 +204,27 @@ void D3D11HelloTriangle::OnRender()
 	float clearColor[] = {0, 0, 0, 0};
 	m_context->ClearRenderTargetView(rtvHanble.Get(), clearColor);
 
-	ID3D11Buffer* buffers[] = {_vbuffer, _vbuffer};
-	uint32_t strides[] = {sizeof(XMFLOAT3)*2, sizeof(XMFLOAT3)*2};
-	uint32_t offsets[] = {0, sizeof(XMFLOAT3)*2};
+	ID3D11Buffer* buffers[] = {_meshVexBuffer, _meshVexBuffer, _meshVexBuffer};
+	uint32_t strides[] = {sizeof(XMFLOAT3)*2 + sizeof(XMFLOAT2), sizeof(XMFLOAT3)*2 + sizeof(XMFLOAT2), sizeof(XMFLOAT3)*2 + sizeof(XMFLOAT2)};
+	uint32_t offsets[] = {0, sizeof(XMFLOAT3), sizeof(XMFLOAT3)*2};
 	ID3D11RenderTargetView* rtvs[] = {rtvHanble.Get()};
 	//ID3D11Buffer* buffers[] = {_vbuffer};
 	//uint32_t strides[] = {sizeof(XMFLOAT3)*2};
 	//uint32_t offsets[] = {0};
 	//ID3D11RenderTargetView* rtvs[] = {rtvHanble.Get()};
 
+
+	m_context->RSSetState(_defaultRasterizerState);
 	m_context->RSSetViewports(1, &m_viewport);
-	m_context->IASetInputLayout(_vlayout);
-	m_context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
-	m_context->IASetIndexBuffer(_ibuffer, DXGI_FORMAT_R32_UINT, 0);
-	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_context->IASetInputLayout(_meshLayoutBuffer);
+	m_context->IASetVertexBuffers(0, 3, buffers, strides, offsets);
+	m_context->IASetIndexBuffer(_meshIdxBuffer, DXGI_FORMAT_R32_UINT, 0);
+	m_context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ);
 	m_context->VSSetShader(_vexShader, 0, 0);
+	m_context->VSSetConstantBuffers(0, 1, &_vsConstantBuffer);
 	m_context->PSSetShader(_pixShader, 0, 0);
 	m_context->OMSetRenderTargets(1, rtvs, nullptr);
-	m_context->DrawIndexed(3, 0, 0);
+	m_context->DrawIndexed(108, 0, 0);
 }
 
 void D3D11HelloTriangle::OnPresent()

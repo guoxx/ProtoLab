@@ -21,12 +21,26 @@ public:
 private:
 	static const UINT FrameCount = 2;
 
+	struct TransformMatrixs
+	{
+		XMMATRIX modelViewProjMatrix;
+	};
+
 	// Pipeline objects.
 	D3D11_VIEWPORT m_viewport;
 	D3D11_RECT m_scissorRect;
 
 	std::shared_ptr<Camera> _camera;
-	std::shared_ptr<Mesh> _dragonMesh;
+
+	TransformMatrixs _transformMatrixsBuffer;
+
+	ID3D11RasterizerState* _defaultRasterizerState;
+
+	std::shared_ptr<Mesh> _mesh;
+	ID3D11Buffer* _meshVexBuffer;
+	ID3D11Buffer* _meshIdxBuffer;
+	ID3D11InputLayout* _meshLayoutBuffer;
+	ID3D11Buffer* _vsConstantBuffer;
 
 	ComPtr<ID3D11Device> m_device;
 	ComPtr<ID3D11DeviceContext> m_context;

@@ -97,6 +97,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\Actor.h" />
     <ClInclude Include="Sources\Camera.h" />
     <ClInclude Include="Sources\Mesh.h" />
+    <ClInclude Include="Sources\tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/D3D11HelloTriangle.cpp" />

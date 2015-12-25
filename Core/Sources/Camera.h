@@ -23,7 +23,7 @@ public:
 
 private:
 
-	DirectX::XMMATRIX _viewMat;
-	DirectX::XMMATRIX _projMat;
+	DirectX::XMFLOAT4X4 _viewMat;
+	DirectX::XMFLOAT4X4 _projMat;
 };
 

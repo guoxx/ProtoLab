@@ -37,6 +37,9 @@
     <ClInclude Include="Sources\Mesh.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\tiny_obj_loader.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/D3D11HelloTriangle.cpp">

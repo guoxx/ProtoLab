@@ -14,7 +14,7 @@ public:
 	void LoadMeshFromFile(const wchar_t* objFileName, bool ccw = true);
 	void LoadMaterielFromFile(const wchar_t* mtlFileName);
 
-private:
+//private:
 
 	std::shared_ptr<WaveFrontReader<uint32_t>> _rawMeshData;
 };
