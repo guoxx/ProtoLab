@@ -1,12 +1,23 @@
 #pragma once
 
-D3D11_BUFFER_DESC createDx11BufferDesc(D3D11_BIND_FLAG bindFlag, UINT byteWidth)
+D3D11_BUFFER_DESC createDx11BufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG bindFlag, UINT byteWidth)
 {
 	D3D11_BUFFER_DESC bufferDesc;	
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.Usage = usage;
 	bufferDesc.ByteWidth = byteWidth;
 	bufferDesc.BindFlags = bindFlag;
 	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+	return bufferDesc;
+}
+
+D3D11_BUFFER_DESC createDx11DynamicBufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG bindFlag, UINT byteWidth)
+{
+	D3D11_BUFFER_DESC bufferDesc;	
+	bufferDesc.Usage = usage;
+	bufferDesc.ByteWidth = byteWidth;
+	bufferDesc.BindFlags = bindFlag;
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferDesc.MiscFlags = 0;
 	return bufferDesc;
 }

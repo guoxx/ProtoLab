@@ -29,6 +29,12 @@ public:
 	static ID3D11VertexShader* createVertexShaderFromFile(const wchar_t* filename, const char* entryPoint, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl);
 	static ID3D11PixelShader* createPixelShaderFromFile(const wchar_t* filename, const char* entryPoint);
 
+	// resources deletion
+	static void destroyResource(ID3D11Resource* resourceToDelete);
+	static void destroyVertexShader(ID3D11VertexShader* shaderToDelete);
+	static void destroyVertexDeclaration(ID3D11InputLayout* declToDelete);
+	static void destroyPixelShader(ID3D11PixelShader* shaderToDelete);
+
 	// render states
 	static void setDefaultRHIStates();
 
@@ -66,5 +72,3 @@ private:
 	DX11RHI() {};
 	~DX11RHI() {};
 };
-
-using RHI=DX11RHI;

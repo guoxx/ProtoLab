@@ -99,7 +99,9 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h" />
     <ClInclude Include="Sources\Mesh.h" />
+    <ClInclude Include="Sources\Primitive.h" />
     <ClInclude Include="Sources\tiny_obj_loader.h" />
+    <ClInclude Include="Sources\utDefines.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/D3D11HelloTriangle.cpp" />
@@ -113,6 +115,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\Camera.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp" />
     <ClCompile Include="Sources\Mesh.cpp" />
+    <ClCompile Include="Sources\Primitive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\hello_mesh.hlsl">

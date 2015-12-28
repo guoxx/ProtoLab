@@ -28,4 +28,7 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "utDefines.h"
+#include "RHI.h"
+
 // TODO: reference additional headers your program requires here

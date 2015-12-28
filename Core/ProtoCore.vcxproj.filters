@@ -52,6 +52,12 @@
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Primitive.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\utDefines.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/D3D11HelloTriangle.cpp">
@@ -80,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp">
       <Filter>Sources\DX11RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Primitive.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -72,7 +72,7 @@ void DX11RHI::initializeDefaultRHIStates()
 
 ID3D11Buffer* DX11RHI::createVertexBuffer(void* memPtr, uint32_t memSize)
 {
-	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_BIND_VERTEX_BUFFER, memSize);
+	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_VERTEX_BUFFER, memSize);
 	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
 	ID3D11Buffer* buffer{nullptr};
 	_device->CreateBuffer(&desc, &resData, &buffer);
@@ -81,7 +81,7 @@ ID3D11Buffer* DX11RHI::createVertexBuffer(void* memPtr, uint32_t memSize)
 
 ID3D11Buffer* DX11RHI::createIndexBuffer(void* memPtr, uint32_t memSize)
 {
-	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_BIND_INDEX_BUFFER, memSize);
+	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, memSize);
 	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
 	ID3D11Buffer* buffer{nullptr};
 	_device->CreateBuffer(&desc, &resData, &buffer);
@@ -90,7 +90,7 @@ ID3D11Buffer* DX11RHI::createIndexBuffer(void* memPtr, uint32_t memSize)
 
 ID3D11Buffer* DX11RHI::createConstantBuffer(void* memPtr, uint32_t memSize)
 {
-	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_BIND_CONSTANT_BUFFER, memSize);
+	D3D11_BUFFER_DESC desc = createDx11DynamicBufferDesc(D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, memSize);
 	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
 	ID3D11Buffer* buffer{nullptr};
 	_device->CreateBuffer(&desc, &resData, &buffer);
@@ -122,6 +122,30 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromFile(const wchar_t* filename, c
 	_device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &outShader);
 
 	return outShader;
+}
+
+void DX11RHI::destroyResource(ID3D11Resource* resourceToDelete)
+{
+	if (resourceToDelete)
+		resourceToDelete->Release();
+}
+
+void DX11RHI::destroyVertexShader(ID3D11VertexShader* shaderToDelete)
+{
+	if (shaderToDelete)
+		shaderToDelete->Release();
+}
+
+void DX11RHI::destroyVertexDeclaration(ID3D11InputLayout* declToDelete)
+{
+	if (declToDelete)
+		declToDelete->Release();
+}
+
+void DX11RHI::destroyPixelShader(ID3D11PixelShader* shaderToDelete)
+{
+	if (shaderToDelete)
+		shaderToDelete->Release();
 }
 
 void DX11RHI::setDefaultRHIStates()

@@ -12,14 +12,14 @@ public:
 
 	void setViewParams(float fovy, float aspectRatio, float zNear, float zFar);
 
-	DirectX::XMMATRIX getViewMatrix();
-	DirectX::XMMATRIX getInvViewMatrix();
+	DirectX::XMMATRIX getViewMatrix() const;
+	DirectX::XMMATRIX getInvViewMatrix() const;
 
-	DirectX::XMMATRIX getProjectionMatrix();
-	DirectX::XMMATRIX getInvProjectionMatrix();
+	DirectX::XMMATRIX getProjectionMatrix() const;
+	DirectX::XMMATRIX getInvProjectionMatrix() const;
 
-	DirectX::XMMATRIX getViewProjectionMatrix();
-	DirectX::XMMATRIX getInvViewProjectionMatrix();
+	DirectX::XMMATRIX getViewProjectionMatrix() const;
+	DirectX::XMMATRIX getInvViewProjectionMatrix() const;
 
 private:
 
