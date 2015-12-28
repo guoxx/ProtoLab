@@ -386,7 +386,6 @@
   </ItemDefinitionGroup>
   <ItemGroup />
   <ItemGroup>
-    <ClInclude Include="..\Utilities\WaveFrontReader.h" />
     <CLInclude Include="DirectXMesh.h" />
     <CLInclude Include="DirectXMeshP.h" />
     <CLInclude Include="DirectXMesh.inl" />
