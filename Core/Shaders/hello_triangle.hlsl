@@ -25,5 +25,5 @@ PSInput VSMain(VSInput input)
 
 float4 PSMain(PSInput input) : SV_TARGET
 {
-	return float4(input.texCoord.xy, 0, 1);
+	return float4(input.normal, 1);
 }

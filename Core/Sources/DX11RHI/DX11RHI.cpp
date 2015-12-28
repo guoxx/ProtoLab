@@ -11,7 +11,6 @@ int32_t								DX11RHI::_frameIndex{0};
 ComPtr<ID3D11Device>				DX11RHI::_device{nullptr};
 ComPtr<ID3D11DeviceContext>			DX11RHI::_context{nullptr};
 ComPtr<IDXGISwapChain>				DX11RHI::_swapChain{nullptr};
-ComPtr<ID3D11Texture2D>				DX11RHI::_renderTargets{nullptr};
 ComPtr<ID3D11RenderTargetView>		DX11RHI::_backbufferRtvHanble{nullptr};
 
 
@@ -45,8 +44,9 @@ void DX11RHI::initialize(uint32_t frameWidth, uint32_t frameHeight)
 	hr = factory->CreateSwapChain(_device.Get(), &swapChainDesc, _swapChain.GetAddressOf());
 	if (FAILED(hr)) { abort(); }
 
-	_swapChain->GetBuffer(0, IID_PPV_ARGS(&_renderTargets));
-	_device->CreateRenderTargetView(_renderTargets.Get(), nullptr, _backbufferRtvHanble.GetAddressOf());
+	ComPtr<ID3D11Texture2D> renderTexture;
+	_swapChain->GetBuffer(0, IID_PPV_ARGS(&renderTexture));
+	_device->CreateRenderTargetView(renderTexture.Get(), nullptr, _backbufferRtvHanble.GetAddressOf());
 
 	_frameIndex = 0;
 

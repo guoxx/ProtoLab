@@ -3,17 +3,8 @@
 #include "DX11RHI/DX11RHI.h"
 
 D3D11HelloTriangle::D3D11HelloTriangle(UINT width, UINT height, std::wstring name) :
-	DXSample(width, height, name),
-	m_frameIndex(0),
-	m_viewport(),
-	m_scissorRect()
+	DXSample(width, height, name)
 {
-	m_viewport.Width = static_cast<float>(width);
-	m_viewport.Height = static_cast<float>(height);
-	m_viewport.MaxDepth = 1.0f;
-
-	m_scissorRect.right = static_cast<LONG>(width);
-	m_scissorRect.bottom = static_cast<LONG>(height);
 }
 
 void D3D11HelloTriangle::OnInit()
@@ -126,27 +117,27 @@ void D3D11HelloTriangle::loadTriangle()
 	};
 	
 	static SimpleVertex vertexDatas[3]= {
-		XMFLOAT3(-0.5, -0.5, 0), XMFLOAT3(1, 0, 0), XMFLOAT2(0, 0),
-		XMFLOAT3( 0.5, -0.5, 0), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 0),
-		XMFLOAT3(-0.5,  0.5, 0), XMFLOAT3(0, 0, 1), XMFLOAT2(0, 0),
+		XMFLOAT3(-0.5, -0.5, 0), XMFLOAT3(1, 0, 0), XMFLOAT2(1, 0),
+		XMFLOAT3( 0.5, -0.5, 0), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1),
+		XMFLOAT3(-0.5,  0.5, 0), XMFLOAT3(0, 0, 1), XMFLOAT2(1, 1),
 	};
 
-	_vbuffer = RHI::createVertexBuffer(vertexDatas, sizeof(vertexDatas));
+	_triangleVertexBuffer = RHI::createVertexBuffer(vertexDatas, sizeof(vertexDatas));
 
 	static uint32_t indexDatas[] = {0, 2, 1};
-	_ibuffer = RHI::createIndexBuffer(indexDatas, sizeof(indexDatas));
+	_triangleIndexBuffer = RHI::createIndexBuffer(indexDatas, sizeof(indexDatas));
 
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMFLOAT3), D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(XMFLOAT3)*2, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	_vexShader = RHI::createVertexShaderFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(),
+	_triangleVertexShader = RHI::createVertexShaderFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(),
 												"VSMain",
 												inputDesc,
 												sizeof(inputDesc)/sizeof(inputDesc[0]),
-												_vlayout);
-	_pixShader = RHI::createPixelShaderFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), "PSMain");
+												_triangleVertexLayoutBuffer);
+	_trianglePixelShader = RHI::createPixelShaderFromFile(GetAssetFullPath(L"hello_triangle.hlsl").c_str(), "PSMain");
 }
 
 void D3D11HelloTriangle::loadMesh()
@@ -155,7 +146,7 @@ void D3D11HelloTriangle::loadMesh()
 
 void D3D11HelloTriangle::drawTriangle()
 {
-	ID3D11Buffer* buffers[] = {_vbuffer, _vbuffer, _vbuffer};
+	ID3D11Buffer* buffers[] = {_triangleVertexBuffer, _triangleVertexBuffer, _triangleVertexBuffer};
 	uint32_t strides[] = {sizeof(XMFLOAT3)*2+sizeof(XMFLOAT2), sizeof(XMFLOAT3)*2+sizeof(XMFLOAT2), sizeof(XMFLOAT3)*2+sizeof(XMFLOAT2)};
 	uint32_t offsets[] = {0, sizeof(XMFLOAT3), sizeof(XMFLOAT3)*2};
 	ID3D11RenderTargetView* rtvs[] = {RHI::getBackbufferRTV()};
@@ -163,13 +154,13 @@ void D3D11HelloTriangle::drawTriangle()
 	RHI::setDefaultRHIStates();	
 	RHI::setViewport(0, 0, GetWidth(), GetHeight());
 
-	RHI::_context->IASetInputLayout(_vlayout);
+	RHI::_context->IASetInputLayout(_triangleVertexLayoutBuffer);
 	RHI::_context->IASetVertexBuffers(0, 3, buffers, strides, offsets);
-	RHI::_context->IASetIndexBuffer(_ibuffer, DXGI_FORMAT_R32_UINT, 0);
+	RHI::_context->IASetIndexBuffer(_triangleIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	RHI::_context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	RHI::_context->VSSetShader(_vexShader, 0, 0);
+	RHI::_context->VSSetShader(_triangleVertexShader, 0, 0);
 	//m_context->VSSetConstantBuffers(0, 1, &_vsConstantBuffer);
-	RHI::_context->PSSetShader(_pixShader, 0, 0);
+	RHI::_context->PSSetShader(_trianglePixelShader, 0, 0);
 	RHI::_context->OMSetRenderTargets(1, rtvs, nullptr);
 	RHI::_context->DrawIndexed(3, 0, 0);
 }

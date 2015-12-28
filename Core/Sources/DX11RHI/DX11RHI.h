@@ -57,7 +57,6 @@ public:
 	static ComPtr<ID3D11Device>				_device;
 	static ComPtr<ID3D11DeviceContext>		_context;
 	static ComPtr<IDXGISwapChain>			_swapChain;
-	static ComPtr<ID3D11Texture2D>			_renderTargets;
 	static ComPtr<ID3D11RenderTargetView>	_backbufferRtvHanble;
 
 	// constants
