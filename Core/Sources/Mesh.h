@@ -21,7 +21,7 @@ private:
 
 	struct TransformMatrixs
 	{
-		DirectX::XMFLOAT4X4 modelViewProjMatrix;
+		DirectX::XMMATRIX modelViewProjMatrix;
 	};
 
 	ID3D11VertexShader* _vertexShader{nullptr};

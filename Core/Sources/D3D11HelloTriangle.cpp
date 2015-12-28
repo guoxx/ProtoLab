@@ -22,8 +22,11 @@ void D3D11HelloTriangle::LoadPipeline()
 void D3D11HelloTriangle::LoadAssets()
 {
 	_camera = std::make_shared<Camera>();
-	_camera->lookAt(DirectX::XMVECTOR{1, 1, 1}, DirectX::XMVECTOR{0, 0, 0}, DirectX::XMVECTOR{0, 1, 0});
-	_camera->setViewParams(60, m_width * 1.0f / m_height, 0.1f, 1000.0f);
+
+	_camera->lookAt(DirectX::XMVECTOR{3, 4, 5}, DirectX::XMVECTOR{0, 0, 0}, DirectX::XMVECTOR{0, 1, 0});
+	_camera->setViewParams(90, m_width * 1.0f / m_height, 0.1f, 1000.0f);
+
+	_vsConstantsBuffer = RHI::createConstantBuffer(&_vsConstantsData, sizeof(_vsConstantsData));
 
 	loadTriangle();
 	loadMesh();
@@ -39,6 +42,7 @@ void D3D11HelloTriangle::OnRender()
 {
 	RHI::clear(RHI::getBackbufferRTV(), 1.0f, 1.0f, 1.0f, 1.0f);
 
+	updateCamera();
 	//drawTriangle();
 	drawMesh();
 }
@@ -65,9 +69,9 @@ void D3D11HelloTriangle::loadTriangle()
 	};
 	
 	static SimpleVertex vertexDatas[3]= {
-		XMFLOAT3(-0.5, -0.5, 0), XMFLOAT3(1, 0, 0), XMFLOAT2(1, 0),
-		XMFLOAT3( 0.5, -0.5, 0), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1),
-		XMFLOAT3(-0.5,  0.5, 0), XMFLOAT3(0, 0, 1), XMFLOAT2(1, 1),
+		XMFLOAT3(-0.5, 0, 0), XMFLOAT3(1, 0, 0), XMFLOAT2(1, 0),
+		XMFLOAT3( 0.5, 0, 0), XMFLOAT3(0, 1, 0), XMFLOAT2(0, 1),
+		XMFLOAT3(0, 0, 0.5), XMFLOAT3(0, 0, 1), XMFLOAT2(1, 1),
 	};
 
 	_triangleVertexBuffer = RHI::createVertexBuffer(vertexDatas, sizeof(vertexDatas));
@@ -95,8 +99,39 @@ void D3D11HelloTriangle::loadMesh()
 	_mesh->loadShadersFromFile(GetAssetFullPath(L"hello_mesh.hlsl").c_str());
 }
 
+
+void D3D11HelloTriangle::updateCamera()
+{
+	/*
+	static float roll = 0;
+	//roll += 0.01f;
+	static float pitch = 0;
+	//pitch += 0.01f;
+	static float yaw = 0;
+	yaw += 0.01f;
+	#define RADIANS(angle) (angle/180.0f*3.14f)
+
+	// TODO: update constants buffer
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	RHI::_context->Map(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	TransformMatrixs* dataPtr = (TransformMatrixs*)mappedResource.pData;
+	DirectX::XMMATRIX transMatrix = DirectX::XMMatrixTranslation(1, 0, 0);
+	DirectX::XMMATRIX rotateMatrix = DirectX::XMMatrixRotationRollPitchYaw(RADIANS(roll), RADIANS(pitch), RADIANS(yaw));
+	DirectX::XMMATRIX finalMatrix = DirectX::XMMatrixMultiply(transMatrix, rotateMatrix);
+	dataPtr->modelViewProjMatrix = finalMatrix;
+	RHI::_context->Unmap(_vsConstantsBuffer, 0);
+	*/
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	RHI::_context->Map(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	TransformMatrixs* dataPtr = (TransformMatrixs*)mappedResource.pData;
+	dataPtr->modelViewProjMatrix = DirectX::XMMatrixTranspose(_camera->getViewProjectionMatrix());
+	RHI::_context->Unmap(_vsConstantsBuffer, 0);
+}
+
 void D3D11HelloTriangle::drawTriangle()
 {
+
 	ID3D11Buffer* buffers[] = {_triangleVertexBuffer, _triangleVertexBuffer, _triangleVertexBuffer};
 	uint32_t strides[] = {sizeof(XMFLOAT3)*2+sizeof(XMFLOAT2), sizeof(XMFLOAT3)*2+sizeof(XMFLOAT2), sizeof(XMFLOAT3)*2+sizeof(XMFLOAT2)};
 	uint32_t offsets[] = {0, sizeof(XMFLOAT3), sizeof(XMFLOAT3)*2};
@@ -110,7 +145,7 @@ void D3D11HelloTriangle::drawTriangle()
 	RHI::_context->IASetIndexBuffer(_triangleIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	RHI::_context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	RHI::_context->VSSetShader(_triangleVertexShader, 0, 0);
-	//m_context->VSSetConstantBuffers(0, 1, &_vsConstantBuffer);
+	RHI::_context->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
 	RHI::_context->PSSetShader(_trianglePixelShader, 0, 0);
 	RHI::_context->OMSetRenderTargets(1, rtvs, nullptr);
 	RHI::_context->DrawIndexed(3, 0, 0);

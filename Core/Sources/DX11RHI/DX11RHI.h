@@ -54,6 +54,7 @@ public:
 
 	// default hardware states
 	static ID3D11RasterizerState*			_defaultRasterizerState;
+	static ID3D11DepthStencilState*			_defaultDepthStencilState;
 
 	// render states stuffs
 	static D3D11_VIEWPORT					_viewport;

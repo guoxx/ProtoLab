@@ -22,7 +22,7 @@ PSInput VSMain(VSInput input)
 {
 	PSInput result;
 
-	result.position = mul(modelViewProjMatrix, float4(input.position, 1));
+	result.position = mul(float4(input.position, 1), modelViewProjMatrix);
 	result.normal = input.normal;
 	result.texCoord = input.texCoord;
 

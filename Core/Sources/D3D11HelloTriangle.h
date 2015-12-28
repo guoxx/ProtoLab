@@ -19,8 +19,11 @@ public:
 	virtual void OnDestroy();
 
 private:
+
 	void loadTriangle();
 	void loadMesh();
+
+	void updateCamera();
 
 	void drawTriangle();
 	void drawMesh();
@@ -32,15 +35,11 @@ private:
 
 	std::shared_ptr<Camera> _camera;
 
-	TransformMatrixs _transformMatrixsBuffer;
-
+	TransformMatrixs _vsConstantsData;
+	ID3D11Buffer* _vsConstantsBuffer;
 
 	// resources for mesh
 	std::shared_ptr<Mesh> _mesh;
-	ID3D11Buffer* _meshVexBuffer;
-	ID3D11Buffer* _meshIdxBuffer;
-	ID3D11InputLayout* _meshLayoutBuffer;
-	ID3D11Buffer* _vsConstantBuffer;
 
 	// resources for triangle 
 	ID3D11Buffer* _triangleVertexBuffer;

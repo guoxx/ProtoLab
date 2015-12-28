@@ -27,8 +27,7 @@ void Mesh::draw(const Camera* camera) const
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	RHI::_context->Map(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	TransformMatrixs* dataPtr = (TransformMatrixs*)mappedResource.pData;
-	DirectX::XMMATRIX mvpMatrix = camera->getViewProjectionMatrix();
-	DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, mvpMatrix);
+	dataPtr->modelViewProjMatrix = DirectX::XMMatrixTranspose(camera->getViewProjectionMatrix());
 	RHI::_context->Unmap(_vsConstantsBuffer, 0);
 
 	for (auto prim : _primitives)

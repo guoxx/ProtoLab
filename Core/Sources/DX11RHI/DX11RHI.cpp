@@ -4,6 +4,7 @@
 #include "../Win32Application.h"
 
 ID3D11RasterizerState*				DX11RHI::_defaultRasterizerState{nullptr};
+ID3D11DepthStencilState*			DX11RHI::_defaultDepthStencilState{nullptr};
 
 D3D11_VIEWPORT						DX11RHI::_viewport{};
 int32_t								DX11RHI::_frameIndex{0};
@@ -67,7 +68,12 @@ void DX11RHI::initializeDefaultRHIStates()
 {
 	CD3D11_RASTERIZER_DESC rasterizerDesc{CD3D11_DEFAULT{}};	
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	rasterizerDesc.DepthClipEnable = false;
 	_device->CreateRasterizerState(&rasterizerDesc, &_defaultRasterizerState);
+
+	CD3D11_DEPTH_STENCIL_DESC depthStencilDesc{CD3D11_DEFAULT{}};
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	_device->CreateDepthStencilState(&depthStencilDesc, &_defaultDepthStencilState);
 }
 
 ID3D11Buffer* DX11RHI::createVertexBuffer(void* memPtr, uint32_t memSize)
@@ -151,6 +157,7 @@ void DX11RHI::destroyPixelShader(ID3D11PixelShader* shaderToDelete)
 void DX11RHI::setDefaultRHIStates()
 {
 	_context->RSSetState(_defaultRasterizerState);
+	_context->OMSetDepthStencilState(_defaultDepthStencilState, 0);
 }
 
 void DX11RHI::setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height)
