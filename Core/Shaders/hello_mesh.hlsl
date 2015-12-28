@@ -1,3 +1,9 @@
+
+cbuffer TransformMatrixs
+{
+	float4x4 modelViewProjMatrix;
+};
+
 struct PSInput
 {
 	float4 position : SV_POSITION;
@@ -16,7 +22,7 @@ PSInput VSMain(VSInput input)
 {
 	PSInput result;
 
-	result.position = float4(input.position, 1);
+	result.position = mul(float4(input.position, 1), modelViewProjMatrix);
 	result.normal = input.normal;
 	result.texCoord = input.texCoord;
 
@@ -25,5 +31,5 @@ PSInput VSMain(VSInput input)
 
 float4 PSMain(PSInput input) : SV_TARGET
 {
-	return float4(input.texCoord.xy, 0, 1);
+	return float4(1, 0, 0, 0.5);
 }

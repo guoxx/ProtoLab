@@ -8,6 +8,12 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{4e71d5b7-c67b-4ada-8954-847381dd4d4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Renderer">
+      <UniqueIdentifier>{2fe02855-dfea-4957-bfad-742ed4b20f3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\DX11RHI">
+      <UniqueIdentifier>{fce1924b-44fe-407b-8619-abcb41df8f0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources/D3D11HelloTriangle.h">
@@ -40,6 +46,12 @@
     <ClInclude Include="Sources\tiny_obj_loader.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11RHI.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/D3D11HelloTriangle.cpp">
@@ -66,9 +78,15 @@
     <ClCompile Include="Sources\Mesh.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\hello_triangle.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\hello_mesh.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

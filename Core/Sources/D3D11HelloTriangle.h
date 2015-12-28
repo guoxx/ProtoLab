@@ -19,7 +19,11 @@ public:
 	virtual void OnDestroy();
 
 private:
-	static const UINT FrameCount = 2;
+	void loadTriangle();
+	void loadMesh();
+
+	void drawTriangle();
+	void drawMesh();
 
 	struct TransformMatrixs
 	{

@@ -5,20 +5,27 @@
 
 #pragma once
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "targetver.h"
 
 #include <windows.h>
 
+// DirectX
 #include <d3d11.h>
 #include <dxgi1_3.h>
 #include <D3Dcompiler.h>
 #include <DirectXMath.h>
 
-#include <memory>
-#include <string>
 #include <wrl.h>
 #include <shellapi.h>
 
-
+// c++ std lib
+#include <memory>
+#include <string>
+#include <iostream>
+#include <cstdlib>
 
 // TODO: reference additional headers your program requires here
