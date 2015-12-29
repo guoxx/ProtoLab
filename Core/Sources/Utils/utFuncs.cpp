@@ -1,4 +1,5 @@
-#pragma once
+#include "stdafx.h"
+#include "utFuncs.h"
 
 void print(const char* fmt, ...)
 {

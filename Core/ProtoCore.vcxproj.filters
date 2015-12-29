@@ -17,30 +17,21 @@
     <Filter Include="Sources\Mesh">
       <UniqueIdentifier>{8738a22c-985d-4931-977e-c4ee5f253c1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Utils">
+      <UniqueIdentifier>{a6f59b4c-e6d4-45a5-8a3a-be81d4ab2b80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Win32">
+      <UniqueIdentifier>{0c30ad16-2327-4038-94a4-0890dc143409}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Objects">
+      <UniqueIdentifier>{2386c22e-9741-4d21-8dd6-2892e262d402}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sources/D3D11HelloTriangle.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources/DXSample.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources/DXSampleHelper.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
     <ClInclude Include="Sources/stdafx.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="Sources/targetver.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources/Win32Application.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Camera.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\Actor.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h">
@@ -48,9 +39,6 @@
     </ClInclude>
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h">
       <Filter>Sources\DX11RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\utDefines.h">
-      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="Sources\Mesh\Mesh.h">
       <Filter>Sources\Mesh</Filter>
@@ -61,30 +49,36 @@
     <ClInclude Include="Sources\Mesh\tiny_obj_loader.h">
       <Filter>Sources\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\utFuncs.h">
-      <Filter>Sources</Filter>
+    <ClInclude Include="Sources\Utils\utDefines.h">
+      <Filter>Sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Utils\utFuncs.h">
+      <Filter>Sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Win32\DXSample.h">
+      <Filter>Sources\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Win32\DXSampleHelper.h">
+      <Filter>Sources\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Win32\Win32Application.h">
+      <Filter>Sources\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Win32\D3D11HelloTriangle.h">
+      <Filter>Sources\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Camera.h">
+      <Filter>Sources\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Actor.h">
+      <Filter>Sources\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sources/D3D11HelloTriangle.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources/DXSample.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Sources/main.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Sources/stdafx.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources/Win32Application.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Camera.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Sources\Actor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp">
@@ -95,6 +89,24 @@
     </ClCompile>
     <ClCompile Include="Sources\Mesh\Primitive.cpp">
       <Filter>Sources\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Utils\utFuncs.cpp">
+      <Filter>Sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Win32\DXSample.cpp">
+      <Filter>Sources\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Win32\Win32Application.cpp">
+      <Filter>Sources\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Win32\D3D11HelloTriangle.cpp">
+      <Filter>Sources\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Actor.cpp">
+      <Filter>Sources\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Camera.cpp">
+      <Filter>Sources\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

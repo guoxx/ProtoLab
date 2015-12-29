@@ -88,35 +88,36 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Sources/D3D11HelloTriangle.h" />
-    <ClInclude Include="Sources/DXSample.h" />
-    <ClInclude Include="Sources/DXSampleHelper.h" />
     <ClInclude Include="Sources/stdafx.h" />
     <ClInclude Include="Sources/targetver.h" />
-    <ClInclude Include="Sources/Win32Application.h" />
-    <ClInclude Include="Sources\Actor.h" />
-    <ClInclude Include="Sources\Camera.h" />
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h" />
     <ClInclude Include="Sources\Mesh\Mesh.h" />
     <ClInclude Include="Sources\Mesh\Primitive.h" />
     <ClInclude Include="Sources\Mesh\tiny_obj_loader.h" />
-    <ClInclude Include="Sources\utDefines.h" />
-    <ClInclude Include="Sources\utFuncs.h" />
+    <ClInclude Include="Sources\Objects\Actor.h" />
+    <ClInclude Include="Sources\Objects\Camera.h" />
+    <ClInclude Include="Sources\Utils\utDefines.h" />
+    <ClInclude Include="Sources\Utils\utFuncs.h" />
+    <ClInclude Include="Sources\Win32\D3D11HelloTriangle.h" />
+    <ClInclude Include="Sources\Win32\DXSample.h" />
+    <ClInclude Include="Sources\Win32\DXSampleHelper.h" />
+    <ClInclude Include="Sources\Win32\Win32Application.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sources/D3D11HelloTriangle.cpp" />
-    <ClCompile Include="Sources/DXSample.cpp" />
     <ClCompile Include="Sources/main.cpp" />
     <ClCompile Include="Sources/stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Sources/Win32Application.cpp" />
-    <ClCompile Include="Sources\Actor.cpp" />
-    <ClCompile Include="Sources\Camera.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp" />
     <ClCompile Include="Sources\Mesh\Mesh.cpp" />
     <ClCompile Include="Sources\Mesh\Primitive.cpp" />
+    <ClCompile Include="Sources\Objects\Actor.cpp" />
+    <ClCompile Include="Sources\Objects\Camera.cpp" />
+    <ClCompile Include="Sources\Utils\utFuncs.cpp" />
+    <ClCompile Include="Sources\Win32\D3D11HelloTriangle.cpp" />
+    <ClCompile Include="Sources\Win32\DXSample.cpp" />
+    <ClCompile Include="Sources\Win32\Win32Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\hello_mesh.hlsl">

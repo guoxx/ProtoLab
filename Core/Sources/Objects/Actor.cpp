@@ -3,7 +3,16 @@
 
 
 Actor::Actor()
+	: _dirtyFlags{0}
+	, _parent{}
+	, _children{}
 {
+	_translation = DirectX::XMVectorZero();
+	_rotationQuat = DirectX::XMQuaternionIdentity();
+	_scale = DirectX::XMVECTOR{1, 1, 1};
+
+	DirectX::XMStoreFloat4x4(&_localMatrix, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&_worldMatrix, DirectX::XMMatrixIdentity());
 }
 
 

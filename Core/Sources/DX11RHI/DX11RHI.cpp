@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "DX11RHI.h"
 #include "DX11ResourceCreationHelpers.h"
-#include "../Win32Application.h"
+// TODO: remove this from RHI module
+#include "../Win32/Win32Application.h"
 
 ID3D11RasterizerState*				DX11RHI::_defaultRasterizerState{nullptr};
 ID3D11DepthStencilState*			DX11RHI::_defaultDepthStencilState{nullptr};

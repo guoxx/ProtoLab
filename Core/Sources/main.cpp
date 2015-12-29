@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "D3D11HelloTriangle.h"
+#include "Win32/D3D11HelloTriangle.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {

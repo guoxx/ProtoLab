@@ -1,8 +1,8 @@
 #pragma once
 
 #include "DXSample.h"
-#include "Mesh/Mesh.h"
-#include "Camera.h"
+#include "../Mesh/Mesh.h"
+#include "../Objects/Camera.h"
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;

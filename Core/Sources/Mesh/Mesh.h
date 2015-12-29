@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Actor.h"
+#include "../Objects/Actor.h"
 #include "tiny_obj_loader.h"
 
 class Camera;
