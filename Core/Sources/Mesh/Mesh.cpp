@@ -3,7 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 #include "Mesh.h"
-#include "Camera.h"
+#include "../Camera.h"
 
 
 

@@ -14,6 +14,9 @@
     <Filter Include="Sources\DX11RHI">
       <UniqueIdentifier>{fce1924b-44fe-407b-8619-abcb41df8f0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Mesh">
+      <UniqueIdentifier>{8738a22c-985d-4931-977e-c4ee5f253c1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources/D3D11HelloTriangle.h">
@@ -40,22 +43,25 @@
     <ClInclude Include="Sources\Actor.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Mesh.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
-    <ClInclude Include="Sources\tiny_obj_loader.h">
-      <Filter>Sources</Filter>
-    </ClInclude>
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Primitive.h">
+    <ClInclude Include="Sources\utDefines.h">
       <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\utDefines.h">
+    <ClInclude Include="Sources\Mesh\Mesh.h">
+      <Filter>Sources\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Mesh\Primitive.h">
+      <Filter>Sources\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Mesh\tiny_obj_loader.h">
+      <Filter>Sources\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\utFuncs.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>
@@ -81,14 +87,14 @@
     <ClCompile Include="Sources\Actor.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Mesh.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp">
       <Filter>Sources\DX11RHI</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Primitive.cpp">
-      <Filter>Sources</Filter>
+    <ClCompile Include="Sources\Mesh\Mesh.cpp">
+      <Filter>Sources\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Mesh\Primitive.cpp">
+      <Filter>Sources\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

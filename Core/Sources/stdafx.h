@@ -28,6 +28,7 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "utFuncs.h"
 #include "utDefines.h"
 #include "RHI.h"
 

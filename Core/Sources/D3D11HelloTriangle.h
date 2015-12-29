@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DXSample.h"
-#include "Mesh.h"
+#include "Mesh/Mesh.h"
 #include "Camera.h"
 
 using namespace DirectX;
