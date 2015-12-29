@@ -25,7 +25,8 @@ void D3D11HelloTriangle::LoadAssets()
 {
 	_camera = std::make_shared<Camera>();
 
-	_camera->lookAt(DirectX::XMVECTOR{3, 4, 5}, DirectX::XMVECTOR{0, 0, 0}, DirectX::XMVECTOR{0, 1, 0});
+	_camera->setPosition(DirectX::XMVECTOR{0, 0, 3});
+	//_camera->lookAt(DirectX::XMVECTOR{3, 4, 5}, DirectX::XMVECTOR{0, 0, 0}, DirectX::XMVECTOR{0, 1, 0});
 	_camera->setViewParams(90, m_width * 1.0f / m_height, 0.1f, 1000.0f);
 
 	_vsConstantsBuffer = RHI::createConstantBuffer(&_vsConstantsData, sizeof(_vsConstantsData));
@@ -50,24 +51,16 @@ void D3D11HelloTriangle::OnUpdate()
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::A))
 	{
-		_camera->move(_camera->getLeft(), 0.01f);
+		_camera->move(_camera->getRight(), 0.01f);
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::D))
 	{
-		_camera->move(_camera->getRight(), 0.01f);
+		_camera->move(_camera->getLeft(), 0.01f);
 	}
 
 	if (mouseState.leftButton)
 	{
-		if (mouseState.x != 0)
-		{
-			_camera->rotateY(-mouseState.x*0.1);
-		}
-
-		if (mouseState.y != 0)
-		{
-			_camera->rotateX(-mouseState.y*0.1);
-		}
+		_camera->rotatePitchYawRoll(-mouseState.y*0.1f, -mouseState.x*0.1f, 0);
 	}
 
 }
@@ -156,6 +149,15 @@ void D3D11HelloTriangle::updateCamera()
 	dataPtr->modelViewProjMatrix = finalMatrix;
 	RHI::_context->Unmap(_vsConstantsBuffer, 0);
 	*/
+
+
+	//static float roll = 0.0f;
+	////roll += 0.05f;
+	//static float pitch = 0.0f;
+	////pitch += 0.05f;
+	//static float yaw = 0.0f;
+	////yaw += 0.05f;
+	//_camera->setRotationPitchYawRoll(DirectX::XMVECTOR{pitch, yaw, roll});
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	RHI::_context->Map(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

@@ -19,8 +19,8 @@ public:
 	void setPosition(DirectX::XMVECTOR position);
 	DirectX::XMVECTOR getPosition() const;
 
-	void setRotationQuaternion(DirectX::XMVECTOR quat);
-	DirectX::XMVECTOR getRotationQuaternion() const;
+	void setRotationPitchYawRoll(DirectX::XMVECTOR pitchYawRollInDegrees);
+	DirectX::XMVECTOR getRotationPitchYawRoll() const;
 
 	void setScale(DirectX::XMVECTOR scale);
 	DirectX::XMVECTOR getScale() const;
@@ -39,10 +39,7 @@ public:
 	// transformation in local space
 	void move(DirectX::XMVECTOR direction, float distance);
 	// rotate in local space, angle is measured by degrees
-	void rotate(DirectX::XMVECTOR axis, float angle);
-	void rotateX(float angle);
-	void rotateY(float angle);
-	void rotateZ(float angle);
+	void rotatePitchYawRoll(float pitch, float yaw, float roll);
 
 protected:
 
@@ -62,7 +59,7 @@ protected:
 	uint32_t _dirtyFlags;
 
 	DirectX::XMVECTOR _translation;
-	DirectX::XMVECTOR _rotationQuat;
+	DirectX::XMVECTOR _rotationPitchYawRoll;
 	DirectX::XMVECTOR _scale;
 
 	DirectX::XMFLOAT4X4 _localMatrix;

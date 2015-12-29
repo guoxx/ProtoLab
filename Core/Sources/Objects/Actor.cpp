@@ -8,7 +8,7 @@ Actor::Actor()
 	, _dirtyFlags{0}
 {
 	_translation = DirectX::XMVectorZero();
-	_rotationQuat = DirectX::XMQuaternionIdentity();
+	_rotationPitchYawRoll = DirectX::XMVectorZero();
 	_scale = DirectX::XMVECTOR{1, 1, 1};
 
 	DirectX::XMStoreFloat4x4(&_localMatrix, DirectX::XMMatrixIdentity());
@@ -48,15 +48,16 @@ DirectX::XMVECTOR Actor::getPosition() const
 	return _translation;
 }
 
-void Actor::setRotationQuaternion(DirectX::XMVECTOR quat)
+void Actor::setRotationPitchYawRoll(DirectX::XMVECTOR pitchYawRollInDegrees)
 {
-	_rotationQuat = quat;
+	float degreeToRadian = -DirectX::XM_PI / 180.0f;
+	_rotationPitchYawRoll = DirectX::XMVectorMultiply(pitchYawRollInDegrees, DirectX::XMVECTOR{degreeToRadian, degreeToRadian, degreeToRadian, degreeToRadian});
 	_updateLocalMatrixDeferred();
 }
 
-DirectX::XMVECTOR Actor::getRotationQuaternion() const
+DirectX::XMVECTOR Actor::getRotationPitchYawRoll() const
 {
-	return _rotationQuat;
+	return _rotationPitchYawRoll;
 }
 
 void Actor::setScale(DirectX::XMVECTOR scale)
@@ -128,26 +129,11 @@ void Actor::move(DirectX::XMVECTOR direction, float distance)
 	_updateLocalMatrixDeferred();
 }
 
-void Actor::rotate(DirectX::XMVECTOR axis, float angle)
+void Actor::rotatePitchYawRoll(float pitch, float yaw, float roll)
 {
-	DirectX::XMVECTOR rotation = DirectX::XMQuaternionRotationAxis(axis, DirectX::XMConvertToRadians(angle));
-	_rotationQuat = DirectX::XMQuaternionMultiply(_rotationQuat, rotation);
+	DirectX::XMVECTOR rotation = DirectX::XMVECTOR{DirectX::XMConvertToRadians(pitch), DirectX::XMConvertToRadians(yaw), DirectX::XMConvertToRadians(roll), 0};
+	_rotationPitchYawRoll = DirectX::XMVectorAdd(_rotationPitchYawRoll, rotation);
 	_updateLocalMatrixDeferred();
-}
-
-void Actor::rotateX(float angle)
-{
-	rotate(DirectX::XMVECTOR{1, 0, 0, 0}, angle);
-}
-
-void Actor::rotateY(float angle)
-{
-	rotate(DirectX::XMVECTOR{0, 1, 0, 0}, angle);
-}
-
-void Actor::rotateZ(float angle)
-{
-	rotate(DirectX::XMVECTOR{0, 0, 1, 0}, angle);
 }
 
 void Actor::_updateLocalMatrixImmediate()
@@ -156,7 +142,7 @@ void Actor::_updateLocalMatrixImmediate()
 	//if (_dirtyFlags & ACTOR_DIRTY_LOCAL_MATRIX)
 	{
 		DirectX::XMMATRIX mTrans = DirectX::XMMatrixTranslationFromVector(_translation);
-		DirectX::XMMATRIX mRot = DirectX::XMMatrixRotationQuaternion(_rotationQuat);
+		DirectX::XMMATRIX mRot = DirectX::XMMatrixRotationRollPitchYawFromVector(_rotationPitchYawRoll);
 		DirectX::XMMATRIX mScale = DirectX::XMMatrixScalingFromVector(_scale);
 		// mRot * mTrans * mScale
 		DirectX::XMMATRIX mLocal = DirectX::XMMatrixMultiply(DirectX::XMMatrixMultiply(mRot, mTrans), mScale);
