@@ -25,11 +25,25 @@ private:
 		DirectX::XMMATRIX modelViewProjMatrix;
 	};
 
+	struct MaterielProp
+	{
+		DirectX::XMFLOAT4 ambient;
+		DirectX::XMFLOAT4 diffuse;
+		DirectX::XMFLOAT4 specular;
+		DirectX::XMFLOAT4 transmittance;
+		DirectX::XMFLOAT4 emission;
+		float shininess;
+		float ior;      // index of refraction
+		float dissolve; // 1 == opaque; 0 == fully transparent
+		// illumination model (see http://www.fileformat.info/format/material/)
+		float illum;
+	};
+
 	ID3D11VertexShader* _vertexShader{nullptr};
 	ID3D11PixelShader* _pixelShader{nullptr};
 	ID3D11InputLayout* _vertexDecl{nullptr};
 	ID3D11Buffer* _vsConstantsBuffer{nullptr};
-	TransformMatrixs _vsConstantsData{};
+	ID3D11Buffer* _psMaterielBuffer{nullptr};
 	std::vector<std::shared_ptr<Primitive>> _primitives{};
 
 	std::vector<tinyobj::shape_t> _shapes{};

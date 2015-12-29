@@ -10,6 +10,7 @@ public:
 
 private:
 	std::string				_name;
+	uint32_t				_matIdx;
 	ID3D11Buffer*			_positionBuffer{nullptr};
 	ID3D11Buffer*			_normalBuffer{nullptr};
 	ID3D11Buffer*			_texcoordBuffer{nullptr};

@@ -9,9 +9,12 @@
 
 Mesh::Mesh()
 {
-	_vsConstantsBuffer = RHI::createConstantBuffer(&_vsConstantsData, sizeof(_vsConstantsData));
-}
+	TransformMatrixs vsConstantsData{};
+	_vsConstantsBuffer = RHI::createConstantBuffer(&vsConstantsData, sizeof(vsConstantsData));
 
+	MaterielProp psMaterielData{};
+	_psMaterielBuffer = RHI::createConstantBuffer(psMaterielData, sizeof(psMaterielData));
+}
 
 Mesh::~Mesh()
 {
@@ -19,6 +22,7 @@ Mesh::~Mesh()
 	RHI::destroyPixelShader(_pixelShader);
 	RHI::destroyVertexDeclaration(_vertexDecl);
 	RHI::destroyResource(_vsConstantsBuffer);
+	RHI::destroyResource(_psMaterielBuffer);
 }
 
 void Mesh::draw(const Camera* camera) const
@@ -32,6 +36,22 @@ void Mesh::draw(const Camera* camera) const
 
 	for (auto prim : _primitives)
 	{
+		auto mat = _materiels[prim->_matIdx];
+
+		D3D11_MAPPED_SUBRESOURCE matSubResource;
+		RHI::_context->Map(_psMaterielBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
+		MaterielProp* matPtr = (MaterielProp*)matSubResource.pData;
+		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
+		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
+		matPtr->specular = DirectX::XMFLOAT4(mat.specular[0], mat.specular[1], mat.specular[2], 0);
+		matPtr->transmittance = DirectX::XMFLOAT4(mat.transmittance[0], mat.transmittance[1], mat.transmittance[2], 0);
+		matPtr->emission = DirectX::XMFLOAT4(mat.emission[0], mat.emission[1], mat.emission[2], 0);
+		matPtr->shininess = mat.shininess;
+		matPtr->ior = mat.ior;
+		matPtr->dissolve = mat.dissolve;
+		matPtr->illum = mat.illum;
+		RHI::_context->Unmap(_psMaterielBuffer, 0);
+
 		ID3D11Buffer* buffers[] = { prim->_positionBuffer, prim->_normalBuffer, prim->_texcoordBuffer };
 		uint32_t strides[] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3) };
 		uint32_t offsets[] = { 0, 0, 0 };
@@ -44,6 +64,7 @@ void Mesh::draw(const Camera* camera) const
 		RHI::_context->IASetPrimitiveTopology(prim->_topology);
 		RHI::_context->VSSetShader(_vertexShader, 0, 0);
 		RHI::_context->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
+		RHI::_context->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
 		RHI::_context->PSSetShader(_pixelShader, 0, 0);
 		RHI::_context->DrawIndexed(prim->_indicesCount, 0, 0);
 	}
@@ -54,7 +75,13 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 	std::string errmsg;
 	char filename[1024];
 	std::wcstombs(filename, objFileName, sizeof(filename));
-	if (!tinyobj::LoadObj(_shapes, _materiels, errmsg, filename))
+
+	std::string wtlBasepath{filename};
+	size_t lastSlash = wtlBasepath.rfind('\\');
+	wtlBasepath = wtlBasepath.substr(0, lastSlash);
+	wtlBasepath.push_back('\\');
+
+	if (!tinyobj::LoadObj(_shapes, _materiels, errmsg, filename, wtlBasepath.c_str()))
 	{
 		std::cout << errmsg << std::endl;
 	}
@@ -63,6 +90,7 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 	{
 		std::shared_ptr<Primitive> prim = std::make_shared<Primitive>();
 		prim->_name = shape.name;
+		prim->_matIdx = shape.mesh.material_ids[0];
 		prim->_positionBuffer = RHI::createVertexBuffer(shape.mesh.positions.data(), BYTES_OF_STD_VECTOR(shape.mesh.positions));
 		if (shape.mesh.normals.size() > 0)
 		{

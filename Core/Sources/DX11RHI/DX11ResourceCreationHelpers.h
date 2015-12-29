@@ -3,6 +3,7 @@
 D3D11_BUFFER_DESC createDx11BufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG bindFlag, UINT byteWidth)
 {
 	D3D11_BUFFER_DESC bufferDesc;	
+	memset(&bufferDesc, 0x00, sizeof(bufferDesc));
 	bufferDesc.Usage = usage;
 	bufferDesc.ByteWidth = byteWidth;
 	bufferDesc.BindFlags = bindFlag;
@@ -14,6 +15,7 @@ D3D11_BUFFER_DESC createDx11BufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG bindFl
 D3D11_BUFFER_DESC createDx11DynamicBufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG bindFlag, UINT byteWidth)
 {
 	D3D11_BUFFER_DESC bufferDesc;	
+	memset(&bufferDesc, 0x00, sizeof(bufferDesc));
 	bufferDesc.Usage = usage;
 	bufferDesc.ByteWidth = byteWidth;
 	bufferDesc.BindFlags = bindFlag;
@@ -25,6 +27,7 @@ D3D11_BUFFER_DESC createDx11DynamicBufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG
 D3D11_SUBRESOURCE_DATA createDx11SubresourceData(void* memPtr)
 {
 	D3D11_SUBRESOURCE_DATA resData;
+	memset(&resData, 0x00, sizeof(resData));
 	resData.pSysMem = memPtr;
 	resData.SysMemPitch = 0;
 	resData.SysMemSlicePitch = 0;
