@@ -6,6 +6,7 @@ using Microsoft::WRL::ComPtr;
 // 1. use singleton to have const functions
 // 2. use draw command list to cache each draw call so that we can flush it on another thread
 // 3. deferred context
+// 4. make data private
 class DX11RHI
 {
 public:
