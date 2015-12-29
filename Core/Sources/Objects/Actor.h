@@ -28,7 +28,18 @@ public:
 	DirectX::XMMATRIX getLocalMatrix() const;
 	DirectX::XMMATRIX getWorldMatrix() const;
 
-private:
+	// get directions in local space
+	DirectX::XMVECTOR getUp() const;
+	DirectX::XMVECTOR getDown() const;
+	DirectX::XMVECTOR getLeft() const;
+	DirectX::XMVECTOR getRight() const;
+	DirectX::XMVECTOR getForward() const;
+	DirectX::XMVECTOR getBackward() const;
+
+	// transformation in local space
+	void move(DirectX::XMVECTOR direction, float distance);
+
+protected:
 
 	void _updateLocalMatrixImmediate();
 	void _updateWorldMatrixImmediate();
@@ -38,10 +49,12 @@ private:
 
 private:
 
-	uint32_t _dirtyFlags;
-
 	std::weak_ptr<Actor> _parent;
 	std::vector<std::shared_ptr<Actor>> _children;
+
+protected:
+
+	uint32_t _dirtyFlags;
 
 	DirectX::XMVECTOR _translation;
 	DirectX::XMVECTOR _rotationQuat;

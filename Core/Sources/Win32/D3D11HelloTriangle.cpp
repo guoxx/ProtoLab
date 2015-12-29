@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "D3D11HelloTriangle.h"
+#include <DirectXTK/Inc/Keyboard.h>
+#include <DirectXTK/Inc/Mouse.h>
 
 D3D11HelloTriangle::D3D11HelloTriangle(UINT width, UINT height, std::wstring name) :
 	DXSample(width, height, name)
@@ -35,6 +37,25 @@ void D3D11HelloTriangle::LoadAssets()
 // Update frame-based values.
 void D3D11HelloTriangle::OnUpdate()
 {
+	DirectX::Keyboard::State keyboardState = DirectX::Keyboard::Get().GetState();
+	DirectX::Mouse::State mouseState = DirectX::Mouse::Get().GetState();
+
+	if (keyboardState.IsKeyDown(DirectX::Keyboard::W))
+	{
+		_camera->move(_camera->getForward(), 0.01f);
+	}
+	else if (keyboardState.IsKeyDown(DirectX::Keyboard::S))
+	{
+		_camera->move(_camera->getBackward(), 0.01f);
+	}
+	else if (keyboardState.IsKeyDown(DirectX::Keyboard::A))
+	{
+		_camera->move(_camera->getLeft(), 0.01f);
+	}
+	else if (keyboardState.IsKeyDown(DirectX::Keyboard::D))
+	{
+		_camera->move(_camera->getRight(), 0.01f);
+	}
 }
 
 // Render the scene.

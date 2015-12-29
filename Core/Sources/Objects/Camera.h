@@ -24,7 +24,6 @@ public:
 private:
 
 	// column-major matrix data
-	DirectX::XMFLOAT4X4 _viewMat;
 	DirectX::XMFLOAT4X4 _projMat;
 };
 
