@@ -56,6 +56,20 @@ void D3D11HelloTriangle::OnUpdate()
 	{
 		_camera->move(_camera->getRight(), 0.01f);
 	}
+
+	if (mouseState.leftButton)
+	{
+		if (mouseState.x != 0)
+		{
+			_camera->rotateY(-mouseState.x*0.1);
+		}
+
+		if (mouseState.y != 0)
+		{
+			_camera->rotateX(-mouseState.y*0.1);
+		}
+	}
+
 }
 
 // Render the scene.

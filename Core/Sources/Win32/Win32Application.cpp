@@ -49,6 +49,7 @@ int Win32Application::Run(DXSample* pSample, HINSTANCE hInstance, int nCmdShow)
 	new DirectX::Mouse();
 	DirectX::Keyboard::Get();
 	DirectX::Mouse::Get().SetWindow(m_hwnd);
+	DirectX::Mouse::Get().SetMode(DirectX::Mouse::MODE_RELATIVE);
 
 	ShowWindow(m_hwnd, nCmdShow);
 

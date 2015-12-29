@@ -38,6 +38,11 @@ public:
 
 	// transformation in local space
 	void move(DirectX::XMVECTOR direction, float distance);
+	// rotate in local space, angle is measured by degrees
+	void rotate(DirectX::XMVECTOR axis, float angle);
+	void rotateX(float angle);
+	void rotateY(float angle);
+	void rotateZ(float angle);
 
 protected:
 

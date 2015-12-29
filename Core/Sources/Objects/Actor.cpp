@@ -128,6 +128,28 @@ void Actor::move(DirectX::XMVECTOR direction, float distance)
 	_updateLocalMatrixDeferred();
 }
 
+void Actor::rotate(DirectX::XMVECTOR axis, float angle)
+{
+	DirectX::XMVECTOR rotation = DirectX::XMQuaternionRotationAxis(axis, DirectX::XMConvertToRadians(angle));
+	_rotationQuat = DirectX::XMQuaternionMultiply(_rotationQuat, rotation);
+	_updateLocalMatrixDeferred();
+}
+
+void Actor::rotateX(float angle)
+{
+	rotate(DirectX::XMVECTOR{1, 0, 0, 0}, angle);
+}
+
+void Actor::rotateY(float angle)
+{
+	rotate(DirectX::XMVECTOR{0, 1, 0, 0}, angle);
+}
+
+void Actor::rotateZ(float angle)
+{
+	rotate(DirectX::XMVECTOR{0, 0, 1, 0}, angle);
+}
+
 void Actor::_updateLocalMatrixImmediate()
 {
 	if (true)
