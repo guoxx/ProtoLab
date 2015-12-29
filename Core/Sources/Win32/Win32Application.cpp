@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Win32Application.h"
 
+#include <DirectXTK/Inc/Keyboard.h>
+#include <DirectXTK/Inc/Mouse.h>
+
 HWND Win32Application::m_hwnd = nullptr;
 
 int Win32Application::Run(DXSample* pSample, HINSTANCE hInstance, int nCmdShow)
@@ -41,6 +44,12 @@ int Win32Application::Run(DXSample* pSample, HINSTANCE hInstance, int nCmdShow)
 	// Initialize the sample. OnInit is defined in each child-implementation of DXSample.
 	pSample->OnInit();
 
+	// Initialize keyboard and mouse
+	new DirectX::Keyboard();
+	new DirectX::Mouse();
+	DirectX::Keyboard::Get();
+	DirectX::Mouse::Get().SetWindow(m_hwnd);
+
 	ShowWindow(m_hwnd, nCmdShow);
 
 	// Main sample loop.
@@ -76,19 +85,32 @@ LRESULT CALLBACK Win32Application::WindowProc(HWND hWnd, UINT message, WPARAM wP
 		}
 		return 0;
 
-	case WM_KEYDOWN:
-		if (pSample)
-		{
-			pSample->OnKeyDown(static_cast<UINT8>(wParam));
-		}
-		return 0;
+     case WM_ACTIVATEAPP:
+         DirectX::Keyboard::ProcessMessage(message, wParam, lParam);
+         DirectX::Mouse::ProcessMessage(message, wParam, lParam);
+         break;
 
-	case WM_KEYUP:
-		if (pSample)
-		{
-			pSample->OnKeyUp(static_cast<UINT8>(wParam));
-		}
-		return 0;
+     case WM_KEYDOWN:
+     case WM_SYSKEYDOWN:
+     case WM_KEYUP:
+     case WM_SYSKEYUP:
+         DirectX::Keyboard::ProcessMessage(message, wParam, lParam);
+         break;
+
+     case WM_INPUT:
+     case WM_MOUSEMOVE:
+     case WM_LBUTTONDOWN:
+     case WM_LBUTTONUP:
+     case WM_RBUTTONDOWN:
+     case WM_RBUTTONUP:
+     case WM_MBUTTONDOWN:
+     case WM_MBUTTONUP:
+     case WM_MOUSEWHEEL:
+     case WM_XBUTTONDOWN:
+     case WM_XBUTTONUP:
+     case WM_MOUSEHOVER:
+         DirectX::Mouse::ProcessMessage(message, wParam, lParam);
+         break;
 
 	case WM_PAINT:
 		if (pSample)

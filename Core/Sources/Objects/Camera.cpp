@@ -4,8 +4,9 @@
 
 Camera::Camera()
 {
+	DirectX::XMStoreFloat4x4(&_viewMat, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&_projMat, DirectX::XMMatrixIdentity());
 }
-
 
 Camera::~Camera()
 {

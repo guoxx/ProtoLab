@@ -6,6 +6,7 @@
 class Camera;
 class Primitive;
 
+// TODO: should not inherit from Actor
 class Mesh : public Actor
 {
 public:
