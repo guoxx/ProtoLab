@@ -20,12 +20,12 @@ public:
 
 private:
 
-	struct TransformMatrixs
+	cbuffer TransformMatrixs
 	{
 		DirectX::XMMATRIX modelViewProjMatrix;
 	};
 
-	struct MaterielProp
+	cbuffer MaterielProp
 	{
 		DirectX::XMFLOAT4 ambient;
 		DirectX::XMFLOAT4 diffuse;
@@ -36,7 +36,7 @@ private:
 		float ior;      // index of refraction
 		float dissolve; // 1 == opaque; 0 == fully transparent
 		// illumination model (see http://www.fileformat.info/format/material/)
-		float illum;
+		int illum;
 	};
 
 	ID3D11VertexShader* _vertexShader{nullptr};
