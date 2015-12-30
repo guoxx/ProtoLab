@@ -136,7 +136,20 @@ ID3D11VertexShader* DX11RHI::createVertexShaderFromFile(const wchar_t* filename,
 
 	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	ID3DBlob* blob{nullptr};
-	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, "vs_5_0", compileFlags, 0, &blob, nullptr);
+	ID3DBlob* err{nullptr};
+	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, "vs_5_0", compileFlags, 0, &blob, &err);
+	if (err != nullptr)
+	{
+		char mbsFilename[1024];
+		std::wcstombs(mbsFilename, filename, wcslen(filename));
+
+		size_t sz = err->GetBufferSize();
+		char* msg = new char[sz + 1];
+		msg[sz] = '\0';
+		memcpy(msg, err->GetBufferPointer(), sz);
+		PRINT("failed to compile vertex shader %s, error : %s", mbsFilename, msg);
+		delete [] msg;
+	}
 
 	_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &outShader);
 	_device->CreateInputLayout(desc, descElemCnt, blob->GetBufferPointer(), blob->GetBufferSize(), &vertexDecl);
@@ -150,7 +163,20 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromFile(const wchar_t* filename, c
 
 	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	ID3DBlob* blob{nullptr};
-	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, "ps_5_0", compileFlags, 0, &blob, nullptr);
+	ID3DBlob* err{nullptr};
+	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, "ps_5_0", compileFlags, 0, &blob, &err);
+	if (err != nullptr)
+	{
+		char mbsFilename[1024];
+		std::wcstombs(mbsFilename, filename, wcslen(filename));
+
+		size_t sz = err->GetBufferSize();
+		char* msg = new char[sz + 1];
+		msg[sz] = '\0';
+		memcpy(msg, err->GetBufferPointer(), sz);
+		PRINT("failed to compile pixel shader %s, error : %s", mbsFilename, msg);
+		delete [] msg;
+	}
 
 	_device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &outShader);
 
