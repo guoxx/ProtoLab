@@ -30,7 +30,7 @@ void D3D11HelloTriangle::LoadAssets()
 
 	_camera->setPosition(DirectX::XMVECTOR{0, 0, 3});
 	//_camera->lookAt(DirectX::XMVECTOR{3, 4, 5}, DirectX::XMVECTOR{0, 0, 0}, DirectX::XMVECTOR{0, 1, 0});
-	_camera->setViewParams(90, m_width * 1.0f / m_height, 0.1f, 1000.0f);
+	_camera->setViewParams(54, m_width * 1.0f / m_height, 0.1f, 1000.0f);
 
 	_vsConstantsBuffer = RHI::createConstantBuffer(&_vsConstantsData, sizeof(_vsConstantsData));
 

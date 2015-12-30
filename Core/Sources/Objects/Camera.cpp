@@ -26,7 +26,7 @@ Camera::~Camera()
 
 void Camera::setViewParams(float fovy, float aspectRatio, float zNear, float zFar)
 {
-	DirectX::XMMATRIX mProj = DirectX::XMMatrixPerspectiveFovRH(fovy, aspectRatio, zNear, zFar);
+	DirectX::XMMATRIX mProj = DirectX::XMMatrixPerspectiveFovRH(DirectX::XMConvertToRadians(fovy), aspectRatio, zNear, zFar);
 	DirectX::XMStoreFloat4x4(&_projMat, mProj);
 }
 
