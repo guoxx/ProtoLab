@@ -13,7 +13,7 @@ Mesh::Mesh()
 	_vsConstantsBuffer = RHI::createConstantBuffer(&vsConstantsData, sizeof(vsConstantsData));
 
 	MaterielProp psMaterielData{};
-	_psMaterielBuffer = RHI::createConstantBuffer(psMaterielData, sizeof(psMaterielData));
+	_psMaterielBuffer = RHI::createConstantBuffer(&psMaterielData, sizeof(psMaterielData));
 }
 
 Mesh::~Mesh()

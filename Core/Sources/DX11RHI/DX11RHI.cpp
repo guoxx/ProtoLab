@@ -20,15 +20,18 @@ void DX11RHI::initialize(uint32_t frameWidth, uint32_t frameHeight)
 {
 	HRESULT hr;
 
-	uint32_t creationFlag = D3D11_CREATE_DEVICE_DEBUG;
+	uint32_t creationFlag = 0;
+#ifdef _DEBUG
+	creationFlag |= D3D11_CREATE_DEVICE_DEBUG;
 	//creationFlag |= D3D11_CREATE_DEVICE_DEBUGGABLE;
+#endif
 
 	const D3D_FEATURE_LEVEL featureLevels[] = {D3D_FEATURE_LEVEL_11_1,
 												D3D_FEATURE_LEVEL_11_0};
 
 	ComPtr<IDXGIFactory1> factory;
 	hr = CreateDXGIFactory1(IID_PPV_ARGS(&factory));
-	if (FAILED(hr)) { abort(); }
+	CHECK(hr == S_OK);
 
 	hr = D3D11CreateDevice(nullptr,
 							D3D_DRIVER_TYPE_HARDWARE,
@@ -40,11 +43,11 @@ void DX11RHI::initialize(uint32_t frameWidth, uint32_t frameHeight)
 							_device.GetAddressOf(),
 							nullptr,
 							_context.GetAddressOf());
-	if (FAILED(hr)) { abort(); }
+	CHECK(hr == S_OK);
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = createDxgiSwapChainDesc(Win32Application::GetHwnd(), FRAME_COUNT, frameWidth, frameHeight);
 	hr = factory->CreateSwapChain(_device.Get(), &swapChainDesc, _swapChain.GetAddressOf());
-	if (FAILED(hr)) { abort(); }
+	CHECK(hr == S_OK);
 
 	ComPtr<ID3D11Texture2D> renderTexture;
 	_swapChain->GetBuffer(0, IID_PPV_ARGS(&renderTexture));
@@ -57,6 +60,29 @@ void DX11RHI::initialize(uint32_t frameWidth, uint32_t frameHeight)
 	_viewport.MaxDepth = 1.0f;
 
 	initializeDefaultRHIStates();
+
+#ifdef _DEBUG
+	ComPtr<ID3D11Debug> d3dDebug;
+	 hr = _device.As(&d3dDebug);
+	 CHECK(hr == S_OK);
+
+	ComPtr<ID3D11InfoQueue> d3dInfoQueue;
+	hr = d3dDebug.As(&d3dInfoQueue);
+	CHECK(hr == S_OK);
+
+	d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+	d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+	D3D11_MESSAGE_ID hide[] =
+	{
+		D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
+		// TODO: Add more message IDs here as needed 
+	};
+	D3D11_INFO_QUEUE_FILTER filter;
+	memset(&filter, 0, sizeof(filter));
+	filter.DenyList.NumIDs = _countof(hide);
+	filter.DenyList.pIDList = hide;
+	d3dInfoQueue->AddStorageFilterEntries(&filter);
+ #endif
 }
 
 
