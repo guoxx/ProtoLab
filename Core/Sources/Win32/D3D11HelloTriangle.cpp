@@ -2,6 +2,9 @@
 #include "D3D11HelloTriangle.h"
 #include <DirectXTK/Inc/Keyboard.h>
 #include <DirectXTK/Inc/Mouse.h>
+#include "../Objects/Scene.h"
+#include "../Objects/Model.h"
+#include "../Renderer/ForwardRenderer.h"
 
 D3D11HelloTriangle::D3D11HelloTriangle(UINT width, UINT height, std::wstring name) :
 	DXSample(width, height, name)
@@ -33,6 +36,17 @@ void D3D11HelloTriangle::LoadAssets()
 
 	loadTriangle();
 	loadMesh();
+
+	_scene = std::make_shared<Scene>();
+	auto mod = std::make_shared<Model>();
+	_scene->attachModel(mod);
+
+	auto mesh = std::make_shared<Mesh>();
+	mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
+	mesh->loadShadersFromFile(GetAssetFullPath(L"hello_mesh.hlsl").c_str());
+	mod->setMesh(mesh);
+
+	_renderer = std::make_shared<ForwardRenderer>();
 }
 
 // Update frame-based values.
@@ -72,7 +86,10 @@ void D3D11HelloTriangle::OnRender()
 
 	updateCamera();
 	//drawTriangle();
-	drawMesh();
+	//drawMesh();
+
+	RHI::setViewport(0, 0, GetWidth(), GetHeight());
+	_renderer->render(_camera, _scene);
 }
 
 void D3D11HelloTriangle::OnPresent()

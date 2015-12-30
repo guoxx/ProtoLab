@@ -97,6 +97,9 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\Mesh\tiny_obj_loader.h" />
     <ClInclude Include="Sources\Objects\Actor.h" />
     <ClInclude Include="Sources\Objects\Camera.h" />
+    <ClInclude Include="Sources\Objects\Model.h" />
+    <ClInclude Include="Sources\Objects\Scene.h" />
+    <ClInclude Include="Sources\Renderer\ForwardRenderer.h" />
     <ClInclude Include="Sources\Utils\utDefines.h" />
     <ClInclude Include="Sources\Utils\utFuncs.h" />
     <ClInclude Include="Sources\Win32\D3D11HelloTriangle.h" />
@@ -114,6 +117,9 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\Mesh\Primitive.cpp" />
     <ClCompile Include="Sources\Objects\Actor.cpp" />
     <ClCompile Include="Sources\Objects\Camera.cpp" />
+    <ClCompile Include="Sources\Objects\Model.cpp" />
+    <ClCompile Include="Sources\Objects\Scene.cpp" />
+    <ClCompile Include="Sources\Renderer\ForwardRenderer.cpp" />
     <ClCompile Include="Sources\Utils\utFuncs.cpp" />
     <ClCompile Include="Sources\Win32\D3D11HelloTriangle.cpp" />
     <ClCompile Include="Sources\Win32\DXSample.cpp" />

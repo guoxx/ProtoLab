@@ -73,6 +73,15 @@
     <ClInclude Include="Sources\Objects\Actor.h">
       <Filter>Sources\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Renderer\ForwardRenderer.h">
+      <Filter>Sources\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Scene.h">
+      <Filter>Sources\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\Model.h">
+      <Filter>Sources\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -106,6 +115,15 @@
       <Filter>Sources\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Objects\Camera.cpp">
+      <Filter>Sources\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Renderer\ForwardRenderer.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Scene.cpp">
+      <Filter>Sources\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\Model.cpp">
       <Filter>Sources\Objects</Filter>
     </ClCompile>
   </ItemGroup>

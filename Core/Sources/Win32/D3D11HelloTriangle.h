@@ -7,6 +7,9 @@
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
+class Scene;
+class ForwardRenderer;
+
 class D3D11HelloTriangle : public DXSample
 {
 public:
@@ -38,6 +41,8 @@ private:
 	TransformMatrixs _vsConstantsData;
 	ID3D11Buffer* _vsConstantsBuffer;
 
+	std::shared_ptr<ForwardRenderer> _renderer;
+	std::shared_ptr<Scene> _scene;
 	// resources for mesh
 	std::shared_ptr<Mesh> _mesh;
 
