@@ -1,15 +1,14 @@
 #pragma once
 
-#include "../Objects/Actor.h"
 #include "tiny_obj_loader.h"
 
 class Camera;
 class Primitive;
 
-// TODO: should not inherit from Actor
-class Mesh : public Actor
+class Mesh
 {
 public:
+
 	Mesh();
 	~Mesh();
 
@@ -17,6 +16,8 @@ public:
 
 	void loadMeshFromFile(const wchar_t* objFileName);
 	void loadShadersFromFile(const wchar_t* shaderFileName);
+
+	void loadCoordinateSystemFrame();
 
 private:
 

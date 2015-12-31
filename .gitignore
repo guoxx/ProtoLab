@@ -1,2 +1,5 @@
 Debug/
 ipch/
+
+Core/Shaders/*_vs.h
+Core/Shaders/*_ps.h

@@ -37,7 +37,9 @@ public:
 	static ID3D11Buffer* createConstantBuffer(void* memPtr, uint32_t memSize);
 
 	static ID3D11VertexShader* createVertexShaderFromFile(const wchar_t* filename, const char* entryPoint, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl);
+	static ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl);
 	static ID3D11PixelShader* createPixelShaderFromFile(const wchar_t* filename, const char* entryPoint);
+	static ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
 
 	// number of mipmap levels include base
 	static DX11RenderTarget* createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);

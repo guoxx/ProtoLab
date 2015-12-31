@@ -38,13 +38,27 @@ void D3D11HelloTriangle::LoadAssets()
 	_camera->setViewParams(54, m_width * 1.0f / m_height, 0.1f, 1000.0f);
 
 	_scene = std::make_shared<Scene>();
-	auto mod = std::make_shared<Model>();
-	_scene->attachModel(mod);
 
-	auto mesh = std::make_shared<Mesh>();
-	mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
-	mesh->loadShadersFromFile(GetAssetFullPath(L"hello_mesh.hlsl").c_str());
-	mod->setMesh(mesh);
+	{
+		// cornell box
+		auto mod = std::make_shared<Model>();
+		_scene->attachModel(mod);
+
+		auto mesh = std::make_shared<Mesh>();
+		mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
+		mesh->loadShadersFromFile(GetAssetFullPath(L"hello_mesh.hlsl").c_str());
+		mod->setMesh(mesh);
+	}
+
+	{
+		// coordiante basis
+		auto mod = std::make_shared<Model>();
+		_scene->attachModel(mod);
+
+		auto mesh = std::make_shared<Mesh>();
+		mesh->loadCoordinateSystemFrame();
+		mod->setMesh(mesh);
+	}
 
 	_renderer = std::make_shared<ForwardRenderer>();
 }

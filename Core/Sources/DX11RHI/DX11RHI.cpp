@@ -133,8 +133,6 @@ ID3D11Buffer* DX11RHI::createConstantBuffer(void* memPtr, uint32_t memSize)
 
 ID3D11VertexShader* DX11RHI::createVertexShaderFromFile(const wchar_t* filename, const char* entryPoint, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl)
 {
-	ID3D11VertexShader* outShader{nullptr};
-
 	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	ID3DBlob* blob{nullptr};
 	ID3DBlob* err{nullptr};
@@ -152,16 +150,19 @@ ID3D11VertexShader* DX11RHI::createVertexShaderFromFile(const wchar_t* filename,
 		delete [] msg;
 	}
 
-	_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &outShader);
-	_device->CreateInputLayout(desc, descElemCnt, blob->GetBufferPointer(), blob->GetBufferSize(), &vertexDecl);
+	return createVertexShaderFromBytecodes(blob->GetBufferPointer(), blob->GetBufferSize(), desc, descElemCnt, vertexDecl);
+}
 
+ID3D11VertexShader* DX11RHI::createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl)
+{
+	ID3D11VertexShader* outShader{nullptr};
+	_device->CreateVertexShader(bytecode, bytecodeLength, nullptr, &outShader);
+	_device->CreateInputLayout(desc, descElemCnt, bytecode, bytecodeLength, &vertexDecl);
 	return outShader;
 }
 
 ID3D11PixelShader* DX11RHI::createPixelShaderFromFile(const wchar_t* filename, const char* entryPoint)
 {
-	ID3D11PixelShader* outShader{nullptr};
-
 	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	ID3DBlob* blob{nullptr};
 	ID3DBlob* err{nullptr};
@@ -179,8 +180,13 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromFile(const wchar_t* filename, c
 		delete [] msg;
 	}
 
-	_device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &outShader);
+	return createPixelShaderFromBytecodes(blob->GetBufferPointer(), blob->GetBufferSize());
+}
 
+ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength)
+{
+	ID3D11PixelShader* outShader{nullptr};
+	_device->CreatePixelShader(bytecode, bytecodeLength, nullptr, &outShader);
 	return outShader;
 }
 
