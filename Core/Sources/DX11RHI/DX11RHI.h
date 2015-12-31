@@ -1,5 +1,8 @@
 #pragma once
 
+#include "DX11RenderTarget.h"
+#include "DX11DepthStencilRenderTarget.h"
+
 using Microsoft::WRL::ComPtr;
 
 #ifdef _MSC_VER
@@ -36,11 +39,18 @@ public:
 	static ID3D11VertexShader* createVertexShaderFromFile(const wchar_t* filename, const char* entryPoint, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl);
 	static ID3D11PixelShader* createPixelShaderFromFile(const wchar_t* filename, const char* entryPoint);
 
+	// number of mipmap levels include base
+	static DX11RenderTarget* createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);
+	static DX11DepthStencilRenderTarget* createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);
+
 	// resources deletion
 	static void destroyResource(ID3D11Resource* resourceToDelete);
 	static void destroyVertexShader(ID3D11VertexShader* shaderToDelete);
 	static void destroyVertexDeclaration(ID3D11InputLayout* declToDelete);
 	static void destroyPixelShader(ID3D11PixelShader* shaderToDelete);
+	static void destroyView(ID3D11View* viewToDelete);
+	static void destroyRenderTarget(DX11RenderTarget* renderTargetToDelete);
+	static void destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* renderTargetToDelete);
 
 	// render states
 	static void setDefaultRHIStates();
@@ -51,7 +61,7 @@ public:
 
 	// draws
 	static void clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a);
-	static void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth, uint8_t stencil);
+	static void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth = 1.0f, uint8_t stencil = 0);
 	static void drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation);
 
 	// present

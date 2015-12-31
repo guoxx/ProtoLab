@@ -82,6 +82,12 @@
     <ClInclude Include="Sources\Objects\Model.h">
       <Filter>Sources\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11RenderTarget.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -125,6 +131,12 @@
     </ClCompile>
     <ClCompile Include="Sources\Objects\Model.cpp">
       <Filter>Sources\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11RenderTarget.cpp">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.cpp">
+      <Filter>Sources\DX11RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

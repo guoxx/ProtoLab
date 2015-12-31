@@ -63,25 +63,26 @@ void DX11RHI::initialize(uint32_t frameWidth, uint32_t frameHeight)
 
 #ifdef _DEBUG
 	ComPtr<ID3D11Debug> d3dDebug;
-	 hr = _device.As(&d3dDebug);
-	 CHECK(hr == S_OK);
-
-	ComPtr<ID3D11InfoQueue> d3dInfoQueue;
-	hr = d3dDebug.As(&d3dInfoQueue);
-	CHECK(hr == S_OK);
-
-	d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
-	d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
-	D3D11_MESSAGE_ID hide[] =
+	hr = _device.As(&d3dDebug);
+	if (hr == S_OK)
 	{
-		D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
-		// TODO: Add more message IDs here as needed 
-	};
-	D3D11_INFO_QUEUE_FILTER filter;
-	memset(&filter, 0, sizeof(filter));
-	filter.DenyList.NumIDs = _countof(hide);
-	filter.DenyList.pIDList = hide;
-	d3dInfoQueue->AddStorageFilterEntries(&filter);
+		ComPtr<ID3D11InfoQueue> d3dInfoQueue;
+		hr = d3dDebug.As(&d3dInfoQueue);
+		CHECK(hr == S_OK);
+
+		d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+		d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+		D3D11_MESSAGE_ID hide[] =
+		{
+			D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
+			// TODO: Add more message IDs here as needed 
+		};
+		D3D11_INFO_QUEUE_FILTER filter;
+		memset(&filter, 0, sizeof(filter));
+		filter.DenyList.NumIDs = _countof(hide);
+		filter.DenyList.pIDList = hide;
+		d3dInfoQueue->AddStorageFilterEntries(&filter);
+	}
  #endif
 }
 
@@ -99,7 +100,7 @@ void DX11RHI::initializeDefaultRHIStates()
 	_device->CreateRasterizerState(&rasterizerDesc, &_defaultRasterizerState);
 
 	CD3D11_DEPTH_STENCIL_DESC depthStencilDesc{CD3D11_DEFAULT{}};
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	//depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
 	_device->CreateDepthStencilState(&depthStencilDesc, &_defaultDepthStencilState);
 }
 
@@ -183,6 +184,44 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromFile(const wchar_t* filename, c
 	return outShader;
 }
 
+DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat)
+{
+	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
+
+	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texelFormat);
+	desc.BindFlags = D3D11_BIND_RENDER_TARGET;
+	_device->CreateTexture2D(&desc, nullptr, &(renderTarget->_texture));
+
+	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
+	{
+		ID3D11RenderTargetView* rtv{nullptr};
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2d(texelFormat, mipSlice);
+		_device->CreateRenderTargetView(renderTarget->_texture, &rtvDesc, &rtv);
+		renderTarget->_renderTargets.push_back(rtv);
+	}
+
+	return renderTarget;
+}
+
+DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat)
+{
+	DX11DepthStencilRenderTarget* depthStencilRenderTarget = new DX11DepthStencilRenderTarget{};
+
+	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texelFormat);
+	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	_device->CreateTexture2D(&desc, nullptr, &(depthStencilRenderTarget->_texture));
+
+	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
+	{
+		ID3D11DepthStencilView* dsv{nullptr};
+		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = createDx11DepthStencilViewDescTex2d(texelFormat, mipSlice);
+		_device->CreateDepthStencilView(depthStencilRenderTarget->_texture, &dsvDesc, &dsv);
+		depthStencilRenderTarget->_depthStencilRenderTargets.push_back(dsv);
+	}
+
+	return depthStencilRenderTarget;
+}
+
 void DX11RHI::destroyResource(ID3D11Resource* resourceToDelete)
 {
 	if (resourceToDelete)
@@ -205,6 +244,22 @@ void DX11RHI::destroyPixelShader(ID3D11PixelShader* shaderToDelete)
 {
 	if (shaderToDelete)
 		shaderToDelete->Release();
+}
+
+void DX11RHI::destroyView(ID3D11View* viewToDelete)
+{
+	if (viewToDelete)
+		viewToDelete->Release();
+}
+
+void DX11RHI::destroyRenderTarget(DX11RenderTarget* renderTargetToDelete)
+{
+	delete renderTargetToDelete;
+}
+
+void DX11RHI::destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* renderTargetToDelete)
+{
+	delete renderTargetToDelete;
 }
 
 void DX11RHI::setDefaultRHIStates()

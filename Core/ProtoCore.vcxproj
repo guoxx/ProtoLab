@@ -90,6 +90,8 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
   <ItemGroup>
     <ClInclude Include="Sources/stdafx.h" />
     <ClInclude Include="Sources/targetver.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11RenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h" />
     <ClInclude Include="Sources\Mesh\Mesh.h" />
@@ -112,6 +114,8 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources/stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.cpp" />
+    <ClCompile Include="Sources\DX11RHI\DX11RenderTarget.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp" />
     <ClCompile Include="Sources\Mesh\Mesh.cpp" />
     <ClCompile Include="Sources\Mesh\Primitive.cpp" />

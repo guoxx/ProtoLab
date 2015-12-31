@@ -45,5 +45,5 @@ PSInput VSMain(VSInput input)
 
 float4 PSMain(PSInput input) : SV_TARGET
 {
-	return float4(diffuse);
+	return float4(diffuse + emission);
 }
