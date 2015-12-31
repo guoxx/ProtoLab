@@ -2,14 +2,12 @@
 #include "DX11RHI.h"
 #include "DX11ResourceCreationHelpers.h"
 
-ID3D11RasterizerState*				DX11RHI::_defaultRasterizerState{nullptr};
-ID3D11DepthStencilState*			DX11RHI::_defaultDepthStencilState{nullptr};
 
-D3D11_VIEWPORT						DX11RHI::_viewport{};
-
-ComPtr<ID3D11Device>				DX11RHI::_device{nullptr};
-ComPtr<ID3D11DeviceContext>			DX11RHI::_context{nullptr};
-
+DX11RHI& DX11RHI::GetInst()
+{
+	static DX11RHI _inst;
+	return _inst;
+}
 
 void DX11RHI::initialize()
 {

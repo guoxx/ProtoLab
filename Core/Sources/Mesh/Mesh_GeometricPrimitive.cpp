@@ -27,8 +27,8 @@ void Mesh::loadCoordinateSystemFrame()
 	xAxis->_name = "x-axis";
 	xAxis->_matIdx = 0;
 	xAxis->_materialId = Primitive::MATERIAL_ID::MATERIAL_VERTEX_COLOR;
-	xAxis->_positionBuffer = RHI::createVertexBuffer(pVexBuf+0, sizeof(Vertex)*2);
-	xAxis->_indexBuffer = RHI::createIndexBuffer(idxBuf, sizeof(idxBuf));
+	xAxis->_positionBuffer = RHI::GetInst().createVertexBuffer(pVexBuf+0, sizeof(Vertex)*2);
+	xAxis->_indexBuffer = RHI::GetInst().createIndexBuffer(idxBuf, sizeof(idxBuf));
 	xAxis->_topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	xAxis->_indicesFormat = DXGI_FORMAT_R32_UINT;
 	xAxis->_indicesCount = 2;
@@ -38,8 +38,8 @@ void Mesh::loadCoordinateSystemFrame()
 	yAxis->_name = "y-axis";
 	yAxis->_matIdx = 1;
 	yAxis->_materialId = Primitive::MATERIAL_ID::MATERIAL_VERTEX_COLOR;
-	yAxis->_positionBuffer = RHI::createVertexBuffer(pVexBuf+2, sizeof(Vertex)*2);
-	yAxis->_indexBuffer = RHI::createIndexBuffer(idxBuf, sizeof(idxBuf));
+	yAxis->_positionBuffer = RHI::GetInst().createVertexBuffer(pVexBuf+2, sizeof(Vertex)*2);
+	yAxis->_indexBuffer = RHI::GetInst().createIndexBuffer(idxBuf, sizeof(idxBuf));
 	yAxis->_topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	yAxis->_indicesFormat = DXGI_FORMAT_R32_UINT;
 	yAxis->_indicesCount = 2;
@@ -49,8 +49,8 @@ void Mesh::loadCoordinateSystemFrame()
 	zAxis->_name = "z-axis";
 	zAxis->_matIdx = 2;
 	zAxis->_materialId = Primitive::MATERIAL_ID::MATERIAL_VERTEX_COLOR;
-	zAxis->_positionBuffer = RHI::createVertexBuffer(pVexBuf+4, sizeof(Vertex)*2);
-	zAxis->_indexBuffer = RHI::createIndexBuffer(idxBuf, sizeof(idxBuf));
+	zAxis->_positionBuffer = RHI::GetInst().createVertexBuffer(pVexBuf+4, sizeof(Vertex)*2);
+	zAxis->_indexBuffer = RHI::GetInst().createIndexBuffer(idxBuf, sizeof(idxBuf));
 	zAxis->_topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	zAxis->_indicesFormat = DXGI_FORMAT_R32_UINT;
 	zAxis->_indicesCount = 2;
@@ -77,6 +77,6 @@ void Mesh::loadCoordinateSystemFrame()
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	_vertexShader = RHI::createVertexShaderFromBytecodes(g_PerVertexColor_vs, sizeof(g_PerVertexColor_vs), inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexDecl);
-	_pixelShader = RHI::createPixelShaderFromBytecodes(g_PerVertexColor_ps, sizeof(g_PerVertexColor_ps));
+	_vertexShader = RHI::GetInst().createVertexShaderFromBytecodes(g_PerVertexColor_vs, sizeof(g_PerVertexColor_vs), inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexDecl);
+	_pixelShader = RHI::GetInst().createPixelShaderFromBytecodes(g_PerVertexColor_ps, sizeof(g_PerVertexColor_ps));
 }
