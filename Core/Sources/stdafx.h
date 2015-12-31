@@ -32,6 +32,8 @@
 #include "Utils/utFuncs.h"
 #include "Utils/utDefines.h"
 
+#include "../Shaders/HLSLCommon.h"
+
 #include "RHI.h"
 
 // TODO: reference additional headers your program requires here

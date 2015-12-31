@@ -5,12 +5,6 @@
 
 using Microsoft::WRL::ComPtr;
 
-#ifdef _MSC_VER
-#define cbuffer struct __declspec(align(16))
-#else
-#define cbuffer alignas(16)
-#endif
-
 // TODO:
 // 2. use draw command list to cache each draw call so that we can flush it on another thread
 // 3. deferred context
