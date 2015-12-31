@@ -322,3 +322,15 @@ void DX11RHI::drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint3
 {
 	_context->DrawIndexed(indexCount, startIndexLoccation, baseVertexLocation);
 }
+
+
+DX11RHI::DX11RHI()
+{
+}
+
+
+DX11RHI::~DX11RHI()
+{
+	_defaultRasterizerState->Release();
+	_defaultDepthStencilState->Release();
+}

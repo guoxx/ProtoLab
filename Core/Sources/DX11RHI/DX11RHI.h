@@ -77,8 +77,8 @@ public:
 	ComPtr<ID3D11DeviceContext>		_context{nullptr};
 
 private:
-	DX11RHI() {};
-	~DX11RHI() {};
+	DX11RHI();
+	~DX11RHI();
 
 	DX11RHI(const DX11RHI&) = delete;
 	DX11RHI& operator=(const DX11RHI&) = delete;
