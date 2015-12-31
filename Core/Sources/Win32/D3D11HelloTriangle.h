@@ -1,13 +1,13 @@
 #pragma once
 
 #include "DXSample.h"
-#include "../Mesh/Mesh.h"
-#include "../Objects/Camera.h"
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
 class Scene;
+class Camera;
+class Viewport;
 class ForwardRenderer;
 
 class D3D11HelloTriangle : public DXSample
@@ -23,37 +23,13 @@ public:
 
 private:
 
-	void loadTriangle();
-	void loadMesh();
-
-	void updateCamera();
-
-	void drawTriangle();
-	void drawMesh();
-
-	struct TransformMatrixs
-	{
-		XMMATRIX modelViewProjMatrix;
-	};
-
-	std::shared_ptr<Camera> _camera;
-
-	TransformMatrixs _vsConstantsData;
-	ID3D11Buffer* _vsConstantsBuffer;
-
-	std::shared_ptr<ForwardRenderer> _renderer;
-	std::shared_ptr<Scene> _scene;
-	// resources for mesh
-	std::shared_ptr<Mesh> _mesh;
-
-	// resources for triangle 
-	ID3D11Buffer* _triangleVertexBuffer;
-	ID3D11Buffer* _triangleIndexBuffer;
-	ID3D11InputLayout* _triangleVertexLayoutBuffer;
-
-	ID3D11VertexShader* _triangleVertexShader;
-	ID3D11PixelShader* _trianglePixelShader;
-
 	void LoadPipeline();
 	void LoadAssets();
+
+private:
+
+	std::shared_ptr<Viewport> _viewport;
+	std::shared_ptr<Camera> _camera;
+	std::shared_ptr<Scene> _scene;
+	std::shared_ptr<ForwardRenderer> _renderer;
 };
