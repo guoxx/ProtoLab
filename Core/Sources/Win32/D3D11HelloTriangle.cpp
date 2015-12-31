@@ -23,7 +23,7 @@ void D3D11HelloTriangle::OnInit()
 // Load the rendering pipeline dependencies.
 void D3D11HelloTriangle::LoadPipeline()
 {
-	RHI::initialize(GetWidth(), GetHeight());	
+	RHI::initialize();
 }
 
 // Load the sample assets.
@@ -103,7 +103,7 @@ void D3D11HelloTriangle::OnRender()
 
 void D3D11HelloTriangle::OnPresent()
 {
-	RHI::present();
+	_renderer->present();
 }
 
 

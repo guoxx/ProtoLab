@@ -1,22 +1,17 @@
 #include "stdafx.h"
 #include "DX11RHI.h"
 #include "DX11ResourceCreationHelpers.h"
-// TODO: remove this from RHI module
-#include "../Win32/Win32Application.h"
 
 ID3D11RasterizerState*				DX11RHI::_defaultRasterizerState{nullptr};
 ID3D11DepthStencilState*			DX11RHI::_defaultDepthStencilState{nullptr};
 
 D3D11_VIEWPORT						DX11RHI::_viewport{};
-int32_t								DX11RHI::_frameIndex{0};
 
 ComPtr<ID3D11Device>				DX11RHI::_device{nullptr};
 ComPtr<ID3D11DeviceContext>			DX11RHI::_context{nullptr};
-ComPtr<IDXGISwapChain>				DX11RHI::_swapChain{nullptr};
-ComPtr<ID3D11RenderTargetView>		DX11RHI::_backbufferRtvHanble{nullptr};
 
 
-void DX11RHI::initialize(uint32_t frameWidth, uint32_t frameHeight)
+void DX11RHI::initialize()
 {
 	HRESULT hr;
 
@@ -44,16 +39,6 @@ void DX11RHI::initialize(uint32_t frameWidth, uint32_t frameHeight)
 							nullptr,
 							_context.GetAddressOf());
 	CHECK(hr == S_OK);
-
-	DXGI_SWAP_CHAIN_DESC swapChainDesc = createDxgiSwapChainDesc(Win32Application::GetHwnd(), FRAME_COUNT, frameWidth, frameHeight);
-	hr = factory->CreateSwapChain(_device.Get(), &swapChainDesc, _swapChain.GetAddressOf());
-	CHECK(hr == S_OK);
-
-	ComPtr<ID3D11Texture2D> renderTexture;
-	_swapChain->GetBuffer(0, IID_PPV_ARGS(&renderTexture));
-	_device->CreateRenderTargetView(renderTexture.Get(), nullptr, _backbufferRtvHanble.GetAddressOf());
-
-	_frameIndex = 0;
 
 	_viewport.Width = 0;
 	_viewport.Height = 0;
@@ -102,6 +87,26 @@ void DX11RHI::initializeDefaultRHIStates()
 	CD3D11_DEPTH_STENCIL_DESC depthStencilDesc{CD3D11_DEFAULT{}};
 	//depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
 	_device->CreateDepthStencilState(&depthStencilDesc, &_defaultDepthStencilState);
+}
+
+IDXGISwapChain* DX11RHI::createSwapChain(HWND hwnd, uint32_t frameCount, uint32_t winWidth, uint32_t winHeight)
+{
+	HRESULT hr;
+
+	ComPtr<IDXGIDevice> pDXGIDevice;
+	hr = _device.CopyTo( pDXGIDevice.GetAddressOf() );
+
+	ComPtr<IDXGIAdapter> pDXGIAdapter;
+	hr = pDXGIDevice->GetParent(IID_PPV_ARGS(&pDXGIAdapter));
+
+	ComPtr<IDXGIFactory> pFactory;
+	pDXGIAdapter->GetParent(IID_PPV_ARGS(&pFactory));
+
+	IDXGISwapChain* outSwapChain;
+	DXGI_SWAP_CHAIN_DESC swapChainDesc = createDxgiSwapChainDesc(hwnd, frameCount, winWidth, winHeight);
+	hr = pFactory->CreateSwapChain(_device.Get(), &swapChainDesc, &outSwapChain);
+	CHECK(hr == S_OK);
+	return outSwapChain;
 }
 
 ID3D11Buffer* DX11RHI::createVertexBuffer(void* memPtr, uint32_t memSize)
@@ -228,6 +233,26 @@ DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t w
 	return depthStencilRenderTarget;
 }
 
+
+DX11RenderTarget* DX11RHI::createRenderTargetViewFromSwapChain(IDXGISwapChain* swapChain)
+{
+	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
+
+	ID3D11RenderTargetView* rtv;
+	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&renderTarget->_texture));
+	_device->CreateRenderTargetView(renderTarget->_texture, nullptr, &rtv);
+	renderTarget->_renderTargets.push_back(rtv);
+
+	return renderTarget;
+}
+
+
+void DX11RHI::destroySwapChain(IDXGISwapChain* swapChainToDelete)
+{
+	if (swapChainToDelete)
+		swapChainToDelete->Release();
+}
+
 void DX11RHI::destroyResource(ID3D11Resource* resourceToDelete)
 {
 	if (resourceToDelete)
@@ -283,10 +308,6 @@ void DX11RHI::setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, 
 	_context->RSSetViewports(1, &_viewport);
 }
 
-ID3D11RenderTargetView* DX11RHI::getBackbufferRTV()
-{
-	return _backbufferRtvHanble.Get();
-}
 
 void DX11RHI::clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a)
 {
@@ -302,9 +323,4 @@ void DX11RHI::clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float
 void DX11RHI::drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation)
 {
 	_context->DrawIndexed(indexCount, startIndexLoccation, baseVertexLocation);
-}
-
-void DX11RHI::present()
-{
-	_swapChain->Present(0, 0);
 }

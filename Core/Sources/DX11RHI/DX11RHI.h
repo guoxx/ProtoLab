@@ -26,12 +26,14 @@ public:
 		RHI_CLEAR_DEPTH_STENCIL = RHI_CLEAR_DEPTH | RHI_CLEAR_STENCIL
 	};
 
-	static void initialize(uint32_t frameWidth, uint32_t frameHeight);
+	static void initialize();
 	static void finalize();
 
 	static void initializeDefaultRHIStates();
 
 	// resources creation
+	static IDXGISwapChain* createSwapChain(HWND hwnd, uint32_t frameCount, uint32_t winWidth, uint32_t winHeight);
+
 	static ID3D11Buffer* createVertexBuffer(void* memPtr, uint32_t memSize);
 	static ID3D11Buffer* createIndexBuffer(void* memPtr, uint32_t memSize);
 	static ID3D11Buffer* createConstantBuffer(void* memPtr, uint32_t memSize);
@@ -44,8 +46,10 @@ public:
 	// number of mipmap levels include base
 	static DX11RenderTarget* createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);
 	static DX11DepthStencilRenderTarget* createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);
+	static DX11RenderTarget* createRenderTargetViewFromSwapChain(IDXGISwapChain* swapChain);
 
 	// resources deletion
+	static void destroySwapChain(IDXGISwapChain* swapChainToDelete);
 	static void destroyResource(ID3D11Resource* resourceToDelete);
 	static void destroyVertexShader(ID3D11VertexShader* shaderToDelete);
 	static void destroyVertexDeclaration(ID3D11InputLayout* declToDelete);
@@ -59,15 +63,10 @@ public:
 
 	static void setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height);
 
-	static ID3D11RenderTargetView* getBackbufferRTV();
-
 	// draws
 	static void clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a);
 	static void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth = 1.0f, uint8_t stencil = 0);
 	static void drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation);
-
-	// present
-	static void present();
 
 public:
 
@@ -77,16 +76,10 @@ public:
 
 	// render states stuffs
 	static D3D11_VIEWPORT					_viewport;
-	static int32_t							_frameIndex;
 
 	// render resources
 	static ComPtr<ID3D11Device>				_device;
 	static ComPtr<ID3D11DeviceContext>		_context;
-	static ComPtr<IDXGISwapChain>			_swapChain;
-	static ComPtr<ID3D11RenderTargetView>	_backbufferRtvHanble;
-
-	// constants
-	const static int32_t					FRAME_COUNT = 2;
 
 private:
 	DX11RHI() {};
