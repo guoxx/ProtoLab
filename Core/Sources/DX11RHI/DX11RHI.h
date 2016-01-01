@@ -19,7 +19,7 @@ public:
 		RHI_CLEAR_DEPTH_STENCIL = RHI_CLEAR_DEPTH | RHI_CLEAR_STENCIL
 	};
 
-	static DX11RHI& GetInst();
+	static DX11RHI& getInst();
 
 	void initialize();
 	void finalize();

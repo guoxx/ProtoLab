@@ -3,7 +3,7 @@
 #include "DX11ResourceCreationHelpers.h"
 
 
-DX11RHI& DX11RHI::GetInst()
+DX11RHI& DX11RHI::getInst()
 {
 	static DX11RHI _inst;
 	return _inst;

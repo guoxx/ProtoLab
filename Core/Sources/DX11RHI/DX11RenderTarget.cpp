@@ -9,11 +9,11 @@ DX11RenderTarget::DX11RenderTarget()
 
 DX11RenderTarget::~DX11RenderTarget()
 {
-	RHI::GetInst().destroyResource(_texture);
+	RHI::getInst().destroyResource(_texture);
 
 	for (auto rtv : _renderTargets)
 	{
-		RHI::GetInst().destroyView(rtv);
+		RHI::getInst().destroyView(rtv);
 	}
 }
 
