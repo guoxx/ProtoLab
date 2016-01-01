@@ -35,7 +35,10 @@ void DX11RHI::initialize()
 							D3D11_SDK_VERSION,
 							_device.GetAddressOf(),
 							nullptr,
-							_context.GetAddressOf());
+							_immediateContext.GetAddressOf());
+	CHECK(hr == S_OK);
+
+	hr = _device->CreateDeferredContext(0, &_deferredContext);
 	CHECK(hr == S_OK);
 
 	_viewport.Width = 0;
@@ -293,8 +296,8 @@ void DX11RHI::destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* rend
 
 void DX11RHI::setDefaultRHIStates()
 {
-	_context->RSSetState(_defaultRasterizerState);
-	_context->OMSetDepthStencilState(_defaultDepthStencilState, 0);
+	_deferredContext->RSSetState(_defaultRasterizerState);
+	_deferredContext->OMSetDepthStencilState(_defaultDepthStencilState, 0);
 }
 
 void DX11RHI::setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height)
@@ -303,24 +306,33 @@ void DX11RHI::setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, 
 	_viewport.TopLeftY = static_cast<float>(topLeftY);
 	_viewport.Width = static_cast<float>(width);
 	_viewport.Height = static_cast<float>(height);
-	_context->RSSetViewports(1, &_viewport);
+	_deferredContext->RSSetViewports(1, &_viewport);
 }
 
 
 void DX11RHI::clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a)
 {
 	const float clearColor[4] = {r, g, b, a};
-	_context->ClearRenderTargetView(rtv, clearColor);
+	_deferredContext->ClearRenderTargetView(rtv, clearColor);
 }
 
 void DX11RHI::clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth, uint8_t stencil)
 {
-	_context->ClearDepthStencilView(dsv, static_cast<uint32_t>(clearFlag), depth, stencil);
+	_deferredContext->ClearDepthStencilView(dsv, static_cast<uint32_t>(clearFlag), depth, stencil);
 }
 
 void DX11RHI::drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation)
 {
-	_context->DrawIndexed(indexCount, startIndexLoccation, baseVertexLocation);
+	_deferredContext->DrawIndexed(indexCount, startIndexLoccation, baseVertexLocation);
+}
+
+
+void DX11RHI::submit()
+{
+	ID3D11CommandList* cmdlist;
+	_deferredContext->FinishCommandList(false, &cmdlist);
+	_immediateContext->ExecuteCommandList(cmdlist, false);
+	cmdlist->Release();
 }
 
 

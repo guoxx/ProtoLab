@@ -49,7 +49,7 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 	RHI::GetInst().setViewport(x, y, w, h);
 
 	ID3D11RenderTargetView* rtvs[] = {_backbufferRT->getRenderTarget()};
-	RHI::GetInst()._context->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
+	RHI::GetInst()._deferredContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
 
 	auto models = scene->getModels();
 	for (auto model :models)
@@ -62,7 +62,7 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 
 void ForwardRenderer::endFrame()
 {
-
+	RHI::GetInst().submit();
 }
 
 void ForwardRenderer::present()

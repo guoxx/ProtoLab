@@ -63,6 +63,8 @@ public:
 	void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth = 1.0f, uint8_t stencil = 0);
 	void drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation);
 
+	void submit();
+
 public:
 
 	// default hardware states
@@ -74,7 +76,8 @@ public:
 
 	// render resources
 	ComPtr<ID3D11Device>			_device{nullptr};
-	ComPtr<ID3D11DeviceContext>		_context{nullptr};
+	ComPtr<ID3D11DeviceContext>		_immediateContext{nullptr};
+	ComPtr<ID3D11DeviceContext>		_deferredContext{nullptr};
 
 private:
 	DX11RHI();

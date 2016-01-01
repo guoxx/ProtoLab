@@ -29,17 +29,17 @@ void Mesh::draw(const Camera* camera) const
 {
 	// TODO: update constants buffer
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	RHI::GetInst()._context->Map(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	RHI::GetInst()._deferredContext->Map(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	TransformMatrixs* dataPtr = (TransformMatrixs*)mappedResource.pData;
 	dataPtr->modelViewProjMatrix = DirectX::XMMatrixTranspose(camera->getViewProjectionMatrix());
-	RHI::GetInst()._context->Unmap(_vsConstantsBuffer, 0);
+	RHI::GetInst()._deferredContext->Unmap(_vsConstantsBuffer, 0);
 
 	for (auto prim : _primitives)
 	{
 		auto mat = _materiels[prim->_matIdx];
 
 		D3D11_MAPPED_SUBRESOURCE matSubResource;
-		RHI::GetInst()._context->Map(_psMaterielBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
+		RHI::GetInst()._deferredContext->Map(_psMaterielBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
 		MaterielProp* matPtr = (MaterielProp*)matSubResource.pData;
 		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
 		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
@@ -50,7 +50,7 @@ void Mesh::draw(const Camera* camera) const
 		matPtr->ior = mat.ior;
 		matPtr->dissolve = mat.dissolve;
 		matPtr->illum = mat.illum;
-		RHI::GetInst()._context->Unmap(_psMaterielBuffer, 0);
+		RHI::GetInst()._deferredContext->Unmap(_psMaterielBuffer, 0);
 
 		ID3D11Buffer* buffers[] = { prim->_positionBuffer, prim->_normalBuffer, prim->_texcoordBuffer };
 		uint32_t strides[] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3) };
@@ -58,15 +58,15 @@ void Mesh::draw(const Camera* camera) const
 
 		RHI::GetInst().setDefaultRHIStates();
 
-		RHI::GetInst()._context->IASetInputLayout(_vertexDecl);
-		RHI::GetInst()._context->IASetVertexBuffers(0, 3, buffers, strides, offsets);
-		RHI::GetInst()._context->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
-		RHI::GetInst()._context->IASetPrimitiveTopology(prim->_topology);
-		RHI::GetInst()._context->VSSetShader(_vertexShader, 0, 0);
-		RHI::GetInst()._context->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
-		RHI::GetInst()._context->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
-		RHI::GetInst()._context->PSSetShader(_pixelShader, 0, 0);
-		RHI::GetInst()._context->DrawIndexed(prim->_indicesCount, 0, 0);
+		RHI::GetInst()._deferredContext->IASetInputLayout(_vertexDecl);
+		RHI::GetInst()._deferredContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
+		RHI::GetInst()._deferredContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+		RHI::GetInst()._deferredContext->IASetPrimitiveTopology(prim->_topology);
+		RHI::GetInst()._deferredContext->VSSetShader(_vertexShader, 0, 0);
+		RHI::GetInst()._deferredContext->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
+		RHI::GetInst()._deferredContext->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
+		RHI::GetInst()._deferredContext->PSSetShader(_pixelShader, 0, 0);
+		RHI::GetInst()._deferredContext->DrawIndexed(prim->_indicesCount, 0, 0);
 	}
 }
 
