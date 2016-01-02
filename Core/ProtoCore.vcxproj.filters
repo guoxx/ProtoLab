@@ -106,6 +106,9 @@
     <ClInclude Include="Sources\Utils\Nonmovable.h">
       <Filter>Sources\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Utils\Heaponly.h">
+      <Filter>Sources\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">

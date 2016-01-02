@@ -2,6 +2,7 @@
 
 #include "DX11RenderTarget.h"
 #include "DX11DepthStencilRenderTarget.h"
+#include "DX11GraphicContext.h"
 
 using Microsoft::WRL::ComPtr;
 

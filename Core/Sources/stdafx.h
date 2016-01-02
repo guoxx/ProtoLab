@@ -33,6 +33,7 @@
 #include "Utils/utDefines.h"
 #include "Utils/Nonmovable.h"
 #include "Utils/Noncopyable.h"
+#include "Utils/Heaponly.h"
 
 #include "../Shaders/HLSLCommon.h"
 
