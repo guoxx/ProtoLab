@@ -196,6 +196,7 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode,
 	return outShader;
 }
 
+
 DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat)
 {
 	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
@@ -215,6 +216,20 @@ DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, u
 	return renderTarget;
 }
 
+
+DX11RenderTarget* DX11RHI::createRenderTargetFromSwapChain(IDXGISwapChain* swapChain)
+{
+	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
+
+	ID3D11RenderTargetView* rtv;
+	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&renderTarget->_texture));
+	_device->CreateRenderTargetView(renderTarget->_texture, nullptr, &rtv);
+	renderTarget->_renderTargets.push_back(rtv);
+
+	return renderTarget;
+}
+
+
 DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat)
 {
 	DX11DepthStencilRenderTarget* depthStencilRenderTarget = new DX11DepthStencilRenderTarget{};
@@ -232,19 +247,6 @@ DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t w
 	}
 
 	return depthStencilRenderTarget;
-}
-
-
-DX11RenderTarget* DX11RHI::createRenderTargetViewFromSwapChain(IDXGISwapChain* swapChain)
-{
-	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
-
-	ID3D11RenderTargetView* rtv;
-	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&renderTarget->_texture));
-	_device->CreateRenderTargetView(renderTarget->_texture, nullptr, &rtv);
-	renderTarget->_renderTargets.push_back(rtv);
-
-	return renderTarget;
 }
 
 

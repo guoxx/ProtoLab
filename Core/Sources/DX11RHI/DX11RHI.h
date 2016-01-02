@@ -40,8 +40,8 @@ public:
 
 	// number of mipmap levels include base
 	DX11RenderTarget* createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);
+	DX11RenderTarget* createRenderTargetFromSwapChain(IDXGISwapChain* swapChain);
 	DX11DepthStencilRenderTarget* createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);
-	DX11RenderTarget* createRenderTargetViewFromSwapChain(IDXGISwapChain* swapChain);
 
 	// resources deletion
 	void destroySwapChain(IDXGISwapChain* swapChainToDelete);
