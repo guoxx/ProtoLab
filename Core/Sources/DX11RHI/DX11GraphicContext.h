@@ -1,6 +1,6 @@
 #pragma once
 
-class DX11GraphicContext
+class DX11GraphicContext : public Noncopyable
 {
 public:
 	enum class RHI_CLEAR_FLAG
@@ -12,11 +12,6 @@ public:
 
 	DX11GraphicContext(ID3D11DeviceContext* ctx);
 	~DX11GraphicContext();
-
-	DX11GraphicContext(const DX11GraphicContext&) = delete;
-	DX11GraphicContext& operator=(const DX11RenderTarget&) = delete;
-	DX11GraphicContext(const DX11GraphicContext&&) = delete;
-	DX11GraphicContext& operator=(const DX11RenderTarget&&) = delete;
 
 	void mapResource(ID3D11Resource* resource, uint32_t subresource, D3D11_MAP mapType, uint32_t mapFlags, D3D11_MAPPED_SUBRESOURCE *mappedResource);
 	void unmapResource(ID3D11Resource* resource, uint32_t subresource);

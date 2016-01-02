@@ -1,6 +1,6 @@
 #pragma once
 
-class DX11DepthStencilRenderTarget
+class DX11DepthStencilRenderTarget : public Noncopyable
 {
 public:
 

@@ -4,7 +4,7 @@ class Camera;
 class Scene;
 class Viewport;
 
-class ForwardRenderer
+class ForwardRenderer : public Noncopyable
 {
 public:
 	ForwardRenderer();

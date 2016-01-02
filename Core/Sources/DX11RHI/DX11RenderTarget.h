@@ -1,6 +1,6 @@
 #pragma once
 
-class DX11RenderTarget
+class DX11RenderTarget : public Noncopyable
 {
 public:
 

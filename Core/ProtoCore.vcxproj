@@ -106,6 +106,8 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\Objects\Scene.h" />
     <ClInclude Include="Sources\Renderer\ForwardRenderer.h" />
     <ClInclude Include="Sources\Renderer\Viewport.h" />
+    <ClInclude Include="Sources\Utils\Noncopyable.h" />
+    <ClInclude Include="Sources\Utils\Nonmovable.h" />
     <ClInclude Include="Sources\Utils\utDefines.h" />
     <ClInclude Include="Sources\Utils\utFuncs.h" />
     <ClInclude Include="Sources\Win32\D3D11HelloTriangle.h" />

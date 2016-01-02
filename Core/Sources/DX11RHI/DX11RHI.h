@@ -9,7 +9,7 @@ using Microsoft::WRL::ComPtr;
 // 2. use draw command list to cache each draw call so that we can flush it on another thread
 // 3. deferred context
 // 4. make data private
-class DX11RHI
+class DX11RHI : public Noncopyable, Nonmovable
 {
 public:
 	enum class RHI_CLEAR_FLAG
@@ -84,10 +84,4 @@ public:
 private:
 	DX11RHI();
 	~DX11RHI();
-
-	DX11RHI(const DX11RHI&) = delete;
-	DX11RHI& operator=(const DX11RHI&) = delete;
-
-	DX11RHI(const DX11RHI&&) = delete;
-	DX11RHI& operator=(const DX11RHI&&) = delete;
 };
