@@ -97,7 +97,7 @@
     <ClInclude Include="Shaders\PerVertexColor_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\DX11RHI\DX11RenderContext.h">
+    <ClInclude Include="Sources\DX11RHI\DX11GraphicContext.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
   </ItemGroup>
