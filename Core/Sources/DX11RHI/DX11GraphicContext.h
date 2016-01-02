@@ -18,8 +18,8 @@ public:
 	DX11GraphicContext(const DX11GraphicContext&&) = delete;
 	DX11GraphicContext& operator=(const DX11RenderTarget&&) = delete;
 
-	void mapResource();
-	void unmapResource();
+	void mapResource(ID3D11Resource* resource, uint32_t subresource, D3D11_MAP mapType, uint32_t mapFlags, D3D11_MAPPED_SUBRESOURCE *mappedResource);
+	void unmapResource(ID3D11Resource* resource, uint32_t subresource);
 
 	void clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a);
 	void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth, uint8_t stencil);
