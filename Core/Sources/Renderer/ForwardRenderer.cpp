@@ -14,7 +14,7 @@ ForwardRenderer::ForwardRenderer()
 	// TODO: hard code window size
 
 	_swapChain = RHI::getInst().createSwapChain(Win32Application::GetHwnd(), FRAME_COUNT, WIN_WIDTH, WIN_HEIGHT);
-	_backbufferRT = RHI::getInst().createRenderTargetViewFromSwapChain(_swapChain);
+	_backbufferRT = RHI::getInst().createRenderTargetFromSwapChain(_swapChain);
 
 	_sceneRT = RHI::getInst().createRenderTarget(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
 	_sceneDepthRT = RHI::getInst().createDepthStencilRenderTarget(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_D32_FLOAT);

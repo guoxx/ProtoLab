@@ -97,6 +97,9 @@
     <ClInclude Include="Shaders\PerVertexColor_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11RenderContext.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -152,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="Sources\Mesh\Mesh_GeometricPrimitive.cpp">
       <Filter>Sources\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11GraphicContext.cpp">
+      <Filter>Sources\DX11RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -27,6 +27,7 @@ public:
 	void initializeDefaultRHIStates();
 
 	// resources creation
+	ID3D11DeviceContext* createDeviceContext();
 	IDXGISwapChain* createSwapChain(HWND hwnd, uint32_t frameCount, uint32_t winWidth, uint32_t winHeight);
 
 	ID3D11Buffer* createVertexBuffer(void* memPtr, uint32_t memSize);
@@ -44,6 +45,7 @@ public:
 	DX11DepthStencilRenderTarget* createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat);
 
 	// resources deletion
+	void destroyDeviceContext(ID3D11DeviceContext* ctxToDelete);
 	void destroySwapChain(IDXGISwapChain* swapChainToDelete);
 	void destroyResource(ID3D11Resource* resourceToDelete);
 	void destroyVertexShader(ID3D11VertexShader* shaderToDelete);

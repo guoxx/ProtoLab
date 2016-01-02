@@ -90,6 +90,13 @@ void DX11RHI::initializeDefaultRHIStates()
 	_device->CreateDepthStencilState(&depthStencilDesc, &_defaultDepthStencilState);
 }
 
+ID3D11DeviceContext * DX11RHI::createDeviceContext()
+{
+	ID3D11DeviceContext* ctx{nullptr};
+	CHECK(_device->CreateDeferredContext(0, &ctx) == S_OK);
+	return ctx;
+}
+
 IDXGISwapChain* DX11RHI::createSwapChain(HWND hwnd, uint32_t frameCount, uint32_t winWidth, uint32_t winHeight)
 {
 	HRESULT hr;
@@ -247,6 +254,13 @@ DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t w
 	}
 
 	return depthStencilRenderTarget;
+}
+
+
+void DX11RHI::destroyDeviceContext(ID3D11DeviceContext * ctxToDelete)
+{
+	if (ctxToDelete)
+		ctxToDelete->Release();
 }
 
 
