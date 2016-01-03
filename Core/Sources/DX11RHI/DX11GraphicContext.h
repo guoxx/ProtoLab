@@ -17,10 +17,11 @@ public:
 	void unmapResource(ID3D11Resource* resource, uint32_t subresource);
 
 	void clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a);
-	void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth, uint8_t stencil);
+	void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth = 1.0, uint8_t stencil = 0);
 	void drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation);
 
-private:
+public:
+	friend class DX11RHI;
 
 	ID3D11DeviceContext* _context{nullptr};
 };

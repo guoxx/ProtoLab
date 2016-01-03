@@ -35,21 +35,23 @@ void ForwardRenderer::beginFrame()
 {
 	RHI::getInst().setDefaultRHIStates();	
 
-	RHI::getInst().clear(_backbufferRT->getRenderTarget(), 0, 0, 0, 0);
+	RHI::getInst().getContext()->clear(_backbufferRT->getRenderTarget(), 0, 0, 0, 0);
 }
 
 
 void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
 {
-	RHI::getInst().clear(_sceneRT->getRenderTarget(), 0.f, 0.f, 0.f, 0.f);
-	RHI::getInst().clear(_sceneDepthRT->getRenderTarget(), RHI::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0f);
+	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
+
+	gfxContext->clear(_sceneRT->getRenderTarget(), 0.f, 0.f, 0.f, 0.f);
+	gfxContext->clear(_sceneDepthRT->getRenderTarget(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0f);
 
 	uint32_t x, y, w, h;
 	viewport->getViewport(x, y, w, h);
 	RHI::getInst().setViewport(x, y, w, h);
 
 	ID3D11RenderTargetView* rtvs[] = {_backbufferRT->getRenderTarget()};
-	RHI::getInst()._deferredContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
+	gfxContext->_context->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
 
 	auto models = scene->getModels();
 	for (auto model :models)

@@ -9,7 +9,6 @@ using Microsoft::WRL::ComPtr;
 // TODO:
 // 2. use draw command list to cache each draw call so that we can flush it on another thread
 // 3. deferred context
-// 4. make data private
 class DX11RHI : public Noncopyable, Nonmovable
 {
 public:
@@ -61,14 +60,12 @@ public:
 
 	void setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height);
 
-	// draws
-	void clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a);
-	void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth = 1.0f, uint8_t stencil = 0);
-	void drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation);
+	// gfx contexts
+	std::shared_ptr<DX11GraphicContext> getContext();
 
 	void submit();
 
-public:
+private:
 
 	// default hardware states
 	ID3D11RasterizerState*			_defaultRasterizerState{nullptr};
@@ -78,9 +75,10 @@ public:
 	D3D11_VIEWPORT					_viewport{};
 
 	// render resources
-	ComPtr<ID3D11Device>			_device{nullptr};
-	ComPtr<ID3D11DeviceContext>		_immediateContext{nullptr};
-	ComPtr<ID3D11DeviceContext>		_deferredContext{nullptr};
+	ComPtr<ID3D11Device>				_device{nullptr};
+	std::shared_ptr<DX11GraphicContext>	_immediateContext{nullptr};
+	std::shared_ptr<DX11GraphicContext>	_deferredContext{nullptr};
+
 
 private:
 	DX11RHI();

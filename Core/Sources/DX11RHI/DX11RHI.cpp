@@ -26,6 +26,7 @@ void DX11RHI::initialize()
 	hr = CreateDXGIFactory1(IID_PPV_ARGS(&factory));
 	CHECK(hr == S_OK);
 
+	ID3D11DeviceContext* immediateCtx;
 	hr = D3D11CreateDevice(nullptr,
 							D3D_DRIVER_TYPE_HARDWARE,
 							nullptr,
@@ -35,11 +36,14 @@ void DX11RHI::initialize()
 							D3D11_SDK_VERSION,
 							_device.GetAddressOf(),
 							nullptr,
-							_immediateContext.GetAddressOf());
+							&immediateCtx);
 	CHECK(hr == S_OK);
+	_immediateContext = std::make_shared<DX11GraphicContext>(immediateCtx);
 
-	hr = _device->CreateDeferredContext(0, &_deferredContext);
+	ID3D11DeviceContext* deferredCtx;
+	hr = _device->CreateDeferredContext(0, &deferredCtx);
 	CHECK(hr == S_OK);
+	_deferredContext = std::make_shared<DX11GraphicContext>(deferredCtx);
 
 	_viewport.Width = 0;
 	_viewport.Height = 0;
@@ -312,8 +316,8 @@ void DX11RHI::destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* rend
 
 void DX11RHI::setDefaultRHIStates()
 {
-	_deferredContext->RSSetState(_defaultRasterizerState);
-	_deferredContext->OMSetDepthStencilState(_defaultDepthStencilState, 0);
+	_deferredContext->_context->RSSetState(_defaultRasterizerState);
+	_deferredContext->_context->OMSetDepthStencilState(_defaultDepthStencilState, 0);
 }
 
 void DX11RHI::setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height)
@@ -322,32 +326,22 @@ void DX11RHI::setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, 
 	_viewport.TopLeftY = static_cast<float>(topLeftY);
 	_viewport.Width = static_cast<float>(width);
 	_viewport.Height = static_cast<float>(height);
-	_deferredContext->RSSetViewports(1, &_viewport);
+	_deferredContext->_context->RSSetViewports(1, &_viewport);
 }
 
 
-void DX11RHI::clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a)
+std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
 {
-	const float clearColor[4] = {r, g, b, a};
-	_deferredContext->ClearRenderTargetView(rtv, clearColor);
-}
-
-void DX11RHI::clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth, uint8_t stencil)
-{
-	_deferredContext->ClearDepthStencilView(dsv, static_cast<uint32_t>(clearFlag), depth, stencil);
-}
-
-void DX11RHI::drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation)
-{
-	_deferredContext->DrawIndexed(indexCount, startIndexLoccation, baseVertexLocation);
+	// TODO: each need to have own context
+	return _deferredContext;
 }
 
 
 void DX11RHI::submit()
 {
 	ID3D11CommandList* cmdlist;
-	_deferredContext->FinishCommandList(false, &cmdlist);
-	_immediateContext->ExecuteCommandList(cmdlist, false);
+	_deferredContext->_context->FinishCommandList(false, &cmdlist);
+	_immediateContext->_context->ExecuteCommandList(cmdlist, false);
 	cmdlist->Release();
 }
 
