@@ -204,18 +204,18 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode,
 }
 
 
-DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat)
+DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT rtvFormat)
 {
 	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
 
-	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texelFormat);
+	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
 	desc.BindFlags = D3D11_BIND_RENDER_TARGET;
 	_device->CreateTexture2D(&desc, nullptr, &(renderTarget->_texture));
 
 	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
 	{
 		ID3D11RenderTargetView* rtv{nullptr};
-		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2d(texelFormat, mipSlice);
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2d(rtvFormat, mipSlice);
 		_device->CreateRenderTargetView(renderTarget->_texture, &rtvDesc, &rtv);
 		renderTarget->_renderTargets.push_back(rtv);
 	}
@@ -237,18 +237,18 @@ DX11RenderTarget* DX11RHI::createRenderTargetFromSwapChain(IDXGISwapChain* swapC
 }
 
 
-DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texelFormat)
+DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT dsvFormat)
 {
 	DX11DepthStencilRenderTarget* depthStencilRenderTarget = new DX11DepthStencilRenderTarget{};
 
-	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texelFormat);
+	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
 	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	_device->CreateTexture2D(&desc, nullptr, &(depthStencilRenderTarget->_texture));
 
 	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
 	{
 		ID3D11DepthStencilView* dsv{nullptr};
-		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = createDx11DepthStencilViewDescTex2d(texelFormat, mipSlice);
+		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = createDx11DepthStencilViewDescTex2d(dsvFormat, mipSlice);
 		_device->CreateDepthStencilView(depthStencilRenderTarget->_texture, &dsvDesc, &dsv);
 		depthStencilRenderTarget->_depthStencilRenderTargets.push_back(dsv);
 	}
