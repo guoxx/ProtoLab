@@ -58,8 +58,6 @@ public:
 	// render states
 	void setDefaultRHIStates();
 
-	void setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height);
-
 	// gfx contexts
 	std::shared_ptr<DX11GraphicContext> getContext();
 
@@ -70,9 +68,6 @@ private:
 	// default hardware states
 	ID3D11RasterizerState*			_defaultRasterizerState{nullptr};
 	ID3D11DepthStencilState*		_defaultDepthStencilState{nullptr};
-
-	// render states stuffs
-	D3D11_VIEWPORT					_viewport{};
 
 	// render resources
 	ComPtr<ID3D11Device>				_device{nullptr};

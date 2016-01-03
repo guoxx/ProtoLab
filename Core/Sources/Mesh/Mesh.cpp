@@ -59,14 +59,14 @@ void Mesh::draw(const Camera* camera) const
 
 		RHI::getInst().setDefaultRHIStates();
 
-		gfxContext->_context->IASetInputLayout(_vertexDecl);
-		gfxContext->_context->IASetVertexBuffers(0, 3, buffers, strides, offsets);
-		gfxContext->_context->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
-		gfxContext->_context->IASetPrimitiveTopology(prim->_topology);
-		gfxContext->_context->VSSetShader(_vertexShader, 0, 0);
-		gfxContext->_context->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
-		gfxContext->_context->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
-		gfxContext->_context->PSSetShader(_pixelShader, 0, 0);
+		gfxContext->IASetInputLayout(_vertexDecl);
+		gfxContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
+		gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+		gfxContext->IASetPrimitiveTopology(prim->_topology);
+		gfxContext->VSSetShader(_vertexShader, 0, 0);
+		gfxContext->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
+		gfxContext->PSSetShader(_pixelShader, 0, 0);
+		gfxContext->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
 		gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 	}
 }

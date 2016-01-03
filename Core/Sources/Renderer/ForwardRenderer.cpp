@@ -48,10 +48,10 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 
 	uint32_t x, y, w, h;
 	viewport->getViewport(x, y, w, h);
-	RHI::getInst().setViewport(x, y, w, h);
+	gfxContext->RSSetViewport(x, y, w, h);
 
 	ID3D11RenderTargetView* rtvs[] = {_backbufferRT->getRenderTarget()};
-	gfxContext->_context->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
+	gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
 
 	auto models = scene->getModels();
 	for (auto model :models)

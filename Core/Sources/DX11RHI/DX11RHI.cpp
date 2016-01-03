@@ -45,10 +45,6 @@ void DX11RHI::initialize()
 	CHECK(hr == S_OK);
 	_deferredContext = std::make_shared<DX11GraphicContext>(deferredCtx);
 
-	_viewport.Width = 0;
-	_viewport.Height = 0;
-	_viewport.MaxDepth = 1.0f;
-
 	initializeDefaultRHIStates();
 
 #ifdef _DEBUG
@@ -316,19 +312,9 @@ void DX11RHI::destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* rend
 
 void DX11RHI::setDefaultRHIStates()
 {
-	_deferredContext->_context->RSSetState(_defaultRasterizerState);
-	_deferredContext->_context->OMSetDepthStencilState(_defaultDepthStencilState, 0);
+	_deferredContext->RSSetState(_defaultRasterizerState);
+	_deferredContext->OMSetDepthStencilState(_defaultDepthStencilState, 0);
 }
-
-void DX11RHI::setViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height)
-{
-	_viewport.TopLeftX = static_cast<float>(topLeftX);
-	_viewport.TopLeftY = static_cast<float>(topLeftY);
-	_viewport.Width = static_cast<float>(width);
-	_viewport.Height = static_cast<float>(height);
-	_deferredContext->_context->RSSetViewports(1, &_viewport);
-}
-
 
 std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
 {
@@ -340,8 +326,8 @@ std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
 void DX11RHI::submit()
 {
 	ID3D11CommandList* cmdlist;
-	_deferredContext->_context->FinishCommandList(false, &cmdlist);
-	_immediateContext->_context->ExecuteCommandList(cmdlist, false);
+	_deferredContext->finishCommandList(false, &cmdlist);
+	_immediateContext->executeCommandList(cmdlist, false);
 	cmdlist->Release();
 }
 
