@@ -94,6 +94,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources/targetver.h" />
     <ClInclude Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11GraphicContext.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11RenderStateCache.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h" />
@@ -123,6 +124,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11GraphicContext.cpp" />
+    <ClCompile Include="Sources\DX11RHI\DX11RenderStateCache.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RenderTarget.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp" />
     <ClCompile Include="Sources\Mesh\Mesh.cpp" />

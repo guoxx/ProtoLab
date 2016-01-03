@@ -109,6 +109,9 @@
     <ClInclude Include="Sources\Utils\Heaponly.h">
       <Filter>Sources\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11RenderStateCache.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -166,6 +169,9 @@
       <Filter>Sources\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11GraphicContext.cpp">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11RenderStateCache.cpp">
       <Filter>Sources\DX11RHI</Filter>
     </ClCompile>
   </ItemGroup>
