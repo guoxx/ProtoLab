@@ -112,6 +112,9 @@
     <ClInclude Include="Sources\DX11RHI\DX11RenderStateCache.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Renderer\DeferredRenderer.h">
+      <Filter>Sources\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11RenderStateCache.cpp">
       <Filter>Sources\DX11RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Renderer\DeferredRenderer.cpp">
+      <Filter>Sources\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

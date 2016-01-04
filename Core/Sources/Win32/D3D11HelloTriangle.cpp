@@ -6,7 +6,7 @@
 #include "../Objects/Model.h"
 #include "../Objects/Camera.h"
 #include "../Mesh/Mesh.h"
-#include "../Renderer/ForwardRenderer.h"
+#include "../Renderer/DeferredRenderer.h"
 #include "../Renderer/Viewport.h"
 
 D3D11HelloTriangle::D3D11HelloTriangle(UINT width, UINT height, std::wstring name) :
@@ -60,7 +60,7 @@ void D3D11HelloTriangle::LoadAssets()
 		mod->setMesh(mesh);
 	}
 
-	_renderer = std::make_shared<ForwardRenderer>();
+	_renderer = std::make_shared<DeferredRenderer>();
 }
 
 // Update frame-based values.
