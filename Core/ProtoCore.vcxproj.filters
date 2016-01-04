@@ -118,6 +118,9 @@
     <ClInclude Include="Sources\Renderer\RenderDoc.h">
       <Filter>Sources\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Renderer\Filter2D.h">
+      <Filter>Sources\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -184,6 +187,9 @@
       <Filter>Sources\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Renderer\RenderDoc.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Renderer\Filter2D.cpp">
       <Filter>Sources\Renderer</Filter>
     </ClCompile>
   </ItemGroup>

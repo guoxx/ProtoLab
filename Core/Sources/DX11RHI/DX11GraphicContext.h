@@ -45,6 +45,7 @@ public:
 	// draws
 	void clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a);
 	void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth = 1.0, uint8_t stencil = 0);
+	void draw(uint32_t vertexCount, uint32_t startVertexLocation);
 	void drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation);
 
 	// command list

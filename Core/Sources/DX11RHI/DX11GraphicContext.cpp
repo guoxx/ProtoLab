@@ -115,6 +115,11 @@ void DX11GraphicContext::clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clear
 	_context->ClearDepthStencilView(dsv, static_cast<uint32_t>(clearFlag), depth, stencil);
 }
 
+void DX11GraphicContext::draw(uint32_t vertexCount, uint32_t startVertexLocation)
+{
+	_context->Draw(vertexCount, startVertexLocation);
+}
+
 void DX11GraphicContext::drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation)
 {
 	_context->DrawIndexed(indexCount, startIndexLoccation, baseVertexLocation);
