@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2013", "ThirdParty\DirectXTK\DirectXTK_Desktop_2013.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderDoc", "ThirdParty\RenderDoc\RenderDoc.vcxproj", "{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,11 +69,30 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|Win32.Build.0 = Release|Win32
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.ActiveCfg = Release|x64
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Debug|Win32.Build.0 = Debug|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Debug|x64.ActiveCfg = Debug|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Profile|Any CPU.ActiveCfg = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Profile|Mixed Platforms.ActiveCfg = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Profile|Mixed Platforms.Build.0 = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Profile|Win32.ActiveCfg = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Profile|Win32.Build.0 = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Profile|x64.ActiveCfg = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Release|Any CPU.ActiveCfg = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Release|Win32.ActiveCfg = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Release|Win32.Build.0 = Release|Win32
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {780CB5FF-5396-40C3-A89A-E135614450A4}
+		{5B9F813D-6AC9-45F3-BDA7-330E1051F2B0} = {780CB5FF-5396-40C3-A89A-E135614450A4}
 	EndGlobalSection
 EndGlobal
