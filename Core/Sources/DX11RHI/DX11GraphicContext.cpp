@@ -32,9 +32,9 @@ void DX11GraphicContext::IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY topology)
 	_context->IASetPrimitiveTopology(topology);
 }
 
-void DX11GraphicContext::VSSetShader(ID3D11VertexShader * pVertexShader, ID3D11ClassInstance * const * ppClassInstances, uint32_t numClassInstances)
+void DX11GraphicContext::VSSetShader(DX11VertexShader* pVertexShader, ID3D11ClassInstance * const * ppClassInstances, uint32_t numClassInstances)
 {
-	_context->VSSetShader(pVertexShader, ppClassInstances, numClassInstances);
+	_context->VSSetShader(pVertexShader->getShader(), ppClassInstances, numClassInstances);
 }
 
 void DX11GraphicContext::VSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer * const * ppConstantBuffers)
@@ -69,9 +69,9 @@ void DX11GraphicContext::RSSetViewports(uint32_t numViewports, const D3D11_VIEWP
 	_context->RSSetViewports(numViewports, pViewports);
 }
 
-void DX11GraphicContext::PSSetShader(ID3D11PixelShader * pPixelShader, ID3D11ClassInstance * const * ppClassInstances, uint32_t numClassInstances)
+void DX11GraphicContext::PSSetShader(DX11PixelShader* pPixelShader, ID3D11ClassInstance * const * ppClassInstances, uint32_t numClassInstances)
 {
-	_context->PSSetShader(pPixelShader, ppClassInstances, numClassInstances);
+	_context->PSSetShader(pPixelShader->getShader(), ppClassInstances, numClassInstances);
 }
 
 void DX11GraphicContext::PSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer * const * ppConstantBuffers)

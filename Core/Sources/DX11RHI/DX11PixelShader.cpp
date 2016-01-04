@@ -23,3 +23,8 @@ DX11PixelShader::~DX11PixelShader()
 	RHI::getInst().destroyBlob(_binaryData);
 	RHI::getInst().destroyPixelShader(_pixelShader);
 }
+
+ID3D11PixelShader * DX11PixelShader::getShader() const
+{
+	return _pixelShader;
+}

@@ -23,3 +23,8 @@ DX11VertexShader::~DX11VertexShader()
 	RHI::getInst().destroyBlob(_binaryData);
 	RHI::getInst().destroyVertexShader(_vertexShader);
 }
+
+ID3D11VertexShader * DX11VertexShader::getShader() const
+{
+	return _vertexShader;
+}

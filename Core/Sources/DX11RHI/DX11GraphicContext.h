@@ -1,5 +1,8 @@
 #pragma once
 
+class DX11VertexShader;
+class DX11PixelShader;
+
 class DX11GraphicContext : public Noncopyable
 {
 public:
@@ -20,7 +23,7 @@ public:
 	void IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY topology);
 
 	// vertex stage
-	void VSSetShader(ID3D11VertexShader* pVertexShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
+	void VSSetShader(DX11VertexShader* pVertexShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
 	void VSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppConstantBuffers);
 	void VSSetShaderResources(uint32_t startSlot, uint32_t numViews, ID3D11ShaderResourceView *const *ppShaderResourceViews);
 
@@ -30,7 +33,7 @@ public:
 	void RSSetViewports(uint32_t numViewports, const D3D11_VIEWPORT *pViewports);
 
 	// pixel stage
-	void PSSetShader(ID3D11PixelShader* pPixelShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
+	void PSSetShader(DX11PixelShader* pPixelShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
 	void PSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppConstantBuffers);
 	void PSSetShaderResources(uint32_t startSlot, uint32_t numViews, ID3D11ShaderResourceView *const *ppShaderResourceViews);
 

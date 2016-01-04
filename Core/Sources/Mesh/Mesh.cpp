@@ -65,9 +65,9 @@ void Mesh::draw(const Camera* camera) const
 		gfxContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
 		gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
 		gfxContext->IASetPrimitiveTopology(prim->_topology);
-		gfxContext->VSSetShader(_vertexShader->_vertexShader, 0, 0);
+		gfxContext->VSSetShader(_vertexShader.get(), 0, 0);
 		gfxContext->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
-		gfxContext->PSSetShader(_pixelShader->_pixelShader, 0, 0);
+		gfxContext->PSSetShader(_pixelShader.get(), 0, 0);
 		gfxContext->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
 		gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 	}
