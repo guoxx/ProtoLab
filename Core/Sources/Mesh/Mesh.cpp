@@ -13,10 +13,10 @@ namespace PerVertexColorCB
 
 Mesh::Mesh()
 {
-	PerVertexColorCB::TransformMatrixs vsConstantsData{};
+	PerVertexColorCB::View vsConstantsData{};
 	_vsConstantsBuffer = RHI::getInst().createConstantBuffer(&vsConstantsData, sizeof(vsConstantsData));
 
-	PerVertexColorCB::MaterielProp psMaterielData{};
+	PerVertexColorCB::Materiel psMaterielData{};
 	_psMaterielBuffer = RHI::getInst().createConstantBuffer(&psMaterielData, sizeof(psMaterielData));
 }
 
@@ -35,7 +35,7 @@ void Mesh::draw(const Camera* camera) const
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	gfxContext->mapResource(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	PerVertexColorCB::TransformMatrixs* dataPtr = (PerVertexColorCB::TransformMatrixs*)mappedResource.pData;
+	PerVertexColorCB::View* dataPtr = (PerVertexColorCB::View*)mappedResource.pData;
 	DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(camera->getViewProjectionMatrix()));
 	gfxContext->unmapResource(_vsConstantsBuffer, 0);
 
@@ -45,7 +45,7 @@ void Mesh::draw(const Camera* camera) const
 
 		D3D11_MAPPED_SUBRESOURCE matSubResource;
 		gfxContext->mapResource(_psMaterielBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
-		PerVertexColorCB::MaterielProp* matPtr = (PerVertexColorCB::MaterielProp*)matSubResource.pData;
+		PerVertexColorCB::Materiel* matPtr = (PerVertexColorCB::Materiel*)matSubResource.pData;
 		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
 		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
 		matPtr->specular = DirectX::XMFLOAT4(mat.specular[0], mat.specular[1], mat.specular[2], 0);
