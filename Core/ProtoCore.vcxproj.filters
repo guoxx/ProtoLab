@@ -115,6 +115,9 @@
     <ClInclude Include="Sources\Renderer\DeferredRenderer.h">
       <Filter>Sources\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Renderer\RenderDoc.h">
+      <Filter>Sources\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -178,6 +181,9 @@
       <Filter>Sources\DX11RHI</Filter>
     </ClCompile>
     <ClCompile Include="Sources\Renderer\DeferredRenderer.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Renderer\RenderDoc.cpp">
       <Filter>Sources\Renderer</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Win32Application.h"
-
+#include "../Renderer/RenderDoc.h"
 #include <DirectXTK/Inc/Keyboard.h>
 #include <DirectXTK/Inc/Mouse.h>
 
@@ -8,6 +8,8 @@ HWND Win32Application::m_hwnd = nullptr;
 
 int Win32Application::Run(DXSample* pSample, HINSTANCE hInstance, int nCmdShow)
 {
+	RenderDoc::initialize();
+
 	// Parse the command line parameters
 	int argc;
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);

@@ -107,6 +107,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\Objects\Scene.h" />
     <ClInclude Include="Sources\Renderer\DeferredRenderer.h" />
     <ClInclude Include="Sources\Renderer\ForwardRenderer.h" />
+    <ClInclude Include="Sources\Renderer\RenderDoc.h" />
     <ClInclude Include="Sources\Renderer\Viewport.h" />
     <ClInclude Include="Sources\Utils\Heaponly.h" />
     <ClInclude Include="Sources\Utils\Noncopyable.h" />
@@ -137,6 +138,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\Objects\Scene.cpp" />
     <ClCompile Include="Sources\Renderer\DeferredRenderer.cpp" />
     <ClCompile Include="Sources\Renderer\ForwardRenderer.cpp" />
+    <ClCompile Include="Sources\Renderer\RenderDoc.cpp" />
     <ClCompile Include="Sources\Renderer\Viewport.cpp" />
     <ClCompile Include="Sources\Utils\utFuncs.cpp" />
     <ClCompile Include="Sources\Win32\D3D11HelloTriangle.cpp" />
