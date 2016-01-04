@@ -26,6 +26,9 @@
     <Filter Include="Sources\Objects">
       <UniqueIdentifier>{2386c22e-9741-4d21-8dd6-2892e262d402}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\DX11RHI\Shader">
+      <UniqueIdentifier>{d5eeacb3-ed66-4d6c-b06e-e872c63864a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources/stdafx.h">
@@ -121,6 +124,15 @@
     <ClInclude Include="Sources\Renderer\Filter2D.h">
       <Filter>Sources\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11VertexShader.h">
+      <Filter>Sources\DX11RHI\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11Shader.h">
+      <Filter>Sources\DX11RHI\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11PixelShader.h">
+      <Filter>Sources\DX11RHI\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -191,6 +203,15 @@
     </ClCompile>
     <ClCompile Include="Sources\Renderer\Filter2D.cpp">
       <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11VertexShader.cpp">
+      <Filter>Sources\DX11RHI\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11Shader.cpp">
+      <Filter>Sources\DX11RHI\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11PixelShader.cpp">
+      <Filter>Sources\DX11RHI\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

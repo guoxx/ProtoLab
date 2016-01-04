@@ -22,8 +22,6 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
-	RHI::getInst().destroyVertexShader(_vertexShader);
-	RHI::getInst().destroyPixelShader(_pixelShader);
 	RHI::getInst().destroyVertexDeclaration(_vertexDecl);
 	RHI::getInst().destroyResource(_vsConstantsBuffer);
 	RHI::getInst().destroyResource(_psMaterielBuffer);
@@ -67,9 +65,9 @@ void Mesh::draw(const Camera* camera) const
 		gfxContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
 		gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
 		gfxContext->IASetPrimitiveTopology(prim->_topology);
-		gfxContext->VSSetShader(_vertexShader, 0, 0);
+		gfxContext->VSSetShader(_vertexShader->_vertexShader, 0, 0);
 		gfxContext->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
-		gfxContext->PSSetShader(_pixelShader, 0, 0);
+		gfxContext->PSSetShader(_pixelShader->_pixelShader, 0, 0);
 		gfxContext->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
 		gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 	}
@@ -121,6 +119,6 @@ void Mesh::loadShadersFromFile(const wchar_t* shaderFileName)
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	_vertexShader = RHI::getInst().createVertexShaderFromFile(shaderFileName, "VSMain", inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexDecl);
-	_pixelShader = RHI::getInst().createPixelShaderFromFile(shaderFileName, "PSMain");
+	_vertexShader = std::make_shared<DX11VertexShader>(shaderFileName, "VSMain");
+	_pixelShader = std::make_shared<DX11PixelShader>(shaderFileName, "PSMain");
 }

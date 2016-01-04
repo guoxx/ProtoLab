@@ -21,8 +21,8 @@ public:
 
 private:
 
-	ID3D11VertexShader* _vertexShader{nullptr};
-	ID3D11PixelShader* _pixelShader{nullptr};
+	std::shared_ptr<DX11VertexShader> _vertexShader{nullptr};
+	std::shared_ptr<DX11PixelShader> _pixelShader{nullptr};
 	ID3D11InputLayout* _vertexDecl{nullptr};
 	ID3D11Buffer* _vsConstantsBuffer{nullptr};
 	ID3D11Buffer* _psMaterielBuffer{nullptr};

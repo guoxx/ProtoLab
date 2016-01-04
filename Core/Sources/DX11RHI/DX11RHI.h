@@ -3,6 +3,8 @@
 #include "DX11RenderTarget.h"
 #include "DX11DepthStencilRenderTarget.h"
 #include "DX11GraphicContext.h"
+#include "DX11VertexShader.h"
+#include "DX11PixelShader.h"
 
 using Microsoft::WRL::ComPtr;
 
@@ -34,10 +36,9 @@ public:
 	ID3D11Buffer* createIndexBuffer(void* memPtr, uint32_t memSize);
 	ID3D11Buffer* createConstantBuffer(void* memPtr, uint32_t memSize);
 
-	ID3D11VertexShader* createVertexShaderFromFile(const wchar_t* filename, const char* entryPoint, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl);
-	ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl);
-	ID3D11PixelShader* createPixelShaderFromFile(const wchar_t* filename, const char* entryPoint);
+	ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
 	ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
+	ID3D11InputLayout* createVertexDeclaration(D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
 
 	// number of mipmap levels include base
 	DX11RenderTarget* createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT rtvFormat);
@@ -52,6 +53,7 @@ public:
 	void destroyVertexDeclaration(ID3D11InputLayout* declToDelete);
 	void destroyPixelShader(ID3D11PixelShader* shaderToDelete);
 	void destroyView(ID3D11View* viewToDelete);
+	void destroyBlob(ID3DBlob* blobToDelete);
 	void destroyRenderTarget(DX11RenderTarget* renderTargetToDelete);
 	void destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* renderTargetToDelete);
 
@@ -60,6 +62,11 @@ public:
 
 	// gfx contexts
 	std::shared_ptr<DX11GraphicContext> getContext();
+
+	// shader compilation
+	ID3DBlob* compileShader(const wchar_t* filename, const char* entryPoint, const char* profile);
+	ID3DBlob* compileVertexShader(const wchar_t* filename, const char* entryPoint);
+	ID3DBlob* compilePixelShader(const wchar_t* filename, const char* entryPoint);
 
 	void submit();
 

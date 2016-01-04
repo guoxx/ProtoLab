@@ -144,56 +144,11 @@ ID3D11Buffer* DX11RHI::createConstantBuffer(void* memPtr, uint32_t memSize)
 	return buffer;
 }
 
-ID3D11VertexShader* DX11RHI::createVertexShaderFromFile(const wchar_t* filename, const char* entryPoint, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl)
-{
-	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-	ID3DBlob* blob{nullptr};
-	ID3DBlob* err{nullptr};
-	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, "vs_5_0", compileFlags, 0, &blob, &err);
-	if (err != nullptr)
-	{
-		char mbsFilename[1024];
-		std::wcstombs(mbsFilename, filename, wcslen(filename));
-
-		size_t sz = err->GetBufferSize();
-		char* msg = new char[sz + 1];
-		msg[sz] = '\0';
-		memcpy(msg, err->GetBufferPointer(), sz);
-		PRINT("failed to compile vertex shader %s, error : %s", mbsFilename, msg);
-		delete [] msg;
-	}
-
-	return createVertexShaderFromBytecodes(blob->GetBufferPointer(), blob->GetBufferSize(), desc, descElemCnt, vertexDecl);
-}
-
-ID3D11VertexShader* DX11RHI::createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength, D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3D11InputLayout* &vertexDecl)
+ID3D11VertexShader* DX11RHI::createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength)
 {
 	ID3D11VertexShader* outShader{nullptr};
 	_device->CreateVertexShader(bytecode, bytecodeLength, nullptr, &outShader);
-	_device->CreateInputLayout(desc, descElemCnt, bytecode, bytecodeLength, &vertexDecl);
 	return outShader;
-}
-
-ID3D11PixelShader* DX11RHI::createPixelShaderFromFile(const wchar_t* filename, const char* entryPoint)
-{
-	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-	ID3DBlob* blob{nullptr};
-	ID3DBlob* err{nullptr};
-	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, "ps_5_0", compileFlags, 0, &blob, &err);
-	if (err != nullptr)
-	{
-		char mbsFilename[1024];
-		std::wcstombs(mbsFilename, filename, wcslen(filename));
-
-		size_t sz = err->GetBufferSize();
-		char* msg = new char[sz + 1];
-		msg[sz] = '\0';
-		memcpy(msg, err->GetBufferPointer(), sz);
-		PRINT("failed to compile pixel shader %s, error : %s", mbsFilename, msg);
-		delete [] msg;
-	}
-
-	return createPixelShaderFromBytecodes(blob->GetBufferPointer(), blob->GetBufferSize());
 }
 
 ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength)
@@ -203,6 +158,12 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode,
 	return outShader;
 }
 
+ID3D11InputLayout* DX11RHI::createVertexDeclaration(D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode)
+{
+	ID3D11InputLayout* vertexDecl{nullptr};
+	_device->CreateInputLayout(desc, descElemCnt, vertexShaderBytecode->GetBufferPointer(), vertexShaderBytecode->GetBufferSize(), &vertexDecl);
+	return vertexDecl;
+}
 
 DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT rtvFormat)
 {
@@ -300,6 +261,12 @@ void DX11RHI::destroyView(ID3D11View* viewToDelete)
 		viewToDelete->Release();
 }
 
+void DX11RHI::destroyBlob(ID3DBlob * blobToDelete)
+{
+	if (blobToDelete)
+		blobToDelete->Release();
+}
+
 void DX11RHI::destroyRenderTarget(DX11RenderTarget* renderTargetToDelete)
 {
 	delete renderTargetToDelete;
@@ -322,6 +289,37 @@ std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
 	return _deferredContext;
 }
 
+ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint, const char* profile)
+{
+	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+	ID3DBlob* blob{nullptr};
+	ID3DBlob* err{nullptr};
+	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, profile, compileFlags, 0, &blob, &err);
+	if (err != nullptr)
+	{
+		char mbsFilename[1024];
+		std::wcstombs(mbsFilename, filename, wcslen(filename));
+
+		size_t sz = err->GetBufferSize();
+		char* msg = new char[sz + 1];
+		msg[sz] = '\0';
+		memcpy(msg, err->GetBufferPointer(), sz);
+		PRINT("failed to compile vertex shader %s, error : %s", mbsFilename, msg);
+		delete[] msg;
+	}
+
+	return blob;
+}
+
+ID3DBlob* DX11RHI::compileVertexShader(const wchar_t* filename, const char* entryPoint)
+{
+	return compileShader(filename, entryPoint, "vs_5_0");
+}
+
+ID3DBlob* DX11RHI::compilePixelShader(const wchar_t* filename, const char* entryPoint)
+{
+	return compileShader(filename, entryPoint, "ps_5_0");
+}
 
 void DX11RHI::submit()
 {

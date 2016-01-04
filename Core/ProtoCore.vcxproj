@@ -93,10 +93,13 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources/targetver.h" />
     <ClInclude Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11GraphicContext.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11PixelShader.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RenderStateCache.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11ResourceCreationHelpers.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11Shader.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11VertexShader.h" />
     <ClInclude Include="Sources\Mesh\Mesh.h" />
     <ClInclude Include="Sources\Mesh\Primitive.h" />
     <ClInclude Include="Sources\Mesh\tiny_obj_loader.h" />
@@ -126,9 +129,12 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11GraphicContext.cpp" />
+    <ClCompile Include="Sources\DX11RHI\DX11PixelShader.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RenderStateCache.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RenderTarget.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp" />
+    <ClCompile Include="Sources\DX11RHI\DX11Shader.cpp" />
+    <ClCompile Include="Sources\DX11RHI\DX11VertexShader.cpp" />
     <ClCompile Include="Sources\Mesh\Mesh.cpp" />
     <ClCompile Include="Sources\Mesh\Mesh_GeometricPrimitive.cpp" />
     <ClCompile Include="Sources\Mesh\Primitive.cpp" />

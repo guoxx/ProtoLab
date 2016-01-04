@@ -77,6 +77,7 @@ void Mesh::loadCoordinateSystemFrame()
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	_vertexShader = RHI::getInst().createVertexShaderFromBytecodes(g_PerVertexColor_vs, sizeof(g_PerVertexColor_vs), inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexDecl);
-	_pixelShader = RHI::getInst().createPixelShaderFromBytecodes(g_PerVertexColor_ps, sizeof(g_PerVertexColor_ps));
+	_vertexShader = std::make_shared<DX11VertexShader>(g_PerVertexColor_vs, sizeof(g_PerVertexColor_vs));
+	_pixelShader = std::make_shared<DX11PixelShader>(g_PerVertexColor_ps, sizeof(g_PerVertexColor_ps));
+	_vertexDecl = RHI::getInst().createVertexDeclaration(inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexShader->getBinaryData());
 }
