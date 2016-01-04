@@ -38,7 +38,7 @@ public:
 
 	ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
 	ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
-	ID3D11InputLayout* createVertexDeclaration(D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
+	ID3D11InputLayout* createVertexDeclaration(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
 
 	// number of mipmap levels include base
 	DX11RenderTarget* createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT rtvFormat);

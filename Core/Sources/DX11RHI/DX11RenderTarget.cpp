@@ -10,6 +10,7 @@ DX11RenderTarget::DX11RenderTarget()
 DX11RenderTarget::~DX11RenderTarget()
 {
 	RHI::getInst().destroyResource(_texture);
+	RHI::getInst().destroyView(_textureSRV);
 
 	for (auto rtv : _renderTargets)
 	{
@@ -17,8 +18,12 @@ DX11RenderTarget::~DX11RenderTarget()
 	}
 }
 
+ID3D11ShaderResourceView * DX11RenderTarget::getTextureSRV() const
+{
+	return _textureSRV;
+}
 
-ID3D11RenderTargetView* DX11RenderTarget::getRenderTarget(uint32_t mipmap)
+ID3D11RenderTargetView* DX11RenderTarget::getRenderTarget(uint32_t mipmap) const
 {
 	return _renderTargets[mipmap];
 }

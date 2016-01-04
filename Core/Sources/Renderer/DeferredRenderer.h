@@ -3,6 +3,7 @@
 class Camera;
 class Scene;
 class Viewport;
+class Filter2D;
 
 class DeferredRenderer
 {

@@ -158,7 +158,7 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode,
 	return outShader;
 }
 
-ID3D11InputLayout* DX11RHI::createVertexDeclaration(D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode)
+ID3D11InputLayout* DX11RHI::createVertexDeclaration(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode)
 {
 	ID3D11InputLayout* vertexDecl{nullptr};
 	_device->CreateInputLayout(desc, descElemCnt, vertexShaderBytecode->GetBufferPointer(), vertexShaderBytecode->GetBufferSize(), &vertexDecl);
@@ -172,6 +172,9 @@ DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, u
 	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
 	desc.BindFlags = D3D11_BIND_RENDER_TARGET;
 	_device->CreateTexture2D(&desc, nullptr, &(renderTarget->_texture));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = createDx11ShaderResourceViewDescTex2d(rtvFormat, numMipmap);
+	_device->CreateShaderResourceView(renderTarget->_texture, &srvDesc, &renderTarget->_textureSRV);
 
 	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
 	{

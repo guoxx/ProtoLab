@@ -73,6 +73,17 @@ D3D11_TEXTURE2D_DESC createDx11Texture2dDesc(uint32_t width, uint32_t height, ui
 	return texDesc;
 }
 
+D3D11_SHADER_RESOURCE_VIEW_DESC createDx11ShaderResourceViewDescTex2d(DXGI_FORMAT texelFormat, uint32_t mipLevels)
+{
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	memset(&srvDesc, 0x00, sizeof(srvDesc));
+	srvDesc.Format = texelFormat;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = mipLevels;
+	return srvDesc;
+}
+
 D3D11_RENDER_TARGET_VIEW_DESC createDx11RenderTargetViewDescTex2d(DXGI_FORMAT texelFormat, uint32_t mipSlice)
 {
 	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
