@@ -32,8 +32,8 @@ cbuffer PointLight
 	: register (b1)
 #endif
 {
-	float3 lightPositionInWorldSpace;
-	float3 intensity;
+	float4 lightPositionInWorldSpace;
+	float4 intensity;
 	float radiusStart;
 	float radiusEnd;
 };

@@ -63,8 +63,9 @@ void D3D11HelloTriangle::LoadAssets()
 
 	{
 		_pointLight = std::make_shared<PointLight>();
-		_pointLight->setIntensity(DirectX::XMFLOAT3{10, 0, 0});
-		_pointLight->setRadius(0.5, 5.0);
+		_pointLight->setIntensity(DirectX::XMFLOAT3{1, 1, 1});
+		_pointLight->setRadius(0.2f, 1.5f);
+		_scene->attachPointLight(_pointLight);
 	}
 
 	_renderer = std::make_shared<ForwardRenderer>();

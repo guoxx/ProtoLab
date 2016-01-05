@@ -58,10 +58,14 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 	gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
 
 	auto models = scene->getModels();
-	for (auto model :models)
+	auto pointLights = scene->getPointLights(); 
+	for (auto model : models)
 	{
 		auto mesh = model->getMesh();
-		mesh->draw(model->getWorldMatrix(), camera.get());
+		for (auto pl : pointLights)
+		{
+			mesh->draw(model->getWorldMatrix(), camera.get(), pl);
+		}
 	}
 
 	_filterIdentity->apply(_sceneRT, _backbufferRT);

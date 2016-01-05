@@ -278,12 +278,16 @@ void DX11RHI::setDefaultRHIStates()
 {
 	_deferredContext->RSSetState(_defaultRasterizerState);
 	_deferredContext->OMSetDepthStencilState(_defaultDepthStencilState, 0);
+
+	_immediateContext->RSSetState(_defaultRasterizerState);
+	_immediateContext->OMSetDepthStencilState(_defaultDepthStencilState, 0);
 }
 
 std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
 {
 	// TODO: each need to have own context
-	return _deferredContext;
+	//return _deferredContext;
+	return _immediateContext;
 }
 
 ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint, const char* profile)

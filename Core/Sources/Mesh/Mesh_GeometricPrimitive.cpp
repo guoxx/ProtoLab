@@ -14,11 +14,11 @@ void Mesh::loadCoordinateSystemFrame()
 
 	Vertex vexBuf[] = {
 		DirectX::XMFLOAT3(0, 0, 0),
-		DirectX::XMFLOAT3(7, 0, 0),
+		DirectX::XMFLOAT3(1, 0, 0),
 		DirectX::XMFLOAT3(0, 0, 0),
-		DirectX::XMFLOAT3(0, 7, 0),
+		DirectX::XMFLOAT3(0, 1, 0),
 		DirectX::XMFLOAT3(0, 0, 0),
-		DirectX::XMFLOAT3(0, 0, 7),
+		DirectX::XMFLOAT3(0, 0, 1),
 	};
 	uint32_t idxBuf[] = {0, 1};
 	Vertex* pVexBuf = vexBuf;
