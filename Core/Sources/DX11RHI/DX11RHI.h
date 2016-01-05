@@ -40,6 +40,8 @@ public:
 	ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
 	ID3D11InputLayout* createVertexDeclaration(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
 
+	ID3D11SamplerState* createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode);
+
 	// number of mipmap levels include base
 	ID3D11Texture2D* createTexture2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags);
 	ID3D11Texture2D* createTexture2DFromSwapChain(IDXGISwapChain* swapChain);
@@ -53,6 +55,7 @@ public:
 	void destroyResource(ID3D11Resource* resourceToDelete);
 	void destroyVertexShader(ID3D11VertexShader* shaderToDelete);
 	void destroyVertexDeclaration(ID3D11InputLayout* declToDelete);
+	void destroySamplerState(ID3D11SamplerState* sampToDelete);
 	void destroyPixelShader(ID3D11PixelShader* shaderToDelete);
 	void destroyView(ID3D11View* viewToDelete);
 	void destroyBlob(ID3DBlob* blobToDelete);

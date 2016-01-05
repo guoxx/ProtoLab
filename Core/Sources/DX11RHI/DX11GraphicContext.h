@@ -36,6 +36,7 @@ public:
 	void PSSetShader(DX11PixelShader* pPixelShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
 	void PSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppConstantBuffers);
 	void PSSetShaderResources(uint32_t startSlot, uint32_t numViews, ID3D11ShaderResourceView *const *ppShaderResourceViews);
+	void PSSetSamplers(uint32_t startSlot, uint32_t numSamplers, ID3D11SamplerState *const *ppSamplers);
 
 	// ouput merge
 	void OMSetDepthStencilState(ID3D11DepthStencilState *pDepthStencilState, uint32_t stencilRef);

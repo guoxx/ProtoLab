@@ -165,6 +165,14 @@ ID3D11InputLayout* DX11RHI::createVertexDeclaration(const D3D11_INPUT_ELEMENT_DE
 	return vertexDecl;
 }
 
+ID3D11SamplerState* DX11RHI::createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode)
+{
+	ID3D11SamplerState* samp{nullptr};
+	D3D11_SAMPLER_DESC sampDesc = createDx11SamplerDesc(filter, addressMode);
+	_device->CreateSamplerState(&sampDesc, &samp);
+	return samp;
+}
+
 ID3D11Texture2D* DX11RHI::createTexture2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags)
 {
 	ID3D11Texture2D* tex{nullptr};
@@ -233,6 +241,12 @@ void DX11RHI::destroyVertexDeclaration(ID3D11InputLayout* declToDelete)
 {
 	if (declToDelete)
 		declToDelete->Release();
+}
+
+void DX11RHI::destroySamplerState(ID3D11SamplerState* sampToDelete)
+{
+	if (sampToDelete)
+		sampToDelete->Release();
 }
 
 void DX11RHI::destroyPixelShader(ID3D11PixelShader* shaderToDelete)

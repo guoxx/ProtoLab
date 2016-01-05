@@ -15,12 +15,14 @@ Filter2D::Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11Pix
 
 	_vertexBuffer = RHI::getInst().createVertexBuffer(vertexs, sizeof(vertexs));
 	_vertexDecl = RHI::getInst().createVertexDeclaration(DirectX::VertexPositionTexture::InputElements, DirectX::VertexPositionTexture::InputElementCount, _vertexShader->getBinaryData());
+	_textureSamp = RHI::getInst().createSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP);
 }
 
 Filter2D::~Filter2D()
 {
 	RHI::getInst().destroyResource(_vertexBuffer);
 	RHI::getInst().destroyVertexDeclaration(_vertexDecl);
+	RHI::getInst().destroySamplerState(_textureSamp);
 }
 
 void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<DX11RenderTarget> dest)
@@ -39,5 +41,7 @@ void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<D
 	gfxContext->PSSetShader(_pixelShader.get(), nullptr, 0);
 	ID3D11ShaderResourceView* textures[] = {source->getTextureSRV()};
 	gfxContext->PSSetShaderResources(0, 1, textures);
+	ID3D11SamplerState* samps[] = {_textureSamp};
+	gfxContext->PSSetSamplers(0, 1, samps);
 	gfxContext->draw(3, 0);
 }

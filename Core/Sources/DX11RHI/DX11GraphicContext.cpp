@@ -84,6 +84,11 @@ void DX11GraphicContext::PSSetShaderResources(uint32_t startSlot, uint32_t numVi
 	_context->PSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
 }
 
+void DX11GraphicContext::PSSetSamplers(uint32_t startSlot, uint32_t numSamplers, ID3D11SamplerState *const *ppSamplers)
+{
+	_context->PSSetSamplers(startSlot, numSamplers, ppSamplers);
+}
+
 void DX11GraphicContext::OMSetDepthStencilState(ID3D11DepthStencilState * pDepthStencilState, uint32_t stencilRef)
 {
 	_context->OMSetDepthStencilState(pDepthStencilState, stencilRef);

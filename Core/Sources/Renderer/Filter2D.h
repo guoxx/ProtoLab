@@ -11,6 +11,7 @@ public:
 private:
 	ID3D11Buffer* _vertexBuffer;
 	ID3D11InputLayout* _vertexDecl;
+	ID3D11SamplerState* _textureSamp;
 
 	std::shared_ptr<DX11VertexShader> _vertexShader;
 	std::shared_ptr<DX11PixelShader> _pixelShader;

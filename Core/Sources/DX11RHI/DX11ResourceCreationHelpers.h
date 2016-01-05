@@ -104,3 +104,13 @@ D3D11_DEPTH_STENCIL_VIEW_DESC createDx11DepthStencilViewDescTex2d(DXGI_FORMAT te
 	dsvDesc.Texture2D.MipSlice = mipSlice;
 	return dsvDesc;
 }
+
+D3D11_SAMPLER_DESC createDx11SamplerDesc(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode)
+{
+	CD3D11_SAMPLER_DESC sampDesc{CD3D11_DEFAULT{}};
+	sampDesc.Filter = filter;
+	sampDesc.AddressU = addressMode;
+	sampDesc.AddressV = addressMode;
+	sampDesc.AddressW = addressMode;
+	return sampDesc;
+}
