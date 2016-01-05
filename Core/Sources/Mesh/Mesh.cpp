@@ -121,4 +121,5 @@ void Mesh::loadShadersFromFile(const wchar_t* shaderFileName)
 	};
 	_vertexShader = std::make_shared<DX11VertexShader>(shaderFileName, "VSMain");
 	_pixelShader = std::make_shared<DX11PixelShader>(shaderFileName, "PSMain");
+	_vertexDecl = RHI::getInst().createVertexDeclaration(inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexShader->getBinaryData());
 }

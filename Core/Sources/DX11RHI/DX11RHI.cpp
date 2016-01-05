@@ -165,68 +165,51 @@ ID3D11InputLayout* DX11RHI::createVertexDeclaration(const D3D11_INPUT_ELEMENT_DE
 	return vertexDecl;
 }
 
-DX11RenderTarget* DX11RHI::createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT rtvFormat)
+ID3D11Texture2D* DX11RHI::createTexture2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags)
 {
-	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
-
+	ID3D11Texture2D* tex{nullptr};
 	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
-	desc.BindFlags = D3D11_BIND_RENDER_TARGET;
-	_device->CreateTexture2D(&desc, nullptr, &(renderTarget->_texture));
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = createDx11ShaderResourceViewDescTex2d(rtvFormat, numMipmap);
-	_device->CreateShaderResourceView(renderTarget->_texture, &srvDesc, &renderTarget->_textureSRV);
-
-	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
-	{
-		ID3D11RenderTargetView* rtv{nullptr};
-		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2d(rtvFormat, mipSlice);
-		_device->CreateRenderTargetView(renderTarget->_texture, &rtvDesc, &rtv);
-		renderTarget->_renderTargets.push_back(rtv);
-	}
-
-	return renderTarget;
+	desc.BindFlags = bindFlags;
+	_device->CreateTexture2D(&desc, nullptr, &tex);
+	return tex;
 }
 
-
-DX11RenderTarget* DX11RHI::createRenderTargetFromSwapChain(IDXGISwapChain* swapChain)
+ID3D11Texture2D* DX11RHI::createTexture2DFromSwapChain(IDXGISwapChain* swapChain)
 {
-	DX11RenderTarget* renderTarget = new DX11RenderTarget{};
-
-	ID3D11RenderTargetView* rtv;
-	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&renderTarget->_texture));
-	_device->CreateRenderTargetView(renderTarget->_texture, nullptr, &rtv);
-	renderTarget->_renderTargets.push_back(rtv);
-
-	return renderTarget;
+	ID3D11Texture2D* tex{nullptr};
+	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&tex));
+	return tex;
 }
 
-
-DX11DepthStencilRenderTarget* DX11RHI::createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT dsvFormat)
+ID3D11ShaderResourceView* DX11RHI::createShaderResourceViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT srvFormat, uint32_t numMipmap)
 {
-	DX11DepthStencilRenderTarget* depthStencilRenderTarget = new DX11DepthStencilRenderTarget{};
-
-	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
-	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	_device->CreateTexture2D(&desc, nullptr, &(depthStencilRenderTarget->_texture));
-
-	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
-	{
-		ID3D11DepthStencilView* dsv{nullptr};
-		D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = createDx11DepthStencilViewDescTex2d(dsvFormat, mipSlice);
-		_device->CreateDepthStencilView(depthStencilRenderTarget->_texture, &dsvDesc, &dsv);
-		depthStencilRenderTarget->_depthStencilRenderTargets.push_back(dsv);
-	}
-
-	return depthStencilRenderTarget;
+	ID3D11ShaderResourceView* textureSRV{nullptr};
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = createDx11ShaderResourceViewDescTex2d(srvFormat, numMipmap);
+	_device->CreateShaderResourceView(texture, &srvDesc, &textureSRV);
+	return textureSRV;
 }
 
+ID3D11RenderTargetView* DX11RHI::createRenderTargetViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice)
+{
+	ID3D11RenderTargetView* rtv{nullptr};
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2d(rtvFormat, mipSlice);
+	_device->CreateRenderTargetView(texture, &rtvDesc, &rtv);
+	return rtv;
+}
+
+ID3D11DepthStencilView* DX11RHI::createDepthStencilViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice)
+{
+	ID3D11DepthStencilView* dsv{nullptr};
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = createDx11DepthStencilViewDescTex2d(dsvFormat, mipSlice);
+	_device->CreateDepthStencilView(texture, &dsvDesc, &dsv);
+	return dsv;
+}
 
 void DX11RHI::destroyDeviceContext(ID3D11DeviceContext * ctxToDelete)
 {
 	if (ctxToDelete)
 		ctxToDelete->Release();
 }
-
 
 void DX11RHI::destroySwapChain(IDXGISwapChain* swapChainToDelete)
 {
@@ -268,16 +251,6 @@ void DX11RHI::destroyBlob(ID3DBlob * blobToDelete)
 {
 	if (blobToDelete)
 		blobToDelete->Release();
-}
-
-void DX11RHI::destroyRenderTarget(DX11RenderTarget* renderTargetToDelete)
-{
-	delete renderTargetToDelete;
-}
-
-void DX11RHI::destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* renderTargetToDelete)
-{
-	delete renderTargetToDelete;
 }
 
 void DX11RHI::setDefaultRHIStates()

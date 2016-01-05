@@ -18,11 +18,11 @@ public:
 	void present();
 
 private:
-	DX11RenderTarget*				_sceneRT;
-	DX11DepthStencilRenderTarget*	_sceneDepthRT;
+	std::shared_ptr<DX11RenderTarget>				_sceneRT;
+	std::shared_ptr<DX11DepthStencilRenderTarget>	_sceneDepthRT;
 
-	IDXGISwapChain*					_swapChain;	
-	DX11RenderTarget*				_backbufferRT;
+	IDXGISwapChain*									_swapChain;	
+	std::shared_ptr<DX11RenderTarget>				_backbufferRT;
 
 	// constants
 	const static int32_t			FRAME_COUNT = 2;

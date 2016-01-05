@@ -14,20 +14,16 @@ ForwardRenderer::ForwardRenderer()
 	// TODO: hard code window size
 
 	_swapChain = RHI::getInst().createSwapChain(Win32Application::GetHwnd(), FRAME_COUNT, WIN_WIDTH, WIN_HEIGHT);
-	_backbufferRT = RHI::getInst().createRenderTargetFromSwapChain(_swapChain);
+	_backbufferRT = std::make_shared<DX11RenderTarget>(_swapChain);
 
-	_sceneRT = RHI::getInst().createRenderTarget(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	_sceneDepthRT = RHI::getInst().createDepthStencilRenderTarget(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_D32_FLOAT);
+	_sceneRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	_sceneDepthRT = std::make_shared<DX11DepthStencilRenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
 }
 
 
 ForwardRenderer::~ForwardRenderer()
 {
 	RHI::getInst().destroySwapChain(_swapChain);
-	RHI::getInst().destroyRenderTarget(_backbufferRT);
-
-	RHI::getInst().destroyRenderTarget(_sceneRT);
-	RHI::getInst().destroyDepthStencilRenderTarget(_sceneDepthRT);
 }
 
 

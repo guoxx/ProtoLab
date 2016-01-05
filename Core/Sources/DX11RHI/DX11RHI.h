@@ -41,9 +41,11 @@ public:
 	ID3D11InputLayout* createVertexDeclaration(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
 
 	// number of mipmap levels include base
-	DX11RenderTarget* createRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT rtvFormat);
-	DX11RenderTarget* createRenderTargetFromSwapChain(IDXGISwapChain* swapChain);
-	DX11DepthStencilRenderTarget* createDepthStencilRenderTarget(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT dsvFormat);
+	ID3D11Texture2D* createTexture2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags);
+	ID3D11Texture2D* createTexture2DFromSwapChain(IDXGISwapChain* swapChain);
+	ID3D11ShaderResourceView* createShaderResourceViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT srvFormat, uint32_t numMipmap);
+	ID3D11RenderTargetView* createRenderTargetViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice);
+	ID3D11DepthStencilView* createDepthStencilViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice);
 
 	// resources deletion
 	void destroyDeviceContext(ID3D11DeviceContext* ctxToDelete);
@@ -54,8 +56,6 @@ public:
 	void destroyPixelShader(ID3D11PixelShader* shaderToDelete);
 	void destroyView(ID3D11View* viewToDelete);
 	void destroyBlob(ID3DBlob* blobToDelete);
-	void destroyRenderTarget(DX11RenderTarget* renderTargetToDelete);
-	void destroyDepthStencilRenderTarget(DX11DepthStencilRenderTarget* renderTargetToDelete);
 
 	// render states
 	void setDefaultRHIStates();

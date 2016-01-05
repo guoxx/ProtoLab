@@ -19,6 +19,7 @@ public:
 	UINT GetWidth() const           { return m_width; }
 	UINT GetHeight() const          { return m_height; }
 	const WCHAR* GetTitle() const   { return m_title.c_str(); }
+	bool GetUseRenderDoc() const	{ return m_useRenderDoc; }
 
 	void ParseCommandLineArgs(_In_reads_(argc) WCHAR* argv[], int argc);
 
@@ -33,6 +34,7 @@ protected:
 
 	// Adapter info.
 	bool m_useWarpDevice;
+	bool m_useRenderDoc;
 
 private:
 	// Root assets path.

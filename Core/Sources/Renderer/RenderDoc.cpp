@@ -13,6 +13,8 @@ void RenderDoc::initialize()
 	renderdocGetApiFunc(eRENDERDOC_API_Version_1_0_0, reinterpret_cast<void**>(&s_renderdoc));
 
 	s_renderdoc->SetLogFilePathTemplate("renderdoc/proto_lab");
+	s_renderdoc->SetCaptureOptionU32(eRENDERDOC_Option_DebugDeviceMode, 1);
+	s_renderdoc->SetCaptureOptionU32(eRENDERDOC_Option_DebugOutputMute, 0);
 }
 
 void RenderDoc::finalize()

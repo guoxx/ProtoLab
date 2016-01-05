@@ -8,13 +8,18 @@ HWND Win32Application::m_hwnd = nullptr;
 
 int Win32Application::Run(DXSample* pSample, HINSTANCE hInstance, int nCmdShow)
 {
-	RenderDoc::initialize();
+
 
 	// Parse the command line parameters
 	int argc;
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
 	pSample->ParseCommandLineArgs(argv, argc);
 	LocalFree(argv);
+
+	if (pSample->GetUseRenderDoc())
+	{
+		RenderDoc::initialize();
+	}
 
 	// Initialize the window class.
 	WNDCLASSEX windowClass = { 0 };
@@ -65,6 +70,11 @@ int Win32Application::Run(DXSample* pSample, HINSTANCE hInstance, int nCmdShow)
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+	}
+
+	if (pSample->GetUseRenderDoc())
+	{
+		RenderDoc::finalize();
 	}
 
 	pSample->OnDestroy();
