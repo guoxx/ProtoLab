@@ -8,7 +8,7 @@ using Microsoft::WRL::ComPtr;
 class Scene;
 class Camera;
 class Viewport;
-class DeferredRenderer;
+class ForwardRenderer;
 
 class D3D11HelloTriangle : public DXSample
 {
@@ -31,5 +31,5 @@ private:
 	std::shared_ptr<Viewport> _viewport;
 	std::shared_ptr<Camera> _camera;
 	std::shared_ptr<Scene> _scene;
-	std::shared_ptr<DeferredRenderer> _renderer;
+	std::shared_ptr<ForwardRenderer> _renderer;
 };
