@@ -20,7 +20,6 @@ DX11VertexShader::DX11VertexShader(const void* bytecode, uint32_t bytecodeLength
 
 DX11VertexShader::~DX11VertexShader()
 {
-	RHI::getInst().destroyBlob(_binaryData);
 	RHI::getInst().destroyVertexShader(_vertexShader);
 }
 

@@ -1,12 +1,16 @@
 #include "stdafx.h"
 #include "DeferredRenderer.h"
 #include "Viewport.h"
+#include "Filter2D.h"
 #include "../Objects/Camera.h"
 #include "../Objects/Scene.h"
 #include "../Objects/Model.h"
 // TODO: remove this
 #include "../Mesh/Mesh.h"
 #include "../Win32/Win32Application.h"
+
+#include "../../Shaders/FilterIdentity_vs.h"
+#include "../../Shaders/FilterIdentity_ps.h"
 
 
 DeferredRenderer::DeferredRenderer()
@@ -18,6 +22,10 @@ DeferredRenderer::DeferredRenderer()
 
 	_sceneRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
 	_sceneDepthRT = std::make_shared<DX11DepthStencilRenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
+
+	std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
+	std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_FilterIdentity_ps, sizeof(g_FilterIdentity_ps));
+	_filterIdentity = std::make_shared<Filter2D>(vs, ps);
 }
 
 
@@ -46,7 +54,7 @@ void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sc
 	viewport->getViewport(x, y, w, h);
 	gfxContext->RSSetViewport(x, y, w, h);
 
-	ID3D11RenderTargetView* rtvs[] = {_backbufferRT->getRenderTarget()};
+	ID3D11RenderTargetView* rtvs[] = {_sceneRT->getRenderTarget()};
 	gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
 
 	auto models = scene->getModels();
@@ -56,6 +64,7 @@ void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sc
 		mesh->draw(camera.get());
 	}
 
+	_filterIdentity->apply(_sceneRT, _backbufferRT);
 }
 
 void DeferredRenderer::endFrame()

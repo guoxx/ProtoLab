@@ -133,6 +133,9 @@
     <ClInclude Include="Sources\DX11RHI\DX11PixelShader.h">
       <Filter>Sources\DX11RHI\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\FilterIdentity_common.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -222,6 +225,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\PerVertexColor_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FilterIdentity_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FilterIdentity_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

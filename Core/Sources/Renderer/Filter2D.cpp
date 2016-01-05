@@ -3,7 +3,7 @@
 #include <DirectXTK/Inc/VertexTypes.h>
 
 
-Filter2D::Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11PixelShader> ps, ID3D11InputLayout* vertexDecl)
+Filter2D::Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11PixelShader> ps)
 	: _vertexShader{vs}
 	, _pixelShader{ps}
 {
@@ -26,9 +26,17 @@ Filter2D::~Filter2D()
 void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<DX11RenderTarget> dest)
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
-	gfxContext->IASetVertexBuffers(0, 1, &_vertexBuffer, nullptr, nullptr);
+
+	ID3D11RenderTargetView* rtvs[] = {dest->getRenderTarget()};
+	gfxContext->OMSetRenderTargets(1, rtvs, nullptr);
+
+	uint32_t strides[] = {sizeof(DirectX::VertexPositionTexture)};
+	uint32_t offsets[] = {0};
+	gfxContext->IASetVertexBuffers(0, 1, &_vertexBuffer, strides, offsets);
 	gfxContext->IASetInputLayout(_vertexDecl);
 	gfxContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gfxContext->VSSetShader(_vertexShader.get(), nullptr, 0);
+	gfxContext->PSSetShader(_pixelShader.get(), nullptr, 0);
 	ID3D11ShaderResourceView* textures[] = {source->getTextureSRV()};
 	gfxContext->PSSetShaderResources(0, 1, textures);
 	gfxContext->draw(3, 0);

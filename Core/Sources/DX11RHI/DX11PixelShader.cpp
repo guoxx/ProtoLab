@@ -20,7 +20,6 @@ DX11PixelShader::DX11PixelShader(const void* bytecode, uint32_t bytecodeLength)
 
 DX11PixelShader::~DX11PixelShader()
 {
-	RHI::getInst().destroyBlob(_binaryData);
 	RHI::getInst().destroyPixelShader(_pixelShader);
 }
 

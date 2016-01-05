@@ -3,7 +3,7 @@
 class Filter2D
 {
 public:
-	Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11PixelShader> ps, ID3D11InputLayout* vertexDecl);
+	Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11PixelShader> ps);
 	~Filter2D();
 
 	void apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<DX11RenderTarget> dest);
