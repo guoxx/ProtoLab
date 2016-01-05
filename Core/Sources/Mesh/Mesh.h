@@ -12,7 +12,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void draw(const Camera* camera) const;
+	void draw(DirectX::CXMMATRIX mModel, const Camera* camera) const;
 
 	void loadMeshFromFile(const wchar_t* objFileName);
 	void loadShadersFromFile(const wchar_t* shaderFileName);

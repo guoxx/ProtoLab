@@ -41,13 +41,13 @@ void D3D11HelloTriangle::LoadAssets()
 
 	{
 		// cornell box
-		auto mod = std::make_shared<Model>();
-		_scene->attachModel(mod);
+		_cornellBox = std::make_shared<Model>();
+		_scene->attachModel(_cornellBox);
 
 		auto mesh = std::make_shared<Mesh>();
 		mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
 		mesh->loadShadersFromFile(GetAssetFullPath(L"hello_mesh.hlsl").c_str());
-		mod->setMesh(mesh);
+		_cornellBox->setMesh(mesh);
 	}
 
 	{
@@ -91,6 +91,7 @@ void D3D11HelloTriangle::OnUpdate()
 		_camera->rotatePitchYawRoll(-mouseState.y*0.1f, -mouseState.x*0.1f, 0);
 	}
 
+	_scene->update(0.0f);
 }
 
 // Render the scene.

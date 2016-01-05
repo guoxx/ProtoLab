@@ -105,8 +105,11 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\Mesh\Primitive.h" />
     <ClInclude Include="Sources\Mesh\tiny_obj_loader.h" />
     <ClInclude Include="Sources\Objects\Actor.h" />
+    <ClInclude Include="Sources\Objects\AreaLight.h" />
     <ClInclude Include="Sources\Objects\Camera.h" />
+    <ClInclude Include="Sources\Objects\ILight.h" />
     <ClInclude Include="Sources\Objects\Model.h" />
+    <ClInclude Include="Sources\Objects\PointLight.h" />
     <ClInclude Include="Sources\Objects\Scene.h" />
     <ClInclude Include="Sources\Renderer\DeferredRenderer.h" />
     <ClInclude Include="Sources\Renderer\Filter2D.h" />
@@ -140,8 +143,11 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\Mesh\Mesh_GeometricPrimitive.cpp" />
     <ClCompile Include="Sources\Mesh\Primitive.cpp" />
     <ClCompile Include="Sources\Objects\Actor.cpp" />
+    <ClCompile Include="Sources\Objects\AreaLight.cpp" />
     <ClCompile Include="Sources\Objects\Camera.cpp" />
+    <ClCompile Include="Sources\Objects\ILight.cpp" />
     <ClCompile Include="Sources\Objects\Model.cpp" />
+    <ClCompile Include="Sources\Objects\PointLight.cpp" />
     <ClCompile Include="Sources\Objects\Scene.cpp" />
     <ClCompile Include="Sources\Renderer\DeferredRenderer.cpp" />
     <ClCompile Include="Sources\Renderer\Filter2D.cpp" />

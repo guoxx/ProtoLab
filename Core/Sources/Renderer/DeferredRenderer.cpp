@@ -61,7 +61,7 @@ void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sc
 	for (auto model :models)
 	{
 		auto mesh = model->getMesh();
-		mesh->draw(camera.get());
+		mesh->draw(model->getWorldMatrix(), camera.get());
 	}
 
 	_filterIdentity->apply(_sceneRT, _backbufferRT);

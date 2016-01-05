@@ -5,6 +5,7 @@
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
+class Model;
 class Scene;
 class Camera;
 class Viewport;
@@ -31,5 +32,6 @@ private:
 	std::shared_ptr<Viewport> _viewport;
 	std::shared_ptr<Camera> _camera;
 	std::shared_ptr<Scene> _scene;
+	std::shared_ptr<Model> _cornellBox;
 	std::shared_ptr<ForwardRenderer> _renderer;
 };

@@ -48,6 +48,11 @@ DirectX::XMVECTOR Actor::getPosition() const
 	return _translation;
 }
 
+void Actor::setRotationPitchYawRoll(float pitch, float yaw, float roll)
+{
+	setRotationPitchYawRoll(DirectX::XMVECTOR{pitch, yaw, roll, 0.0f});
+}
+
 void Actor::setRotationPitchYawRoll(DirectX::XMVECTOR pitchYawRollInDegrees)
 {
 	float degreeToRadian = -DirectX::XM_PI / 180.0f;

@@ -29,6 +29,9 @@
     <Filter Include="Sources\DX11RHI\Shader">
       <UniqueIdentifier>{d5eeacb3-ed66-4d6c-b06e-e872c63864a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Objects\Lights">
+      <UniqueIdentifier>{f299d1a2-4cc9-48a1-a918-bc618acc25db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources/stdafx.h">
@@ -136,6 +139,15 @@
     <ClInclude Include="Shaders\FilterIdentity_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Objects\ILight.h">
+      <Filter>Sources\Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\AreaLight.h">
+      <Filter>Sources\Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Objects\PointLight.h">
+      <Filter>Sources\Objects\Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -215,6 +227,15 @@
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11PixelShader.cpp">
       <Filter>Sources\DX11RHI\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\ILight.cpp">
+      <Filter>Sources\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\AreaLight.cpp">
+      <Filter>Sources\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Objects\PointLight.cpp">
+      <Filter>Sources\Objects\Lights</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

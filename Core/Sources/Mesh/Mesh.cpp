@@ -27,14 +27,15 @@ Mesh::~Mesh()
 	RHI::getInst().destroyResource(_psMaterielBuffer);
 }
 
-void Mesh::draw(const Camera* camera) const
+void Mesh::draw(DirectX::CXMMATRIX mModel, const Camera* camera) const
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	gfxContext->mapResource(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	PerVertexColorCB::View* dataPtr = (PerVertexColorCB::View*)mappedResource.pData;
-	DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(camera->getViewProjectionMatrix()));
+	DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
+	DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(mModelViewProj));
 	gfxContext->unmapResource(_vsConstantsBuffer, 0);
 
 	for (auto prim : _primitives)

@@ -17,6 +17,7 @@ public:
 	void setPosition(DirectX::XMVECTOR position);
 	DirectX::XMVECTOR getPosition() const;
 
+	void setRotationPitchYawRoll(float pitch, float yaw, float roll);
 	void setRotationPitchYawRoll(DirectX::XMVECTOR pitchYawRollInDegrees);
 	DirectX::XMVECTOR getRotationPitchYawRoll() const;
 

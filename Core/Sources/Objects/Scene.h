@@ -23,6 +23,8 @@ public:
 		// TODO: 
 	}
 
+	void update(double delta);
+
 private:
 	std::vector<std::shared_ptr<Model>> _models;
 };
