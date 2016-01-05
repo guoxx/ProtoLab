@@ -5,6 +5,7 @@
 #include "../Objects/Scene.h"
 #include "../Objects/Model.h"
 #include "../Objects/Camera.h"
+#include "../Objects/PointLight.h"
 #include "../Mesh/Mesh.h"
 #include "../Renderer/ForwardRenderer.h"
 #include "../Renderer/Viewport.h"
@@ -58,6 +59,12 @@ void D3D11HelloTriangle::LoadAssets()
 		auto mesh = std::make_shared<Mesh>();
 		mesh->loadCoordinateSystemFrame();
 		mod->setMesh(mesh);
+	}
+
+	{
+		_pointLight = std::make_shared<PointLight>();
+		_pointLight->setIntensity(DirectX::XMFLOAT3{10, 0, 0});
+		_pointLight->setRadius(0.5, 5.0);
 	}
 
 	_renderer = std::make_shared<ForwardRenderer>();

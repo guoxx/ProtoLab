@@ -8,6 +8,7 @@ using Microsoft::WRL::ComPtr;
 class Model;
 class Scene;
 class Camera;
+class PointLight;
 class Viewport;
 class ForwardRenderer;
 
@@ -33,5 +34,6 @@ private:
 	std::shared_ptr<Camera> _camera;
 	std::shared_ptr<Scene> _scene;
 	std::shared_ptr<Model> _cornellBox;
+	std::shared_ptr<PointLight> _pointLight;
 	std::shared_ptr<ForwardRenderer> _renderer;
 };

@@ -10,21 +10,52 @@ namespace PerVertexColorCB
 #include "../../Shaders/PerVertexColor_common.h"
 }
 
+namespace DefaultCB
+{
+	cbuffer View
+	{
+		float4x4 modelViewMatrix;
+		float4x4 modelViewProjMatrix;
+	};
+
+	cbuffer Materiel
+	{
+		float4 ambient;
+		float4 diffuse;
+		float4 specular;
+		float4 transmittance;
+		float4 emission;
+		float shininess;
+		float ior;      // index of refraction
+		float dissolve; // 1 == opaque; 0 == fully transparent
+		// illumination model (see http://www.fileformat.info/format/material/)
+		int illum;
+	};
+
+	cbuffer PointLight
+	{
+		float3 lightPositionInWorldSpace;
+		float3 intensity;
+		float radiusStart;
+		float radiusEnd;
+	};
+}
+
 
 Mesh::Mesh()
 {
 	PerVertexColorCB::View vsConstantsData{};
-	_vsConstantsBuffer = RHI::getInst().createConstantBuffer(&vsConstantsData, sizeof(vsConstantsData));
+	_vsConstantsBufferPerVertexColor = RHI::getInst().createConstantBuffer(&vsConstantsData, sizeof(vsConstantsData));
 
 	PerVertexColorCB::Materiel psMaterielData{};
-	_psMaterielBuffer = RHI::getInst().createConstantBuffer(&psMaterielData, sizeof(psMaterielData));
+	_psMaterielBufferPerVertexColor = RHI::getInst().createConstantBuffer(&psMaterielData, sizeof(psMaterielData));
 }
 
 Mesh::~Mesh()
 {
 	RHI::getInst().destroyVertexDeclaration(_vertexDecl);
-	RHI::getInst().destroyResource(_vsConstantsBuffer);
-	RHI::getInst().destroyResource(_psMaterielBuffer);
+	RHI::getInst().destroyResource(_vsConstantsBufferPerVertexColor);
+	RHI::getInst().destroyResource(_psMaterielBufferPerVertexColor);
 }
 
 void Mesh::draw(DirectX::CXMMATRIX mModel, const Camera* camera) const
@@ -32,45 +63,22 @@ void Mesh::draw(DirectX::CXMMATRIX mModel, const Camera* camera) const
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	gfxContext->mapResource(_vsConstantsBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	gfxContext->mapResource(_vsConstantsBufferPerVertexColor, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	PerVertexColorCB::View* dataPtr = (PerVertexColorCB::View*)mappedResource.pData;
 	DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 	DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(mModelViewProj));
-	gfxContext->unmapResource(_vsConstantsBuffer, 0);
+	gfxContext->unmapResource(_vsConstantsBufferPerVertexColor, 0);
 
 	for (auto prim : _primitives)
 	{
-		auto mat = _materiels[prim->_matIdx];
-
-		D3D11_MAPPED_SUBRESOURCE matSubResource;
-		gfxContext->mapResource(_psMaterielBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
-		PerVertexColorCB::Materiel* matPtr = (PerVertexColorCB::Materiel*)matSubResource.pData;
-		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
-		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
-		matPtr->specular = DirectX::XMFLOAT4(mat.specular[0], mat.specular[1], mat.specular[2], 0);
-		matPtr->transmittance = DirectX::XMFLOAT4(mat.transmittance[0], mat.transmittance[1], mat.transmittance[2], 0);
-		matPtr->emission = DirectX::XMFLOAT4(mat.emission[0], mat.emission[1], mat.emission[2], 0);
-		matPtr->shininess = mat.shininess;
-		matPtr->ior = mat.ior;
-		matPtr->dissolve = mat.dissolve;
-		matPtr->illum = mat.illum;
-		gfxContext->unmapResource(_psMaterielBuffer, 0);
-
-		ID3D11Buffer* buffers[] = { prim->_positionBuffer, prim->_normalBuffer, prim->_texcoordBuffer };
-		uint32_t strides[] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3) };
-		uint32_t offsets[] = { 0, 0, 0 };
-
-		RHI::getInst().setDefaultRHIStates();
-
-		gfxContext->IASetInputLayout(_vertexDecl);
-		gfxContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
-		gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
-		gfxContext->IASetPrimitiveTopology(prim->_topology);
-		gfxContext->VSSetShader(_vertexShader.get(), 0, 0);
-		gfxContext->VSSetConstantBuffers(0, 1, &_vsConstantsBuffer);
-		gfxContext->PSSetShader(_pixelShader.get(), 0, 0);
-		gfxContext->PSSetConstantBuffers(0, 1, &_psMaterielBuffer);
-		gfxContext->drawIndex(prim->_indicesCount, 0, 0);
+		if (prim->_materialId == Primitive::MATERIAL_ID::MATERIAL_VERTEX_COLOR)
+		{
+			_drawPerVertexColor(gfxContext, prim);
+		}
+		else if (prim->_materialId == Primitive::MATERIAL_ID::MATERIAL_DEFAULT)
+		{
+			_drawDefault(gfxContext, prim);
+		}
 	}
 }
 
@@ -123,4 +131,74 @@ void Mesh::loadShadersFromFile(const wchar_t* shaderFileName)
 	_vertexShader = std::make_shared<DX11VertexShader>(shaderFileName, "VSMain");
 	_pixelShader = std::make_shared<DX11PixelShader>(shaderFileName, "PSMain");
 	_vertexDecl = RHI::getInst().createVertexDeclaration(inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexShader->getBinaryData());
+}
+
+void Mesh::_drawDefault(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim) const
+{
+	auto mat = _materiels[prim->_matIdx];
+
+	D3D11_MAPPED_SUBRESOURCE matSubResource;
+	gfxContext->mapResource(_psMaterielBufferPerVertexColor, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
+	PerVertexColorCB::Materiel* matPtr = (PerVertexColorCB::Materiel*)matSubResource.pData;
+	matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
+	matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
+	matPtr->specular = DirectX::XMFLOAT4(mat.specular[0], mat.specular[1], mat.specular[2], 0);
+	matPtr->transmittance = DirectX::XMFLOAT4(mat.transmittance[0], mat.transmittance[1], mat.transmittance[2], 0);
+	matPtr->emission = DirectX::XMFLOAT4(mat.emission[0], mat.emission[1], mat.emission[2], 0);
+	matPtr->shininess = mat.shininess;
+	matPtr->ior = mat.ior;
+	matPtr->dissolve = mat.dissolve;
+	matPtr->illum = mat.illum;
+	gfxContext->unmapResource(_psMaterielBufferPerVertexColor, 0);
+
+	ID3D11Buffer* buffers[] = { prim->_positionBuffer, prim->_normalBuffer, prim->_texcoordBuffer };
+	uint32_t strides[] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3) };
+	uint32_t offsets[] = { 0, 0, 0 };
+
+	RHI::getInst().setDefaultRHIStates();
+
+	gfxContext->IASetInputLayout(_vertexDecl);
+	gfxContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
+	gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+	gfxContext->IASetPrimitiveTopology(prim->_topology);
+	gfxContext->VSSetShader(_vertexShader.get(), 0, 0);
+	gfxContext->VSSetConstantBuffers(0, 1, &_vsConstantsBufferPerVertexColor);
+	gfxContext->PSSetShader(_pixelShader.get(), 0, 0);
+	gfxContext->PSSetConstantBuffers(0, 1, &_psMaterielBufferPerVertexColor);
+	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
+}
+
+void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim) const
+{
+	auto mat = _materiels[prim->_matIdx];
+
+	D3D11_MAPPED_SUBRESOURCE matSubResource;
+	gfxContext->mapResource(_psMaterielBufferPerVertexColor, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
+	PerVertexColorCB::Materiel* matPtr = (PerVertexColorCB::Materiel*)matSubResource.pData;
+	matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
+	matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
+	matPtr->specular = DirectX::XMFLOAT4(mat.specular[0], mat.specular[1], mat.specular[2], 0);
+	matPtr->transmittance = DirectX::XMFLOAT4(mat.transmittance[0], mat.transmittance[1], mat.transmittance[2], 0);
+	matPtr->emission = DirectX::XMFLOAT4(mat.emission[0], mat.emission[1], mat.emission[2], 0);
+	matPtr->shininess = mat.shininess;
+	matPtr->ior = mat.ior;
+	matPtr->dissolve = mat.dissolve;
+	matPtr->illum = mat.illum;
+	gfxContext->unmapResource(_psMaterielBufferPerVertexColor, 0);
+
+	ID3D11Buffer* buffers[] = { prim->_positionBuffer, prim->_normalBuffer, prim->_texcoordBuffer };
+	uint32_t strides[] = { sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3), sizeof(DirectX::XMFLOAT3) };
+	uint32_t offsets[] = { 0, 0, 0 };
+
+	RHI::getInst().setDefaultRHIStates();
+
+	gfxContext->IASetInputLayout(_vertexDecl);
+	gfxContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
+	gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+	gfxContext->IASetPrimitiveTopology(prim->_topology);
+	gfxContext->VSSetShader(_vertexShader.get(), 0, 0);
+	gfxContext->VSSetConstantBuffers(0, 1, &_vsConstantsBufferPerVertexColor);
+	gfxContext->PSSetShader(_pixelShader.get(), 0, 0);
+	gfxContext->PSSetConstantBuffers(0, 1, &_psMaterielBufferPerVertexColor);
+	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 }

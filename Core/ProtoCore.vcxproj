@@ -188,6 +188,9 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">g_%(Filename)</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename).h</HeaderFileOutput>
     </FxCompile>
+    <FxCompile Include="Shaders\PointLight.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ThirdParty\DirectXTK\DirectXTK_Desktop_2013.vcxproj">
