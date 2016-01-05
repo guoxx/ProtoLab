@@ -137,10 +137,17 @@ ID3D11Buffer* DX11RHI::createIndexBuffer(void* memPtr, uint32_t memSize)
 
 ID3D11Buffer* DX11RHI::createConstantBuffer(void* memPtr, uint32_t memSize)
 {
-	D3D11_BUFFER_DESC desc = createDx11DynamicBufferDesc(D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, memSize);
-	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
 	ID3D11Buffer* buffer{nullptr};
-	_device->CreateBuffer(&desc, &resData, &buffer);
+	D3D11_BUFFER_DESC desc = createDx11DynamicBufferDesc(D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, memSize);
+	if (memPtr != nullptr)
+	{
+		D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
+		_device->CreateBuffer(&desc, &resData, &buffer);
+	}
+	else
+	{
+		_device->CreateBuffer(&desc, nullptr, &buffer);
+	}
 	return buffer;
 }
 
@@ -288,7 +295,7 @@ ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint
 	if (err != nullptr)
 	{
 		char mbsFilename[1024];
-		std::wcstombs(mbsFilename, filename, wcslen(filename));
+		std::wcstombs(mbsFilename, filename, wcslen(filename) + 1);
 
 		size_t sz = err->GetBufferSize();
 		char* msg = new char[sz + 1];

@@ -12,7 +12,7 @@ float pointLightDistanceFalloff(float radius, float radiusStart, float radiusEnd
 	}
 	else
 	{
-		falloff = (radiusEnd - radius) / (radiusEnd - raidusStart);
+		falloff = (radiusEnd - radius) / (radiusEnd - radiusStart);
 	}
 	return falloff;
 }

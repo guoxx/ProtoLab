@@ -10,35 +10,9 @@ namespace PerVertexColorCB
 #include "../../Shaders/PerVertexColor_common.h"
 }
 
-namespace DefaultCB
+namespace BaseMaterialCB
 {
-	cbuffer View
-	{
-		float4x4 modelViewMatrix;
-		float4x4 modelViewProjMatrix;
-	};
-
-	cbuffer Materiel
-	{
-		float4 ambient;
-		float4 diffuse;
-		float4 specular;
-		float4 transmittance;
-		float4 emission;
-		float shininess;
-		float ior;      // index of refraction
-		float dissolve; // 1 == opaque; 0 == fully transparent
-		// illumination model (see http://www.fileformat.info/format/material/)
-		int illum;
-	};
-
-	cbuffer PointLight
-	{
-		float3 lightPositionInWorldSpace;
-		float3 intensity;
-		float radiusStart;
-		float radiusEnd;
-	};
+#include "../../Shaders/BaseMaterial_common.h"
 }
 
 
@@ -49,6 +23,8 @@ Mesh::Mesh()
 
 	PerVertexColorCB::Materiel psMaterielData{};
 	_psMaterielBufferPerVertexColor = RHI::getInst().createConstantBuffer(&psMaterielData, sizeof(psMaterielData));
+
+	_ViewCB = RHI::getInst().createConstantBuffer(nullptr, sizeof(BaseMaterialCB::View));
 }
 
 Mesh::~Mesh()
@@ -77,7 +53,8 @@ void Mesh::draw(DirectX::CXMMATRIX mModel, const Camera* camera) const
 		}
 		else if (prim->_materialId == Primitive::MATERIAL_ID::MATERIAL_DEFAULT)
 		{
-			_drawDefault(gfxContext, prim);
+			_drawPerVertexColor(gfxContext, prim);
+			//_drawDefault(gfxContext, prim);
 		}
 	}
 }

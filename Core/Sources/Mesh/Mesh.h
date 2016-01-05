@@ -31,9 +31,9 @@ private:
 	ID3D11Buffer* _vsConstantsBufferPerVertexColor{nullptr};
 	ID3D11Buffer* _psMaterielBufferPerVertexColor{nullptr};
 
-	ID3D11Buffer* _vsConstantsBufferDefault{nullptr};
-	ID3D11Buffer* _psMaterielBufferDefault{nullptr};
-	ID3D11Buffer* _psPointLightBufferDefault{nullptr};
+	ID3D11Buffer* _ViewCB{nullptr};
+	ID3D11Buffer* _MaterielCB{nullptr};
+	ID3D11Buffer* _PointLightCB{nullptr};
 
 	std::vector<tinyobj::shape_t> _shapes{};
 	std::vector<tinyobj::material_t> _materiels{};
