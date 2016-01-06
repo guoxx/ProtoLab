@@ -9,7 +9,7 @@ DX11PixelShader::DX11PixelShader(const wchar_t* filename, const char* entryPoint
 	_pixelShader = RHI::getInst().createPixelShaderFromBytecodes(_binaryData->GetBufferPointer(), _binaryData->GetBufferSize());
 }
 
-DX11PixelShader::DX11PixelShader(const void* bytecode, uint32_t bytecodeLength)
+DX11PixelShader::DX11PixelShader(const void* bytecode, std::size_t bytecodeLength)
 	: DX11Shader{nullptr}
 {
 	D3DCreateBlob(bytecodeLength, &_binaryData);

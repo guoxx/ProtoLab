@@ -36,8 +36,8 @@ public:
 	ID3D11Buffer* createIndexBuffer(void* memPtr, uint32_t memSize);
 	ID3D11Buffer* createConstantBuffer(void* memPtr, uint32_t memSize);
 
-	ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
-	ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength);
+	ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
+	ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ID3D11InputLayout* createVertexDeclaration(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
 
 	ID3D11SamplerState* createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode);

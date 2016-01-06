@@ -151,14 +151,14 @@ ID3D11Buffer* DX11RHI::createConstantBuffer(void* memPtr, uint32_t memSize)
 	return buffer;
 }
 
-ID3D11VertexShader* DX11RHI::createVertexShaderFromBytecodes(const void *bytecode, size_t bytecodeLength)
+ID3D11VertexShader* DX11RHI::createVertexShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength)
 {
 	ID3D11VertexShader* outShader{nullptr};
 	_device->CreateVertexShader(bytecode, bytecodeLength, nullptr, &outShader);
 	return outShader;
 }
 
-ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode, size_t bytecodeLength)
+ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength)
 {
 	ID3D11PixelShader* outShader{nullptr};
 	_device->CreatePixelShader(bytecode, bytecodeLength, nullptr, &outShader);

@@ -109,7 +109,7 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 		prim->_indexBuffer = RHI::getInst().createIndexBuffer(shape.mesh.indices.data(), BYTES_OF_STD_VECTOR(shape.mesh.indices));
 		prim->_topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		prim->_indicesFormat = DXGI_FORMAT_R32_UINT;
-		prim->_indicesCount = shape.mesh.indices.size();
+		prim->_indicesCount = static_cast<uint32_t>(shape.mesh.indices.size());
 
 		_primitives.push_back(prim);
 	}

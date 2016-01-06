@@ -54,5 +54,5 @@ ID3D11RenderTargetView* DX11RenderTarget::getRenderTarget(uint32_t mipmap) const
 
 uint32_t DX11RenderTarget::getNumOfMipmaps()
 {
-	return _renderTargets.size();
+	return static_cast<uint32_t>(_renderTargets.size());
 }

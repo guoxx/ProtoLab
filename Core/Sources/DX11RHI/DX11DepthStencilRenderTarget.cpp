@@ -36,5 +36,5 @@ ID3D11DepthStencilView* DX11DepthStencilRenderTarget::getRenderTarget(uint32_t m
 
 uint32_t DX11DepthStencilRenderTarget::getNumOfMipmaps() const
 {
-	return _depthStencilRenderTargets.size();
+	return static_cast<uint32_t>(_depthStencilRenderTargets.size());
 }
