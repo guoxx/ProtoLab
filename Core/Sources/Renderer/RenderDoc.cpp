@@ -13,8 +13,13 @@ void RenderDoc::initialize()
 	renderdocGetApiFunc(eRENDERDOC_API_Version_1_0_0, reinterpret_cast<void**>(&s_renderdoc));
 
 	s_renderdoc->SetLogFilePathTemplate("renderdoc/proto_lab");
+#ifdef _DEBUG
 	s_renderdoc->SetCaptureOptionU32(eRENDERDOC_Option_DebugDeviceMode, 1);
 	s_renderdoc->SetCaptureOptionU32(eRENDERDOC_Option_DebugOutputMute, 0);
+#endif
+	
+	RENDERDOC_InputButton k = eRENDERDOC_Key_C;
+	s_renderdoc->SetCaptureKeys(&k, 1);
 }
 
 void RenderDoc::finalize()

@@ -64,7 +64,7 @@
       <AdditionalDependencies>dxgi.lib;d3d11.lib;D3DCompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>prebuild.bat "$(SolutionDir)" "$(ProjectDir)" "$(OutDir)"</Command>
+      <Command>prebuild.bat "$(SolutionDir)" "$(ProjectDir)" "$(OutDir)" "$(FrameworkSdkDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

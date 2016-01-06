@@ -58,6 +58,7 @@ void DX11RHI::initialize()
 
 		d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
 		d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+		d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, true);
 		D3D11_MESSAGE_ID hide[] =
 		{
 			D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
@@ -286,8 +287,7 @@ void DX11RHI::setDefaultRHIStates()
 std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
 {
 	// TODO: each need to have own context
-	//return _deferredContext;
-	return _immediateContext;
+	return _deferredContext;
 }
 
 ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint, const char* profile)
