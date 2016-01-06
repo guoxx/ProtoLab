@@ -1,5 +1,7 @@
-Debug/
-ipch/
+Obj/
+Output/
+ThirdParty/DirectXMesh/Meshconvert/Bin/
+ThirdParty/DirectXTK/Bin/
 
 Core/Shaders/*_vs.h
 Core/Shaders/*_ps.h
