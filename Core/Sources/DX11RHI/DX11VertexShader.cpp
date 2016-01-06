@@ -9,7 +9,7 @@ DX11VertexShader::DX11VertexShader(const wchar_t* filename, const char* entryPoi
 	_vertexShader = RHI::getInst().createVertexShaderFromBytecodes(_binaryData->GetBufferPointer(), _binaryData->GetBufferSize());
 }
 
-DX11VertexShader::DX11VertexShader(const void* bytecode, uint32_t bytecodeLength)
+DX11VertexShader::DX11VertexShader(const void* bytecode, std::size_t bytecodeLength)
 	: DX11Shader{nullptr}
 {
 	D3DCreateBlob(bytecodeLength, &_binaryData);
