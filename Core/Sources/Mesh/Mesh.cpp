@@ -133,9 +133,9 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, st
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMMATRIX mModelViewProjInv = DirectX::XMMatrixInverse(nullptr, mModelViewProj);
 		DirectX::XMMATRIX mModelViewProjInvTrans = DirectX::XMMatrixTranspose(mModelViewProjInv);
-		DirectX::XMStoreFloat4x4(&dataPtr->modelViewMatrix, DirectX::XMMatrixTranspose(mModelView));
-		DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(mModelViewProj));
-		DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrixInvTrans, DirectX::XMMatrixTranspose(mModelViewProjInvTrans));
+		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
+		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
+		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProjInvTrans, DirectX::XMMatrixTranspose(mModelViewProjInvTrans));
 		gfxContext->unmapResource(_viewCB, 0);
 	}
 
@@ -164,8 +164,8 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, st
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMVECTOR lightPositionInLocalSpace = pointLight->getPosition();
 		lightPositionInLocalSpace = DirectX::XMVectorSetW(lightPositionInLocalSpace, 1);
-		DirectX::XMVECTOR lightPositionInWorldSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModelView);
-		DirectX::XMStoreFloat4(&dataPtr->lightPositionInWorldSpace, lightPositionInWorldSpace);
+		DirectX::XMVECTOR lightPositionInCameraSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModelView);
+		DirectX::XMStoreFloat4(&dataPtr->lightPositionInCameraSpace, lightPositionInCameraSpace);
 		DirectX::XMFLOAT3 intensity = pointLight->getIntensity();
 		dataPtr->intensity = DirectX::XMFLOAT4{intensity.x, intensity.y, intensity.z, 0};
 		dataPtr->radiusStart = pointLight->getRadiusStart();

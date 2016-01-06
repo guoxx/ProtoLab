@@ -5,9 +5,9 @@ cbuffer View
 	: register (b0)
 #endif
 {
-	float4x4 modelViewMatrix;
-	float4x4 modelViewProjMatrix;
-	float4x4 modelViewProjMatrixInvTrans;
+	float4x4 mModelView;
+	float4x4 mModelViewProj;
+	float4x4 mModelViewProjInvTrans;
 };
 
 cbuffer Materiel
@@ -32,7 +32,7 @@ cbuffer PointLight
 	: register (b1)
 #endif
 {
-	float4 lightPositionInWorldSpace;
+	float4 lightPositionInCameraSpace;
 	float4 intensity;
 	float radiusStart;
 	float radiusEnd;
@@ -51,7 +51,7 @@ struct PSInput
 	float4 position : SV_POSITION;
 	float3 normal : NORMAL;
 	float2 texcoord : TEXCOORD;
-	float3 positionWS : POSITION1;
+	float3 positionCS : POSITION1;
 };
 
 struct PSOutput
