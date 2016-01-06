@@ -1,6 +1,6 @@
 # ProtoLab
 
-A DX11/DX12 renderer for prototype.
+A DX11(DX12 will be supported later) renderer for prototype.
 
 ## How to setup the projects
 
@@ -8,7 +8,7 @@ Currently ProtoCore.vcxproj is the main project, it should be just a core librar
 
 Before you launch this project, here are few steps that you need to do.
 
-1. Set working directory as $(SolutionDir)Debug
+1. Set working directory as $(OutDir)
 
 ## Target features
 
@@ -22,6 +22,8 @@ Before you launch this project, here are few steps that you need to do.
 * Column major matrix
 * Matrix multiplication : post-multiply  (or right multiply), same rule applied on c++ and HLSL 
 
-## Known issues
+## Shader debugging
 
-* RenderDoc plugin doesn't work with deferred context
+I had integrate renderdoc 0.2.6 for shader debugging. Launch with parameter ``-renderdoc`` or ``/renderdoc``, then renderdoc.dll will be loaded. Use key ``c`` to have a capture. Captured file will be saved in ``Your working directory/renderdoc``.
+
+## Known issues
