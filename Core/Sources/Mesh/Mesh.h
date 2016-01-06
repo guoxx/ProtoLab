@@ -16,8 +16,6 @@ public:
 	void draw(DirectX::CXMMATRIX mModel, const Camera* camera, std::shared_ptr<PointLight> pointLight) const;
 
 	void loadMeshFromFile(const wchar_t* objFileName);
-	void loadShadersFromFile(const wchar_t* shaderFileName);
-
 	void loadCoordinateSystemFrame();
 
 private:

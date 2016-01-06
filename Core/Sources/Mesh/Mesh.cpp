@@ -33,6 +33,13 @@ Mesh::Mesh()
 
 	_baseMaterialVertexShader = std::make_shared<DX11VertexShader>(g_BaseMaterial_vs, sizeof(g_BaseMaterial_vs));
 	_baseMaterialPixelShader = std::make_shared<DX11PixelShader>(g_BaseMaterial_ps, sizeof(g_BaseMaterial_ps));
+
+	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	_vertexDecl = RHI::getInst().createVertexDeclaration(inputDesc, COUNT_OF_C_ARRAY(inputDesc), _baseMaterialVertexShader->getBinaryData());
 }
 
 Mesh::~Mesh()
@@ -106,18 +113,6 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 
 		_primitives.push_back(prim);
 	}
-}
-
-void Mesh::loadShadersFromFile(const wchar_t* shaderFileName)
-{
-	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	_vertexShader = std::make_shared<DX11VertexShader>(shaderFileName, "VSMain");
-	_pixelShader = std::make_shared<DX11PixelShader>(shaderFileName, "PSMain");
-	_vertexDecl = RHI::getInst().createVertexDeclaration(inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexShader->getBinaryData());
 }
 
 void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim) const

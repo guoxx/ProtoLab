@@ -32,6 +32,7 @@ cbuffer PointLight
 	: register (b1)
 #endif
 {
+	// TODO: use float3 if possible
 	float4 lightPositionInCameraSpace;
 	float4 intensity;
 	float radiusStart;

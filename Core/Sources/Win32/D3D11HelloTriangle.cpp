@@ -47,7 +47,6 @@ void D3D11HelloTriangle::LoadAssets()
 
 		auto mesh = std::make_shared<Mesh>();
 		mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
-		mesh->loadShadersFromFile(GetAssetFullPath(L"hello_mesh.hlsl").c_str());
 		_cornellBox->setMesh(mesh);
 	}
 
