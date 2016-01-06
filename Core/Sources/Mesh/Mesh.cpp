@@ -97,16 +97,16 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 		std::shared_ptr<Primitive> prim = std::make_shared<Primitive>();
 		prim->_name = shape.name;
 		prim->_matIdx = shape.mesh.material_ids[0];
-		prim->_positionBuffer = RHI::getInst().createVertexBuffer(shape.mesh.positions.data(), BYTES_OF_STD_VECTOR(shape.mesh.positions));
+		prim->_positionBuffer = RHI::getInst().createVertexBuffer(shape.mesh.positions.data(), uint32_t(shape.mesh.positions.size()*sizeof(float)));
 		if (shape.mesh.normals.size() > 0)
 		{
-			prim->_normalBuffer = RHI::getInst().createVertexBuffer(shape.mesh.normals.data(), BYTES_OF_STD_VECTOR(shape.mesh.normals));
+			prim->_normalBuffer = RHI::getInst().createVertexBuffer(shape.mesh.normals.data(), uint32_t(shape.mesh.normals.size()*sizeof(float)));
 		}
 		if (shape.mesh.texcoords.size() > 0)
 		{
-			prim->_texcoordBuffer = RHI::getInst().createVertexBuffer(shape.mesh.texcoords.data(), BYTES_OF_STD_VECTOR(shape.mesh.texcoords));
+			prim->_texcoordBuffer = RHI::getInst().createVertexBuffer(shape.mesh.texcoords.data(), uint32_t(shape.mesh.texcoords.size()*sizeof(float)));
 		}
-		prim->_indexBuffer = RHI::getInst().createIndexBuffer(shape.mesh.indices.data(), BYTES_OF_STD_VECTOR(shape.mesh.indices));
+		prim->_indexBuffer = RHI::getInst().createIndexBuffer(shape.mesh.indices.data(), uint32_t(shape.mesh.indices.size()*sizeof(unsigned int)));
 		prim->_topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		prim->_indicesFormat = DXGI_FORMAT_R32_UINT;
 		prim->_indicesCount = static_cast<uint32_t>(shape.mesh.indices.size());
@@ -126,11 +126,11 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, st
 		BaseMaterialCB::View* dataPtr = (BaseMaterialCB::View*)viewRes.pData;
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
-		DirectX::XMMATRIX mModelViewProjInv = DirectX::XMMatrixInverse(nullptr, mModelViewProj);
-		DirectX::XMMATRIX mModelViewProjInvTrans = DirectX::XMMatrixTranspose(mModelViewProjInv);
+		DirectX::XMMATRIX mModelViewInv = DirectX::XMMatrixInverse(nullptr, mModelView);
+		DirectX::XMMATRIX mModelViewInvTrans = DirectX::XMMatrixTranspose(mModelViewInv);
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
-		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProjInvTrans, DirectX::XMMatrixTranspose(mModelViewProjInvTrans));
+		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewInvTrans, DirectX::XMMatrixTranspose(mModelViewInvTrans));
 		gfxContext->unmapResource(_viewCB, 0);
 	}
 

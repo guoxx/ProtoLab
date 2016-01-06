@@ -46,7 +46,7 @@ void D3D11HelloTriangle::LoadAssets()
 		_scene->attachModel(_cornellBox);
 
 		auto mesh = std::make_shared<Mesh>();
-		mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Original.obj").c_str());
+		mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Glossy.obj").c_str());
 		_cornellBox->setMesh(mesh);
 	}
 
@@ -76,21 +76,22 @@ void D3D11HelloTriangle::OnUpdate()
 	DirectX::Keyboard::State keyboardState = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State mouseState = DirectX::Mouse::Get().GetState();
 
+	float spd = 0.001f;
 	if (keyboardState.IsKeyDown(DirectX::Keyboard::W))
 	{
-		_camera->move(_camera->getForward(), 0.01f);
+		_camera->move(_camera->getForward(), spd);
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::S))
 	{
-		_camera->move(_camera->getBackward(), 0.01f);
+		_camera->move(_camera->getBackward(), spd);
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::A))
 	{
-		_camera->move(_camera->getRight(), 0.01f);
+		_camera->move(_camera->getRight(), spd);
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::D))
 	{
-		_camera->move(_camera->getLeft(), 0.01f);
+		_camera->move(_camera->getLeft(), spd);
 	}
 
 	if (mouseState.leftButton)

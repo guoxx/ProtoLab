@@ -7,7 +7,7 @@ cbuffer View
 {
 	float4x4 mModelView;
 	float4x4 mModelViewProj;
-	float4x4 mModelViewProjInvTrans;
+	float4x4 mModelViewInvTrans;
 };
 
 cbuffer Materiel
@@ -50,7 +50,7 @@ struct VSInput
 struct PSInput
 {
 	float4 position : SV_POSITION;
-	float3 normal : NORMAL;
+	float3 normalCS : NORMAL;
 	float2 texcoord : TEXCOORD;
 	float3 positionCS : POSITION1;
 };

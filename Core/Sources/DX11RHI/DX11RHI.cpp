@@ -82,7 +82,8 @@ void DX11RHI::finalize()
 void DX11RHI::initializeDefaultRHIStates()
 {
 	CD3D11_RASTERIZER_DESC rasterizerDesc{CD3D11_DEFAULT{}};	
-	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+	rasterizerDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerDesc.FrontCounterClockwise = true;
 	rasterizerDesc.DepthClipEnable = false;
 	_device->CreateRasterizerState(&rasterizerDesc, &_defaultRasterizerState);
 
