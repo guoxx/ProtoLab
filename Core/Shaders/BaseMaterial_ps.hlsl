@@ -1,5 +1,5 @@
 #include "BaseMaterial_common.h"
-#include "PointLight.hlsl"
+#include "PointLight.hlsli"
 
 PSOutput main(PSInput input)
 {
