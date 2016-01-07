@@ -244,6 +244,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\BRDF.hlsli" />
     <None Include="Shaders\PointLight.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

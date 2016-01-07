@@ -265,5 +265,8 @@
     <None Include="Shaders\PointLight.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\BRDF.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
