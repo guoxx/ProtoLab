@@ -26,5 +26,11 @@
 #else
 
 // HLSL
+const static float C_PI           = 3.141592654f;
+const static float C_2PI          = 6.283185307f;
+const static float C_1DIVPI       = 0.318309886f;
+const static float C_1DIV2PI      = 0.159154943f;
+const static float C_PIDIV2       = 1.570796327f;
+const static float C_PIDIV4       = 0.785398163f;
 
 #endif

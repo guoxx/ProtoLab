@@ -62,8 +62,9 @@ void D3D11HelloTriangle::LoadAssets()
 
 	{
 		_pointLight = std::make_shared<PointLight>();
-		_pointLight->setIntensity(DirectX::XMFLOAT3{1, 1, 1});
-		_pointLight->setRadius(0.2f, 1.5f);
+		_pointLight->setPosition(DirectX::XMVECTOR{0, 1, 1});
+		_pointLight->setIntensity(DirectX::XMFLOAT3{3, 3, 3});
+		_pointLight->setRadius(0.2f, 2.0f);
 		_scene->attachPointLight(_pointLight);
 	}
 
@@ -76,7 +77,7 @@ void D3D11HelloTriangle::OnUpdate()
 	DirectX::Keyboard::State keyboardState = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State mouseState = DirectX::Mouse::Get().GetState();
 
-	float spd = 0.001f;
+	float spd = 0.005f;
 	if (keyboardState.IsKeyDown(DirectX::Keyboard::W))
 	{
 		_camera->move(_camera->getForward(), spd);

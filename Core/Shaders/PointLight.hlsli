@@ -23,7 +23,7 @@ float pointLightDistanceFalloff(float distance, float radiusStart, float radiusE
 
 float3 pointLightIrradiance(float3 lightIntensity, float distance, float radiusStart, float radiusEnd)
 {
-	float falloff = pointLightDistanceFalloff(distance, radiusStart, radiusEnd);
-	float3 irradiance = lightIntensity * falloff;
+	float distanceFalloff = pointLightDistanceFalloff(distance, radiusStart, radiusEnd);
+	float3 irradiance = lightIntensity * distanceFalloff;
 	return irradiance;	
 }
