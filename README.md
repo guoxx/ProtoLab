@@ -27,3 +27,5 @@ Before you launch this project, here are few steps that you need to do.
 I had integrate renderdoc 0.2.6 for shader debugging. Launch with parameter ``-renderdoc`` or ``/renderdoc``, then renderdoc.dll will be loaded. Use key ``c`` to have a capture. Captured file will be saved in ``Your working directory/renderdoc``.
 
 ## Known issues
+
+* Deferred context not work well with renderdoc, can't display mesh correctly in mesh view due to the missing information of index buffer.

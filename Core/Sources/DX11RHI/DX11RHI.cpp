@@ -288,7 +288,8 @@ void DX11RHI::setDefaultRHIStates()
 std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
 {
 	// TODO: each need to have own context
-	return _deferredContext;
+	//return _deferredContext;
+	return _immediateContext;
 }
 
 ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint, const char* profile)
