@@ -34,19 +34,15 @@ float3 Diffuse_Lambert(float3 DiffuseColor)
 	return DiffuseColor * DIVPI;
 }
 
+float sqr(float x) { return x*x; }
+
 float Distribution(float Roughness, float NdotH)
 {
-#if 1
-	float a = Roughness * Roughness;
-	float a2 = a * a;
-	float n = 2 / a2 - 2;
-	return (n+2) / (2*PI) * PhongShadingPow( NdotH, n );		// 1 mad, 1 exp, 1 mul, 1 log
-#else
-	float a = Roughness * Roughness;
-	float a2 = a * a;
-	float d = ( NdotH * a2 - NdotH ) * NdotH + 1;	// 2 mad
-	return a2 / ( PI*d*d );					// 4 mul, 1 rcp
-#endif
+	float m = Roughness;
+	// Divide by PI is apply later
+	float m2 = m * m;
+	float f = ( NdotH * m2 - NdotH ) * NdotH + 1;
+	return m2 / (f * f);
 }
 
 float3 Fresnel(float3 SpecularColor, float VoH)
@@ -64,10 +60,17 @@ float GeometricVisibility(float Roughness, float NdotL, float NdotV)
 #if 0
 	return 0.25;
 #else
-	float k = sqrt(Roughness) * 0.5;
-	float Vis_SchlickV = NdotV * (1 - k) + k;
-	float Vis_SchlickL = NdotL * (1 - k) + k;
-	return 0.25 / (Vis_SchlickV * Vis_SchlickL);
+	float alphaG = Roughness;
+	// This is the optimize version
+	float alphaG2 = alphaG * alphaG ;
+	float NdotL2 = NdotL * NdotL;
+	float NdotV2 = NdotV * NdotV;
+	// Original formulation of G_SmithGGX Correlated
+	float lambda_v = (-1 + sqrt ( alphaG2 * (1 - NdotL2 ) / NdotL2 + 1)) * 0.5f;
+	float lambda_l = (-1 + sqrt ( alphaG2 * (1 - NdotV2 ) / NdotV2 + 1)) * 0.5f;
+	float G_SmithGGXCorrelated = 1 / (1 + lambda_v + lambda_l );
+	float V_SmithGGXCorrelated = G_SmithGGXCorrelated / ( 4.0f * NdotL * NdotV );
+	return V_SmithGGXCorrelated;
 #endif
 }
 
@@ -77,12 +80,10 @@ float3 MicrofacetSpecular(float3 SpecularColor, float Roughness, float3 V, float
 	float NdotH = saturate(dot(N, H));
 	float VdotH = saturate(dot(V, H));
 	float NdotL = saturate(dot(N, L));
-	float NdotV = saturate(dot(N, V));
-	NdotV = max( 0.001, NdotV );
-	NdotL = max( 0.001, NdotL );
+	float NdotV = abs( dot (N, V)) + 1e-5f;
 
 	float D = Distribution(Roughness, NdotH);
 	float3 F = Fresnel(SpecularColor, VdotH);
 	float G = GeometricVisibility(Roughness, NdotL, NdotV);
-	return D * F * G / (PI * NdotH * VdotH);
+	return D * F * G / PI;
 }

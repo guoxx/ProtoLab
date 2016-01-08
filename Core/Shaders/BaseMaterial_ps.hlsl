@@ -11,16 +11,16 @@ PSOutput main(PSInput input)
 	float3 N = normalize(input.normalCS);
 	float3 E = pointLightIrradiance(intensity.xyz, d, radiusStart, radiusEnd);
 	float cosineTheaI = max(0, dot(N, L));
-	float cosineTheaH = max(0, dot(N, H));
 	float3 diffuseLight = Diffuse_Lambert(diffuse.xyz) * E * cosineTheaI;
 #if 1
-	float Roughness = 0.5; // test
+	float Roughness = (100 - shininess)/100; // test
 	float3 specularLight = MicrofacetSpecular(specular.xyz, Roughness, V, N, L) * E * cosineTheaI;
 #else
+	float cosineTheaH = max(0, dot(N, H));
 	float specularPower = shininess;
 	float3 specularLight = (specularPower + 8.0) / (8.0 * PI) * pow(cosineTheaH, specularPower) * E * specular.xyz;
 #endif
-	result.color.rgb = diffuseLight + specularLight;
+	result.color.rgb = specularLight;
 	result.color.a = 1.0;
 	return result;
 }
