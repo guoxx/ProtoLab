@@ -20,7 +20,7 @@ PSOutput main(PSInput input)
 	float specularPower = shininess;
 	float3 specularLight = (specularPower + 8.0) / (8.0 * PI) * pow(cosineTheaH, specularPower) * E * specular.xyz;
 #endif
-	result.color.rgb = specularLight;
+	result.color.rgb = diffuseLight + specularLight;
 	result.color.a = 1.0;
 	return result;
 }
