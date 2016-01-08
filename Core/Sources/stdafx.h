@@ -25,6 +25,7 @@
 // c++ std lib
 #include <memory>
 #include <vector>
+#include <array>
 #include <string>
 #include <iostream>
 #include <cstdlib>

@@ -13,6 +13,7 @@ public:
 	Mesh();
 	~Mesh();
 
+	static std::shared_ptr<Mesh> createSphere(float diameter = 1, size_t tessellation = 16, bool rhcoords = true, bool invertn = false);
 	void draw(DirectX::CXMMATRIX mModel, const Camera* camera, std::shared_ptr<PointLight> pointLight) const;
 
 	void loadMeshFromFile(const wchar_t* objFileName);

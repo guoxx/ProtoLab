@@ -35,3 +35,7 @@ float PointLight::getRadiusEnd() const
 {
 	return _radiusEnd;
 }
+
+void PointLight::debugDraw()
+{
+}

@@ -1,11 +1,11 @@
 #include "HLSLCommon.h"
 
-cbuffer View
+ConstantsBuffer(View, vs, 0)
 {
 	float4x4 modelViewProjMatrix;
 };
 
-cbuffer Materiel
+ConstantsBuffer(Material, ps, 0)
 {
 	float4 ambient;
 	float4 diffuse;

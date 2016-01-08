@@ -15,6 +15,8 @@ public:
 	float getRadiusStart() const;
 	float getRadiusEnd() const;
 
+	virtual void debugDraw() override final;
+
 private:
 	DirectX::XMFLOAT3 _intensity;
 	float _radiusStart;

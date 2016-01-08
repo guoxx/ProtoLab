@@ -32,9 +32,9 @@ public:
 	ID3D11DeviceContext* createDeviceContext();
 	IDXGISwapChain* createSwapChain(HWND hwnd, uint32_t frameCount, uint32_t winWidth, uint32_t winHeight);
 
-	ID3D11Buffer* createVertexBuffer(void* memPtr, uint32_t memSize);
-	ID3D11Buffer* createIndexBuffer(void* memPtr, uint32_t memSize);
-	ID3D11Buffer* createConstantBuffer(void* memPtr, uint32_t memSize);
+	ID3D11Buffer* createVertexBuffer(const void* memPtr, uint32_t memSize);
+	ID3D11Buffer* createIndexBuffer(const void* memPtr, uint32_t memSize);
+	ID3D11Buffer* createConstantBuffer(const void* memPtr, uint32_t memSize);
 
 	ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);

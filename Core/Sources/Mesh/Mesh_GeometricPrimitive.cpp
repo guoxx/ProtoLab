@@ -2,6 +2,8 @@
 #include "Mesh.h"
 #include "Primitive.h"
 
+#include <DirectXTK/Inc/GeometricPrimitive.h>
+
 #include "../../Shaders/PerVertexColor_vs.h"
 #include "../../Shaders/PerVertexColor_ps.h"
 
@@ -80,4 +82,18 @@ void Mesh::loadCoordinateSystemFrame()
 	_vertexShader = std::make_shared<DX11VertexShader>(g_PerVertexColor_vs, sizeof(g_PerVertexColor_vs));
 	_pixelShader = std::make_shared<DX11PixelShader>(g_PerVertexColor_ps, sizeof(g_PerVertexColor_ps));
 	_vertexDecl = RHI::getInst().createVertexDeclaration(inputDesc, COUNT_OF_C_ARRAY(inputDesc), _vertexShader->getBinaryData());
+}
+
+std::shared_ptr<Mesh> Mesh::createSphere(float diameter, size_t tessellation, bool rhcoords, bool invertn)
+{
+	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
+	std::vector<DirectX::VertexPositionNormalTexture> vertices;
+	std::vector<uint16_t> indices;
+	DirectX::GeometricPrimitive::CreateSphere(vertices, indices, diameter, tessellation, rhcoords, invertn);
+
+	std::shared_ptr<Primitive> prim = std::make_shared<Primitive>();
+	prim->_positionBuffer = RHI::getInst().createVertexBuffer(vertices.data(), vertices.size() * sizeof(DirectX::VertexPositionNormalTexture));
+	prim->_indexBuffer = RHI::getInst().createIndexBuffer(indices.data(), indices.size() * sizeof(uint16_t));
+
+	return mesh;
 }

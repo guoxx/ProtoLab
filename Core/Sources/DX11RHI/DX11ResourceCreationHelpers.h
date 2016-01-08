@@ -24,7 +24,7 @@ D3D11_BUFFER_DESC createDx11DynamicBufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG
 	return bufferDesc;
 }
 
-D3D11_SUBRESOURCE_DATA createDx11SubresourceData(void* memPtr)
+D3D11_SUBRESOURCE_DATA createDx11SubresourceData(const void* memPtr)
 {
 	D3D11_SUBRESOURCE_DATA resData;
 	memset(&resData, 0x00, sizeof(resData));

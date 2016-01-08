@@ -119,7 +119,7 @@ IDXGISwapChain* DX11RHI::createSwapChain(HWND hwnd, uint32_t frameCount, uint32_
 	return outSwapChain;
 }
 
-ID3D11Buffer* DX11RHI::createVertexBuffer(void* memPtr, uint32_t memSize)
+ID3D11Buffer* DX11RHI::createVertexBuffer(const void* memPtr, uint32_t memSize)
 {
 	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_VERTEX_BUFFER, memSize);
 	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
@@ -128,7 +128,7 @@ ID3D11Buffer* DX11RHI::createVertexBuffer(void* memPtr, uint32_t memSize)
 	return buffer;
 }
 
-ID3D11Buffer* DX11RHI::createIndexBuffer(void* memPtr, uint32_t memSize)
+ID3D11Buffer* DX11RHI::createIndexBuffer(const void* memPtr, uint32_t memSize)
 {
 	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, memSize);
 	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
@@ -137,7 +137,7 @@ ID3D11Buffer* DX11RHI::createIndexBuffer(void* memPtr, uint32_t memSize)
 	return buffer;
 }
 
-ID3D11Buffer* DX11RHI::createConstantBuffer(void* memPtr, uint32_t memSize)
+ID3D11Buffer* DX11RHI::createConstantBuffer(const void* memPtr, uint32_t memSize)
 {
 	ID3D11Buffer* buffer{nullptr};
 	D3D11_BUFFER_DESC desc = createDx11DynamicBufferDesc(D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, memSize);

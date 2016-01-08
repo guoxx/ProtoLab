@@ -1,19 +1,14 @@
 #include "HLSLCommon.h"
 
-cbuffer View
-#ifdef __HLSL__
-	: register (b0)
-#endif
+ConstantsBuffer(View, vs, 0)
 {
 	float4x4 mModelView;
 	float4x4 mModelViewProj;
 	float4x4 mModelViewInvTrans;
 };
 
-cbuffer Materiel
-#ifdef __HLSL__
-	: register (b0)
-#endif
+
+ConstantsBuffer(Material, ps, 0)
 {
 	float4 ambient;
 	float4 diffuse;
@@ -27,10 +22,7 @@ cbuffer Materiel
 	int illum;
 };
 
-cbuffer PointLight
-#ifdef __HLSL__
-	: register (b1)
-#endif
+ConstantsBuffer(PointLight, ps, 1)
 {
 	// TODO: use float3 if possible
 	float4 lightPositionInCameraSpace;

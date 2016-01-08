@@ -151,6 +151,9 @@
     <ClInclude Include="Shaders\BaseMaterial_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Mesh\Material.h">
+      <Filter>Sources\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -239,6 +242,9 @@
     </ClCompile>
     <ClCompile Include="Sources\Objects\PointLight.cpp">
       <Filter>Sources\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Mesh\Material.cpp">
+      <Filter>Sources\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
