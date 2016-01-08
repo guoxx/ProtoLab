@@ -6,18 +6,6 @@
 #include "Mesh.h"
 #include "../Objects/Camera.h"
 #include "../Objects/PointLight.h"
-#include "../../Shaders/BaseMaterial_vs.h"
-#include "../../Shaders/BaseMaterial_ps.h"
-
-namespace PerVertexColorCB
-{
-#include "../../Shaders/PerVertexColor_common.h"
-}
-
-namespace BaseMaterialCB
-{
-#include "../../Shaders/BaseMaterial_common.h"
-}
 
 
 Mesh::Mesh()
@@ -163,7 +151,7 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 		ID3D11Buffer* viewCB = _material->getVsConstantBuffer(MaterialCB::PerVertexColor::ViewReg);
 		D3D11_MAPPED_SUBRESOURCE viewRes;
 		gfxContext->mapResource(viewCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
-		PerVertexColorCB::View* dataPtr = (PerVertexColorCB::View*)viewRes.pData;
+		MaterialCB::PerVertexColor::View* dataPtr = (MaterialCB::PerVertexColor::View*)viewRes.pData;
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(mModelViewProj));
 		gfxContext->unmapResource(viewCB, 0);

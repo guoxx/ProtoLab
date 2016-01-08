@@ -5,8 +5,6 @@
 
 #include <DirectXTK/Inc/GeometricPrimitive.h>
 
-#include "../../Shaders/PerVertexColor_vs.h"
-#include "../../Shaders/PerVertexColor_ps.h"
 
 void Mesh::loadCoordinateSystemFrame()
 {
