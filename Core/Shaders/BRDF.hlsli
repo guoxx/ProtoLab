@@ -47,12 +47,8 @@ float Distribution(float Roughness, float NdotH)
 
 float3 Fresnel(float3 SpecularColor, float VoH)
 {
-#if 1
-	return SpecularColor;
-#else
-	float Fc = pow(VoH, 5);
+	float Fc = pow(1 - VoH, 5);
 	return SpecularColor + (1 - SpecularColor) * Fc;
-#endif
 }
 
 float GeometricVisibility(float Roughness, float NdotL, float NdotV)
