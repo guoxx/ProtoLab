@@ -61,6 +61,7 @@ public:
 	ID3D11Buffer* getPsConstantBuffer(uint32_t reg);
 
 	void setVertexBuffer(VEX_INPUT_SLOT slot, ID3D11Buffer* buffer, uint32_t stride, uint32_t offset);
+	void unsetVertexBuffers();
 	void apply(std::shared_ptr<DX11GraphicContext> gfxContext);
 
 protected:
