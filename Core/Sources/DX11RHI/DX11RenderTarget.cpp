@@ -19,7 +19,7 @@ DX11RenderTarget::DX11RenderTarget(IDXGISwapChain* swapChain)
 
 	D3D11_TEXTURE2D_DESC texDesc;
 	_texture->GetDesc(&texDesc);
-	DXGI_FORMAT srvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	DXGI_FORMAT srvFormat = texDesc.Format;
 	uint32_t numMipmap = texDesc.MipLevels;
 
 	_textureSRV = nullptr;
