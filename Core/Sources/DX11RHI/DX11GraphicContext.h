@@ -2,6 +2,7 @@
 
 class DX11VertexShader;
 class DX11PixelShader;
+class DX11RenderStateSet;
 
 class DX11GraphicContext : public Noncopyable
 {
@@ -15,6 +16,8 @@ public:
 
 	DX11GraphicContext(ID3D11DeviceContext* ctx);
 	~DX11GraphicContext();
+
+	void resetDefaultRenderStates(std::shared_ptr<DX11RenderStateSet> stateSet);
 
 	// input assembler
 	void IASetInputLayout(ID3D11InputLayout* vertexDecl);
@@ -39,7 +42,9 @@ public:
 	void PSSetSamplers(uint32_t startSlot, uint32_t numSamplers, ID3D11SamplerState *const *ppSamplers);
 
 	// ouput merge
-	void OMSetDepthStencilState(ID3D11DepthStencilState *pDepthStencilState, uint32_t stencilRef);
+	void OMSetDepthStencilState(ID3D11DepthStencilState* pDepthStencilState, uint32_t stencilRef);
+	void OMSetBlendState(ID3D11BlendState* pBlendState);
+	void OMSetBlendState(ID3D11BlendState* pBlendState, const float blendFactor[4], uint32_t sampleMask);
 	void OMSetRenderTargets(uint32_t numViews, ID3D11RenderTargetView *const *ppRenderTargetViews, ID3D11DepthStencilView *pDepthStencilView);
 
 	// update resources

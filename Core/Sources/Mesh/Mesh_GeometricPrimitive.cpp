@@ -88,6 +88,14 @@ std::shared_ptr<Mesh> Mesh::createSphere(float diameter, size_t tessellation, bo
 	std::shared_ptr<Primitive> prim = std::make_shared<Primitive>();
 	prim->_positionBuffer = RHI::getInst().createVertexBuffer(vertices.data(), vertices.size() * sizeof(DirectX::VertexPositionNormalTexture));
 	prim->_indexBuffer = RHI::getInst().createIndexBuffer(indices.data(), indices.size() * sizeof(uint16_t));
+	prim->_matIdx = 0;
+	prim->_materialId = Primitive::MATERIAL_ID::MATERIAL_EMISSIVE;
+	prim->_topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	prim->_indicesFormat = DXGI_FORMAT_R16_UINT;
+	prim->_indicesCount = indices.size();
+
+	mesh->_primitives.push_back(prim);
+	mesh->_material = Material::createMaterialEmissive();
 
 	return mesh;
 }

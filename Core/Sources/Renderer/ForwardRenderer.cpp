@@ -37,7 +37,7 @@ ForwardRenderer::~ForwardRenderer()
 
 void ForwardRenderer::beginFrame()
 {
-	RHI::getInst().setDefaultRHIStates();	
+	RHI::getInst().getContext()->resetDefaultRenderStates(RHI::getInst().getRenderStateSet());
 
 	RHI::getInst().getContext()->clear(_backbufferRT->getRenderTarget(), 0, 0, 0, 0);
 }

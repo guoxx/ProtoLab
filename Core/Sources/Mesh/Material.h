@@ -11,6 +11,11 @@ namespace MaterialCB
 	{
 	#include "../../Shaders/BaseMaterial_common.h"
 	}
+
+	namespace EmissiveMaterial
+	{
+	#include "../../Shaders/EmissiveMaterial_common.h"
+	}
 }
 
 class DX11GraphicContext;
@@ -50,7 +55,7 @@ public:
 
 	static std::shared_ptr<Material> createMaterialBase();
 	static std::shared_ptr<Material> createMaterialPerVeretxColor();
-	//static std::shared_ptr<Material> createMaterialUnlit();
+	static std::shared_ptr<Material> createMaterialEmissive();
 
 	void initialize(std::shared_ptr<DX11VertexShader> vertShader, std::shared_ptr<DX11PixelShader> fragShader, const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt);
 

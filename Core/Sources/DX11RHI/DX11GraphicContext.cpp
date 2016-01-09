@@ -12,6 +12,12 @@ DX11GraphicContext::~DX11GraphicContext()
 	RHI::getInst().destroyDeviceContext(_context);
 }
 
+void DX11GraphicContext::resetDefaultRenderStates(std::shared_ptr<DX11RenderStateSet> stateSet)
+{
+	_context->RSSetState(stateSet->CullClockwise());
+	_context->OMSetDepthStencilState(stateSet->DepthDefault(), 0);
+}
+
 void DX11GraphicContext::IASetInputLayout(ID3D11InputLayout * vertexDecl)
 {
 	_context->IASetInputLayout(vertexDecl);
@@ -92,6 +98,17 @@ void DX11GraphicContext::PSSetSamplers(uint32_t startSlot, uint32_t numSamplers,
 void DX11GraphicContext::OMSetDepthStencilState(ID3D11DepthStencilState * pDepthStencilState, uint32_t stencilRef)
 {
 	_context->OMSetDepthStencilState(pDepthStencilState, stencilRef);
+}
+
+void DX11GraphicContext::OMSetBlendState(ID3D11BlendState * pBlendState)
+{
+	static const float blendFactor[4] = {1, 1, 1, 1};
+	OMSetBlendState(pBlendState, blendFactor, 0xffffffff);
+}
+
+void DX11GraphicContext::OMSetBlendState(ID3D11BlendState * pBlendState, const float blendFactor[4], uint32_t sampleMask)
+{
+	_context->OMSetBlendState(pBlendState, blendFactor, sampleMask);
 }
 
 void DX11GraphicContext::OMSetRenderTargets(uint32_t numViews, ID3D11RenderTargetView * const * ppRenderTargetViews, ID3D11DepthStencilView * pDepthStencilView)

@@ -23,11 +23,16 @@ public:
 private:
 	void _drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim) const;
 	void _drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, const Camera* camera) const;
+	void _drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, const Camera* camera) const;
 
 	std::vector<std::shared_ptr<Primitive>> _primitives{};
 	std::shared_ptr<Material> _material;
 
 	std::vector<tinyobj::shape_t> _shapes{};
 	std::vector<tinyobj::material_t> _materiels{};
+
+public:
+	// TODO: remove this code!!!
+	PointLight* hackPointLight{nullptr};
 };
 

@@ -7,6 +7,7 @@ public:
 	enum class MATERIAL_ID
 	{
 		MATERIAL_VERTEX_COLOR,
+		MATERIAL_EMISSIVE,
 		MATERIAL_DEFAULT,
 	};
 

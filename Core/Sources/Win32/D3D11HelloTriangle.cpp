@@ -61,11 +61,21 @@ void D3D11HelloTriangle::LoadAssets()
 	}
 
 	{
+		// point light
 		_pointLight = std::make_shared<PointLight>();
 		_pointLight->setPosition(DirectX::XMVECTOR{0, 1, 1});
 		_pointLight->setIntensity(DirectX::XMFLOAT3{3, 3, 3});
-		_pointLight->setRadius(0.2f, 2.0f);
+		_pointLight->setRadius(0.1f, 3.0f);
 		_scene->attachPointLight(_pointLight);
+
+		// point light source mesh
+		auto lightSphere = std::make_shared<Model>();
+		_scene->attachModel(lightSphere);
+
+		auto mesh = Mesh::createSphere(_pointLight->getRadiusStart(), 16, true);
+		lightSphere->setMesh(mesh);
+		mesh->hackPointLight = _pointLight.get();
+		lightSphere->setPosition(DirectX::XMVECTOR{0, 1, 1});
 	}
 
 	_renderer = std::make_shared<ForwardRenderer>();

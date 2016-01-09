@@ -5,6 +5,8 @@
 #include "DX11GraphicContext.h"
 #include "DX11VertexShader.h"
 #include "DX11PixelShader.h"
+#include "DX11RenderStateSet.h"
+
 
 using Microsoft::WRL::ComPtr;
 
@@ -25,8 +27,6 @@ public:
 
 	void initialize();
 	void finalize();
-
-	void initializeDefaultRHIStates();
 
 	// resources creation
 	ID3D11DeviceContext* createDeviceContext();
@@ -60,11 +60,10 @@ public:
 	void destroyView(ID3D11View* viewToDelete);
 	void destroyBlob(ID3DBlob* blobToDelete);
 
-	// render states
-	void setDefaultRHIStates();
-
 	// gfx contexts
-	std::shared_ptr<DX11GraphicContext> getContext();
+	std::shared_ptr<DX11GraphicContext> getContext() const;
+
+	std::shared_ptr<DX11RenderStateSet> getRenderStateSet() const;
 
 	// shader compilation
 	ID3DBlob* compileShader(const wchar_t* filename, const char* entryPoint, const char* profile);
@@ -75,15 +74,11 @@ public:
 
 private:
 
-	// default hardware states
-	ID3D11RasterizerState*			_defaultRasterizerState{nullptr};
-	ID3D11DepthStencilState*		_defaultDepthStencilState{nullptr};
-
 	// render resources
 	ComPtr<ID3D11Device>				_device{nullptr};
 	std::shared_ptr<DX11GraphicContext>	_immediateContext{nullptr};
 	std::shared_ptr<DX11GraphicContext>	_deferredContext{nullptr};
-
+	std::shared_ptr<DX11RenderStateSet> _renderStateSet{nullptr};
 
 private:
 	DX11RHI();

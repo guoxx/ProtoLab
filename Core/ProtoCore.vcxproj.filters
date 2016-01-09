@@ -154,6 +154,12 @@
     <ClInclude Include="Sources\Mesh\Material.h">
       <Filter>Sources\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\EmissiveMaterial_common.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11RenderStateSet.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -246,6 +252,9 @@
     <ClCompile Include="Sources\Mesh\Material.cpp">
       <Filter>Sources\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11RenderStateSet.cpp">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PerVertexColor_vs.hlsl">
@@ -264,6 +273,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\BaseMaterial_vs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EmissiveMaterial_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\EmissiveMaterial_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

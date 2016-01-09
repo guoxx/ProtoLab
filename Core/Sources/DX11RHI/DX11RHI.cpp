@@ -45,7 +45,7 @@ void DX11RHI::initialize()
 	CHECK(hr == S_OK);
 	_deferredContext = std::make_shared<DX11GraphicContext>(deferredCtx);
 
-	initializeDefaultRHIStates();
+	_renderStateSet = std::make_shared<DX11RenderStateSet>(_device.Get());
 
 #ifdef _DEBUG
 	ComPtr<ID3D11Debug> d3dDebug;
@@ -77,19 +77,6 @@ void DX11RHI::initialize()
 void DX11RHI::finalize()
 {
 	// TODO: clean up resources
-}
-
-void DX11RHI::initializeDefaultRHIStates()
-{
-	CD3D11_RASTERIZER_DESC rasterizerDesc{CD3D11_DEFAULT{}};	
-	rasterizerDesc.CullMode = D3D11_CULL_BACK;
-	rasterizerDesc.FrontCounterClockwise = true;
-	rasterizerDesc.DepthClipEnable = false;
-	_device->CreateRasterizerState(&rasterizerDesc, &_defaultRasterizerState);
-
-	CD3D11_DEPTH_STENCIL_DESC depthStencilDesc{CD3D11_DEFAULT{}};
-	//depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-	_device->CreateDepthStencilState(&depthStencilDesc, &_defaultDepthStencilState);
 }
 
 ID3D11DeviceContext * DX11RHI::createDeviceContext()
@@ -276,20 +263,16 @@ void DX11RHI::destroyBlob(ID3DBlob * blobToDelete)
 		blobToDelete->Release();
 }
 
-void DX11RHI::setDefaultRHIStates()
-{
-	_deferredContext->RSSetState(_defaultRasterizerState);
-	_deferredContext->OMSetDepthStencilState(_defaultDepthStencilState, 0);
-
-	_immediateContext->RSSetState(_defaultRasterizerState);
-	_immediateContext->OMSetDepthStencilState(_defaultDepthStencilState, 0);
-}
-
-std::shared_ptr<DX11GraphicContext> DX11RHI::getContext()
+std::shared_ptr<DX11GraphicContext> DX11RHI::getContext() const
 {
 	// TODO: each need to have own context
 	//return _deferredContext;
 	return _immediateContext;
+}
+
+std::shared_ptr<DX11RenderStateSet> DX11RHI::getRenderStateSet() const
+{
+	return _renderStateSet;
 }
 
 ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint, const char* profile)
@@ -340,6 +323,4 @@ DX11RHI::DX11RHI()
 
 DX11RHI::~DX11RHI()
 {
-	_defaultRasterizerState->Release();
-	_defaultDepthStencilState->Release();
 }

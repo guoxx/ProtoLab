@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "../Objects/Camera.h"
 #include "../Objects/PointLight.h"
+#include <DirectXTK/Inc/GeometricPrimitive.h>
 
 
 Mesh::Mesh()
@@ -29,6 +30,10 @@ void Mesh::draw(DirectX::CXMMATRIX mModel, const Camera* camera, std::shared_ptr
 		else if (prim->_materialId == Primitive::MATERIAL_ID::MATERIAL_DEFAULT)
 		{
 			_drawBaseMaterial(mModel, camera, pointLight, gfxContext, prim);
+		}
+		else if (prim->_materialId == Primitive::MATERIAL_ID::MATERIAL_EMISSIVE)
+		{
+			_drawEmissive(gfxContext, prim, mModel, camera);
 		}
 	}
 }
@@ -130,8 +135,6 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, st
 		gfxContext->unmapResource(pointLightCB, 0);
 	}
 
-	RHI::getInst().setDefaultRHIStates();
-
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer, sizeof(DirectX::XMFLOAT3), 0);
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::NORMAL, prim->_normalBuffer, sizeof(DirectX::XMFLOAT3), 0);
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::TEXCOORD0, prim->_texcoordBuffer, sizeof(DirectX::XMFLOAT3), 0);
@@ -175,8 +178,6 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 		gfxContext->unmapResource(materialCB, 0);
 	}
 
-	RHI::getInst().setDefaultRHIStates();
-
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer, sizeof(DirectX::XMFLOAT3), 0);
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::NORMAL, prim->_normalBuffer, sizeof(DirectX::XMFLOAT3), 0);
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::TEXCOORD0, prim->_texcoordBuffer, sizeof(DirectX::XMFLOAT3), 0);
@@ -185,4 +186,49 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 	gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
+}
+
+void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, const Camera* camera) const
+{
+	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Additive());
+
+	{
+		// update view constant buffer
+		ID3D11Buffer* viewCB = _material->getVsConstantBuffer(MaterialCB::EmissiveMaterial::ViewReg);
+		D3D11_MAPPED_SUBRESOURCE viewRes;
+		gfxContext->mapResource(viewCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
+		MaterialCB::EmissiveMaterial::View* dataPtr = (MaterialCB::EmissiveMaterial::View*)viewRes.pData;
+		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
+		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
+		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
+		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
+		gfxContext->unmapResource(viewCB, 0);
+	}
+
+	{
+		ID3D11Buffer* pointLightCB = _material->getPsConstantBuffer(MaterialCB::EmissiveMaterial::PointLightReg);
+		// update point light constant buffer
+		D3D11_MAPPED_SUBRESOURCE pointLightRes;
+		gfxContext->mapResource(pointLightCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &pointLightRes);
+		MaterialCB::EmissiveMaterial::PointLight* dataPtr = (MaterialCB::EmissiveMaterial::PointLight*)pointLightRes.pData;
+		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
+		DirectX::XMVECTOR lightPositionInLocalSpace = hackPointLight->getPosition();
+		lightPositionInLocalSpace = DirectX::XMVectorSetW(lightPositionInLocalSpace, 1);
+		DirectX::XMVECTOR lightPositionInCameraSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModelView);
+		DirectX::XMStoreFloat4(&dataPtr->lightPositionInCameraSpace, lightPositionInCameraSpace);
+		DirectX::XMFLOAT3 intensity = hackPointLight->getIntensity();
+		dataPtr->intensity = DirectX::XMFLOAT4{ intensity.x, intensity.y, intensity.z, 0 };
+		dataPtr->radiusStart = hackPointLight->getRadiusStart();
+		dataPtr->radiusEnd = hackPointLight->getRadiusEnd();
+		gfxContext->unmapResource(pointLightCB, 0);
+	}
+
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer, sizeof(DirectX::VertexPositionNormalTexture), 0);
+	_material->apply(gfxContext);
+
+	gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+	gfxContext->IASetPrimitiveTopology(prim->_topology);
+	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
+
+	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Opaque());
 }
