@@ -14,5 +14,5 @@ Primitive::~Primitive()
 	RHI::getInst().destroyResource(_normalBuffer);
 	RHI::getInst().destroyResource(_texcoordBuffer);
 	RHI::getInst().destroyResource(_indexBuffer);
-	RHI::getInst().destroyVertexDeclaration(_vertexDeclaration);
+	RHI::getInst().destroyInputLayout(_vertexDeclaration);
 }

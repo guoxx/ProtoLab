@@ -70,7 +70,7 @@ Material::Material()
 
 Material::~Material()
 {
-	RHI::getInst().destroyVertexDeclaration(_vertDecl);
+	RHI::getInst().destroyInputLayout(_inputLayout);
 	for (auto desc : _vsConstantBuffers)
 	{
 		if (desc._used)
@@ -91,7 +91,7 @@ void Material::initialize(std::shared_ptr<DX11VertexShader> vertShader, std::sha
 {
 	_vertShader = vertShader;
 	_fragShader = fragShader;
-	_vertDecl = RHI::getInst().createVertexDeclaration(desc, descElemCnt, _vertShader->getBinaryData());
+	_inputLayout = RHI::getInst().createInputLayout(desc, descElemCnt, _vertShader->getBinaryData());
 }
 
 void Material::createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg)
@@ -167,7 +167,7 @@ void Material::apply(std::shared_ptr<DX11GraphicContext> gfxContext)
 
 	// IA
 	gfxContext->IASetVertexBuffers(0, numBuffers, buffers, strides, offsets);
-	gfxContext->IASetInputLayout(_vertDecl);
+	gfxContext->IASetInputLayout(_inputLayout);
 
 	// VS
 	gfxContext->VSSetShader(_vertShader.get(), nullptr, 0);

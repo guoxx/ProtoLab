@@ -93,6 +93,6 @@ protected:
 
 	std::shared_ptr<DX11VertexShader> _vertShader;
 	std::shared_ptr<DX11PixelShader> _fragShader;
-	ID3D11InputLayout* _vertDecl;
+	ID3D11InputLayout* _inputLayout;
 };
 

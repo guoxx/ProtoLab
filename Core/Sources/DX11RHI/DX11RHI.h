@@ -38,7 +38,7 @@ public:
 
 	ID3D11VertexShader* createVertexShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ID3D11PixelShader* createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
-	ID3D11InputLayout* createVertexDeclaration(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
+	ID3D11InputLayout* createInputLayout(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode);
 
 	ID3D11SamplerState* createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode);
 
@@ -54,7 +54,7 @@ public:
 	void destroySwapChain(IDXGISwapChain* swapChainToDelete);
 	void destroyResource(ID3D11Resource* resourceToDelete);
 	void destroyVertexShader(ID3D11VertexShader* shaderToDelete);
-	void destroyVertexDeclaration(ID3D11InputLayout* declToDelete);
+	void destroyInputLayout(ID3D11InputLayout* layoutToDelete);
 	void destroySamplerState(ID3D11SamplerState* sampToDelete);
 	void destroyPixelShader(ID3D11PixelShader* shaderToDelete);
 	void destroyView(ID3D11View* viewToDelete);

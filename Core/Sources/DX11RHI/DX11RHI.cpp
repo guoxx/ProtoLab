@@ -154,11 +154,11 @@ ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode,
 	return outShader;
 }
 
-ID3D11InputLayout* DX11RHI::createVertexDeclaration(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode)
+ID3D11InputLayout* DX11RHI::createInputLayout(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode)
 {
-	ID3D11InputLayout* vertexDecl{nullptr};
-	_device->CreateInputLayout(desc, descElemCnt, vertexShaderBytecode->GetBufferPointer(), vertexShaderBytecode->GetBufferSize(), &vertexDecl);
-	return vertexDecl;
+	ID3D11InputLayout* inputLayout{nullptr};
+	_device->CreateInputLayout(desc, descElemCnt, vertexShaderBytecode->GetBufferPointer(), vertexShaderBytecode->GetBufferSize(), &inputLayout);
+	return inputLayout;
 }
 
 ID3D11SamplerState* DX11RHI::createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode)
@@ -233,10 +233,10 @@ void DX11RHI::destroyVertexShader(ID3D11VertexShader* shaderToDelete)
 		shaderToDelete->Release();
 }
 
-void DX11RHI::destroyVertexDeclaration(ID3D11InputLayout* declToDelete)
+void DX11RHI::destroyInputLayout(ID3D11InputLayout* layoutToDelete)
 {
-	if (declToDelete)
-		declToDelete->Release();
+	if (layoutToDelete)
+		layoutToDelete->Release();
 }
 
 void DX11RHI::destroySamplerState(ID3D11SamplerState* sampToDelete)

@@ -14,14 +14,14 @@ Filter2D::Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11Pix
 	};
 
 	_vertexBuffer = RHI::getInst().createVertexBuffer(vertexs, sizeof(vertexs));
-	_vertexDecl = RHI::getInst().createVertexDeclaration(DirectX::VertexPositionTexture::InputElements, DirectX::VertexPositionTexture::InputElementCount, _vertexShader->getBinaryData());
+	_inputLayout = RHI::getInst().createInputLayout(DirectX::VertexPositionTexture::InputElements, DirectX::VertexPositionTexture::InputElementCount, _vertexShader->getBinaryData());
 	_textureSamp = RHI::getInst().createSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP);
 }
 
 Filter2D::~Filter2D()
 {
 	RHI::getInst().destroyResource(_vertexBuffer);
-	RHI::getInst().destroyVertexDeclaration(_vertexDecl);
+	RHI::getInst().destroyInputLayout(_inputLayout);
 	RHI::getInst().destroySamplerState(_textureSamp);
 }
 
@@ -35,7 +35,7 @@ void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<D
 	uint32_t strides[] = {sizeof(DirectX::VertexPositionTexture)};
 	uint32_t offsets[] = {0};
 	gfxContext->IASetVertexBuffers(0, 1, &_vertexBuffer, strides, offsets);
-	gfxContext->IASetInputLayout(_vertexDecl);
+	gfxContext->IASetInputLayout(_inputLayout);
 	gfxContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gfxContext->VSSetShader(_vertexShader.get(), nullptr, 0);
 	gfxContext->PSSetShader(_pixelShader.get(), nullptr, 0);
