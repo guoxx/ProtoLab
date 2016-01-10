@@ -17,7 +17,12 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::draw(DirectX::CXMMATRIX mModel, const Camera* camera, std::shared_ptr<PointLight> pointLight) const
+std::shared_ptr<Material> Mesh::getMaterial() const
+{
+	return _material;
+}
+
+void Mesh::draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight) const
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
 
@@ -79,7 +84,7 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 	_material = Material::createMaterialBase();
 }
 
-void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim) const
+void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim) const
 {
 	auto mat = _materiels[prim->_matIdx];
 
@@ -145,7 +150,7 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, const Camera* camera, st
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 }
 
-void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, const Camera* camera) const
+void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera) const
 {
 	auto mat = _materiels[prim->_matIdx];
 
@@ -188,7 +193,7 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 }
 
-void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, const Camera* camera) const
+void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera) const
 {
 	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Additive());
 
@@ -203,24 +208,6 @@ void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::sh
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
 		gfxContext->unmapResource(viewCB, 0);
-	}
-
-	{
-		ID3D11Buffer* pointLightCB = _material->getPsConstantBuffer(MaterialCB::EmissiveMaterial::PointLightReg);
-		// update point light constant buffer
-		D3D11_MAPPED_SUBRESOURCE pointLightRes;
-		gfxContext->mapResource(pointLightCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &pointLightRes);
-		MaterialCB::EmissiveMaterial::PointLight* dataPtr = (MaterialCB::EmissiveMaterial::PointLight*)pointLightRes.pData;
-		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
-		DirectX::XMVECTOR lightPositionInLocalSpace = hackPointLight->getPosition();
-		lightPositionInLocalSpace = DirectX::XMVectorSetW(lightPositionInLocalSpace, 1);
-		DirectX::XMVECTOR lightPositionInCameraSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModelView);
-		DirectX::XMStoreFloat4(&dataPtr->lightPositionInCameraSpace, lightPositionInCameraSpace);
-		DirectX::XMFLOAT3 intensity = hackPointLight->getIntensity();
-		dataPtr->intensity = DirectX::XMFLOAT4{ intensity.x, intensity.y, intensity.z, 0 };
-		dataPtr->radiusStart = hackPointLight->getRadiusStart();
-		dataPtr->radiusEnd = hackPointLight->getRadiusEnd();
-		gfxContext->unmapResource(pointLightCB, 0);
 	}
 
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer, sizeof(DirectX::VertexPositionNormalTexture), 0);

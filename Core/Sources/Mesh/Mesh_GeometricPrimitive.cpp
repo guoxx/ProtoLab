@@ -99,3 +99,4 @@ std::shared_ptr<Mesh> Mesh::createSphere(float diameter, size_t tessellation, bo
 
 	return mesh;
 }
+

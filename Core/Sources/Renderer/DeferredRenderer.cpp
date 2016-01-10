@@ -5,6 +5,7 @@
 #include "../Objects/Camera.h"
 #include "../Objects/Scene.h"
 #include "../Objects/Model.h"
+#include "../Objects/PointLight.h"
 // TODO: remove this
 #include "../Mesh/Mesh.h"
 #include "../Win32/Win32Application.h"
@@ -64,8 +65,13 @@ void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sc
 		auto mesh = model->getMesh();
 		for (auto pl : pointLights)
 		{
-			mesh->draw(model->getWorldMatrix(), camera.get(), pl);
+			mesh->draw(model->getWorldMatrix(), camera, pl);
 		}
+	}
+
+	for (auto light : pointLights)
+	{
+		light->debugDraw(gfxContext, camera);
 	}
 
 	_filterIdentity->apply(_sceneRT, _backbufferRT);
