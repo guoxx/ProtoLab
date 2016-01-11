@@ -64,16 +64,16 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 		std::shared_ptr<Primitive> prim = std::make_shared<Primitive>();
 		prim->_name = shape.name;
 		prim->_matIdx = shape.mesh.material_ids[0];
-		prim->_positionBuffer = RHI::getInst().createVertexBuffer(shape.mesh.positions.data(), uint32_t(shape.mesh.positions.size()*sizeof(float)));
+		prim->_positionBuffer = RHI::getInst().getDevice()->createVertexBuffer(shape.mesh.positions.data(), uint32_t(shape.mesh.positions.size()*sizeof(float)));
 		if (shape.mesh.normals.size() > 0)
 		{
-			prim->_normalBuffer = RHI::getInst().createVertexBuffer(shape.mesh.normals.data(), uint32_t(shape.mesh.normals.size()*sizeof(float)));
+			prim->_normalBuffer = RHI::getInst().getDevice()->createVertexBuffer(shape.mesh.normals.data(), uint32_t(shape.mesh.normals.size()*sizeof(float)));
 		}
 		if (shape.mesh.texcoords.size() > 0)
 		{
-			prim->_texcoordBuffer = RHI::getInst().createVertexBuffer(shape.mesh.texcoords.data(), uint32_t(shape.mesh.texcoords.size()*sizeof(float)));
+			prim->_texcoordBuffer = RHI::getInst().getDevice()->createVertexBuffer(shape.mesh.texcoords.data(), uint32_t(shape.mesh.texcoords.size()*sizeof(float)));
 		}
-		prim->_indexBuffer = RHI::getInst().createIndexBuffer(shape.mesh.indices.data(), uint32_t(shape.mesh.indices.size()*sizeof(unsigned int)));
+		prim->_indexBuffer = RHI::getInst().getDevice()->createIndexBuffer(shape.mesh.indices.data(), uint32_t(shape.mesh.indices.size()*sizeof(unsigned int)));
 		prim->_topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		prim->_indicesFormat = DXGI_FORMAT_R32_UINT;
 		prim->_indicesCount = static_cast<uint32_t>(shape.mesh.indices.size());
@@ -90,9 +90,9 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 
 	{
 		// update view constant buffer
-		ID3D11Buffer* viewCB = _material->getVsConstantBuffer(MaterialCB::BaseMaterial::ViewReg);
+		ComPtr<ID3D11Buffer> viewCB = _material->getVsConstantBuffer(MaterialCB::BaseMaterial::ViewReg);
 		D3D11_MAPPED_SUBRESOURCE viewRes;
-		gfxContext->mapResource(viewCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
+		gfxContext->mapResource(viewCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
 		MaterialCB::BaseMaterial::View* dataPtr = (MaterialCB::BaseMaterial::View*)viewRes.pData;
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
@@ -101,14 +101,14 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewInvTrans, DirectX::XMMatrixTranspose(mModelViewInvTrans));
-		gfxContext->unmapResource(viewCB, 0);
+		gfxContext->unmapResource(viewCB.Get(), 0);
 	}
 
 	{
-		ID3D11Buffer* materialCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::MaterialReg);
+		ComPtr<ID3D11Buffer> materialCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::MaterialReg);
 		// update material constant buffer
 		D3D11_MAPPED_SUBRESOURCE materialRes;
-		gfxContext->mapResource(materialCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &materialRes);
+		gfxContext->mapResource(materialCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &materialRes);
 		MaterialCB::BaseMaterial::Material* matPtr = (MaterialCB::BaseMaterial::Material*)materialRes.pData;
 		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
 		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
@@ -119,14 +119,14 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		matPtr->ior = mat.ior;
 		matPtr->dissolve = mat.dissolve;
 		matPtr->illum = mat.illum;
-		gfxContext->unmapResource(materialCB, 0);
+		gfxContext->unmapResource(materialCB.Get(), 0);
 	}
 
 	{
-		ID3D11Buffer* pointLightCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::PointLightReg);
+		ComPtr<ID3D11Buffer> pointLightCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::PointLightReg);
 		// update point light constant buffer
 		D3D11_MAPPED_SUBRESOURCE pointLightRes;
-		gfxContext->mapResource(pointLightCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &pointLightRes);
+		gfxContext->mapResource(pointLightCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pointLightRes);
 		MaterialCB::BaseMaterial::PointLight* dataPtr = (MaterialCB::BaseMaterial::PointLight*)pointLightRes.pData;
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMVECTOR lightPositionInLocalSpace = pointLight->getPosition();
@@ -137,15 +137,15 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		dataPtr->intensity = DirectX::XMFLOAT4{intensity.x, intensity.y, intensity.z, 0};
 		dataPtr->radiusStart = pointLight->getRadiusStart();
 		dataPtr->radiusEnd = pointLight->getRadiusEnd();
-		gfxContext->unmapResource(pointLightCB, 0);
+		gfxContext->unmapResource(pointLightCB.Get(), 0);
 	}
 
-	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer, sizeof(DirectX::XMFLOAT3), 0);
-	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::NORMAL, prim->_normalBuffer, sizeof(DirectX::XMFLOAT3), 0);
-	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::TEXCOORD0, prim->_texcoordBuffer, sizeof(DirectX::XMFLOAT3), 0);
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::NORMAL, prim->_normalBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::TEXCOORD0, prim->_texcoordBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
 	_material->apply(gfxContext);
 
-	gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+	gfxContext->IASetIndexBuffer(prim->_indexBuffer.Get(), prim->_indicesFormat, 0);
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 }
@@ -156,20 +156,20 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 
 	{
 		// update view constant buffer
-		ID3D11Buffer* viewCB = _material->getVsConstantBuffer(MaterialCB::PerVertexColor::ViewReg);
+		ComPtr<ID3D11Buffer> viewCB = _material->getVsConstantBuffer(MaterialCB::PerVertexColor::ViewReg);
 		D3D11_MAPPED_SUBRESOURCE viewRes;
-		gfxContext->mapResource(viewCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
+		gfxContext->mapResource(viewCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
 		MaterialCB::PerVertexColor::View* dataPtr = (MaterialCB::PerVertexColor::View*)viewRes.pData;
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(mModelViewProj));
-		gfxContext->unmapResource(viewCB, 0);
+		gfxContext->unmapResource(viewCB.Get(), 0);
 	}
 
 	{
 		// update material constant buffer
-		ID3D11Buffer* materialCB = _material->getPsConstantBuffer(MaterialCB::PerVertexColor::MaterialReg);
+		ComPtr<ID3D11Buffer> materialCB = _material->getPsConstantBuffer(MaterialCB::PerVertexColor::MaterialReg);
 		D3D11_MAPPED_SUBRESOURCE matSubResource;
-		gfxContext->mapResource(materialCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
+		gfxContext->mapResource(materialCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
 		MaterialCB::PerVertexColor::Material* matPtr = (MaterialCB::PerVertexColor::Material*)matSubResource.pData;
 		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
 		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
@@ -180,15 +180,15 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 		matPtr->ior = mat.ior;
 		matPtr->dissolve = mat.dissolve;
 		matPtr->illum = mat.illum;
-		gfxContext->unmapResource(materialCB, 0);
+		gfxContext->unmapResource(materialCB.Get(), 0);
 	}
 
-	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer, sizeof(DirectX::XMFLOAT3), 0);
-	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::NORMAL, prim->_normalBuffer, sizeof(DirectX::XMFLOAT3), 0);
-	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::TEXCOORD0, prim->_texcoordBuffer, sizeof(DirectX::XMFLOAT3), 0);
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::NORMAL, prim->_normalBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::TEXCOORD0, prim->_texcoordBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
 	_material->apply(gfxContext);
 
-	gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+	gfxContext->IASetIndexBuffer(prim->_indexBuffer.Get(), prim->_indicesFormat, 0);
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 }
@@ -199,21 +199,21 @@ void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::sh
 
 	{
 		// update view constant buffer
-		ID3D11Buffer* viewCB = _material->getVsConstantBuffer(MaterialCB::EmissiveMaterial::ViewReg);
+		ComPtr<ID3D11Buffer> viewCB = _material->getVsConstantBuffer(MaterialCB::EmissiveMaterial::ViewReg);
 		D3D11_MAPPED_SUBRESOURCE viewRes;
-		gfxContext->mapResource(viewCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
+		gfxContext->mapResource(viewCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
 		MaterialCB::EmissiveMaterial::View* dataPtr = (MaterialCB::EmissiveMaterial::View*)viewRes.pData;
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
-		gfxContext->unmapResource(viewCB, 0);
+		gfxContext->unmapResource(viewCB.Get(), 0);
 	}
 
-	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer, sizeof(DirectX::VertexPositionNormalTexture), 0);
+	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(DirectX::VertexPositionNormalTexture), 0);
 	_material->apply(gfxContext);
 
-	gfxContext->IASetIndexBuffer(prim->_indexBuffer, prim->_indicesFormat, 0);
+	gfxContext->IASetIndexBuffer(prim->_indexBuffer.Get(), prim->_indicesFormat, 0);
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 

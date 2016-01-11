@@ -2,14 +2,13 @@
 #include "DX11GraphicContext.h"
 
 
-DX11GraphicContext::DX11GraphicContext(ID3D11DeviceContext * ctx)
+DX11GraphicContext::DX11GraphicContext(ComPtr<ID3D11DeviceContext> ctx)
 	: _context{ctx}
 {
 }
 
 DX11GraphicContext::~DX11GraphicContext()
 {
-	RHI::getInst().destroyDeviceContext(_context);
 }
 
 void DX11GraphicContext::resetDefaultRenderStates(std::shared_ptr<DX11RenderStateSet> stateSet)
@@ -18,9 +17,9 @@ void DX11GraphicContext::resetDefaultRenderStates(std::shared_ptr<DX11RenderStat
 	_context->OMSetDepthStencilState(stateSet->DepthDefault(), 0);
 }
 
-void DX11GraphicContext::IASetInputLayout(ID3D11InputLayout * vertexDecl)
+void DX11GraphicContext::IASetInputLayout(ID3D11InputLayout* inputLayout)
 {
-	_context->IASetInputLayout(vertexDecl);
+	_context->IASetInputLayout(inputLayout);
 }
 
 void DX11GraphicContext::IASetVertexBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer * const * ppVertexBuffers, const uint32_t * pStrides, const uint32_t * pOffsets)
@@ -40,7 +39,7 @@ void DX11GraphicContext::IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY topology)
 
 void DX11GraphicContext::VSSetShader(DX11VertexShader* pVertexShader, ID3D11ClassInstance * const * ppClassInstances, uint32_t numClassInstances)
 {
-	_context->VSSetShader(pVertexShader->getShader(), ppClassInstances, numClassInstances);
+	_context->VSSetShader(pVertexShader->getShader().Get(), ppClassInstances, numClassInstances);
 }
 
 void DX11GraphicContext::VSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer * const * ppConstantBuffers)
@@ -77,7 +76,7 @@ void DX11GraphicContext::RSSetViewports(uint32_t numViewports, const D3D11_VIEWP
 
 void DX11GraphicContext::PSSetShader(DX11PixelShader* pPixelShader, ID3D11ClassInstance * const * ppClassInstances, uint32_t numClassInstances)
 {
-	_context->PSSetShader(pPixelShader->getShader(), ppClassInstances, numClassInstances);
+	_context->PSSetShader(pPixelShader->getShader().Get(), ppClassInstances, numClassInstances);
 }
 
 void DX11GraphicContext::PSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer * const * ppConstantBuffers)
@@ -152,7 +151,7 @@ HRESULT DX11GraphicContext::finishCommandList(bool restoreDeferredContextState, 
 	return _context->FinishCommandList(restoreDeferredContextState, ppCommandList);
 }
 
-void DX11GraphicContext::executeCommandList(ID3D11CommandList * pCommandList, bool restoreContextState)
+void DX11GraphicContext::executeCommandList(ComPtr<ID3D11CommandList> pCommandList, bool restoreContextState)
 {
-	_context->ExecuteCommandList(pCommandList, restoreContextState);
+	_context->ExecuteCommandList(pCommandList.Get(), restoreContextState);
 }

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DX11RHI.h"
-#include "DX11ResourceCreationHelpers.h"
 
 
 DX11RHI& DX11RHI::getInst()
@@ -26,7 +25,8 @@ void DX11RHI::initialize()
 	hr = CreateDXGIFactory1(IID_PPV_ARGS(&factory));
 	CHECK(hr == S_OK);
 
-	ID3D11DeviceContext* immediateCtx;
+	ComPtr<ID3D11Device> device;
+	ComPtr<ID3D11DeviceContext> immediateCtx;
 	hr = D3D11CreateDevice(nullptr,
 							D3D_DRIVER_TYPE_HARDWARE,
 							nullptr,
@@ -34,22 +34,24 @@ void DX11RHI::initialize()
 							featureLevels,
 							sizeof(featureLevels)/sizeof(featureLevels[0]),
 							D3D11_SDK_VERSION,
-							_device.GetAddressOf(),
+							device.GetAddressOf(),
 							nullptr,
-							&immediateCtx);
+							immediateCtx.GetAddressOf());
 	CHECK(hr == S_OK);
+	_device = std::make_shared<DX11Device>(device);
+
 	_immediateContext = std::make_shared<DX11GraphicContext>(immediateCtx);
 
-	ID3D11DeviceContext* deferredCtx;
-	hr = _device->CreateDeferredContext(0, &deferredCtx);
+	ComPtr<ID3D11DeviceContext> deferredCtx;
+	hr = device->CreateDeferredContext(0, deferredCtx.GetAddressOf());
 	CHECK(hr == S_OK);
 	_deferredContext = std::make_shared<DX11GraphicContext>(deferredCtx);
 
-	_renderStateSet = std::make_shared<DX11RenderStateSet>(_device.Get());
+	_renderStateSet = std::make_shared<DX11RenderStateSet>(device.Get());
 
 #ifdef _DEBUG
 	ComPtr<ID3D11Debug> d3dDebug;
-	hr = _device.As(&d3dDebug);
+	hr = device.As(&d3dDebug);
 	if (hr == S_OK)
 	{
 		ComPtr<ID3D11InfoQueue> d3dInfoQueue;
@@ -73,194 +75,14 @@ void DX11RHI::initialize()
  #endif
 }
 
-
 void DX11RHI::finalize()
 {
 	// TODO: clean up resources
 }
 
-ID3D11DeviceContext * DX11RHI::createDeviceContext()
+std::shared_ptr<DX11Device> DX11RHI::getDevice() const
 {
-	ID3D11DeviceContext* ctx{nullptr};
-	CHECK(_device->CreateDeferredContext(0, &ctx) == S_OK);
-	return ctx;
-}
-
-IDXGISwapChain* DX11RHI::createSwapChain(HWND hwnd, uint32_t frameCount, uint32_t winWidth, uint32_t winHeight)
-{
-	HRESULT hr;
-
-	ComPtr<IDXGIDevice> pDXGIDevice;
-	hr = _device.CopyTo( pDXGIDevice.GetAddressOf() );
-
-	ComPtr<IDXGIAdapter> pDXGIAdapter;
-	hr = pDXGIDevice->GetParent(IID_PPV_ARGS(&pDXGIAdapter));
-
-	ComPtr<IDXGIFactory> pFactory;
-	pDXGIAdapter->GetParent(IID_PPV_ARGS(&pFactory));
-
-	IDXGISwapChain* outSwapChain;
-	DXGI_SWAP_CHAIN_DESC swapChainDesc = createDxgiSwapChainDesc(hwnd, frameCount, winWidth, winHeight);
-	hr = pFactory->CreateSwapChain(_device.Get(), &swapChainDesc, &outSwapChain);
-	CHECK(hr == S_OK);
-	return outSwapChain;
-}
-
-ID3D11Buffer* DX11RHI::createVertexBuffer(const void* memPtr, uint32_t memSize)
-{
-	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_VERTEX_BUFFER, memSize);
-	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
-	ID3D11Buffer* buffer{nullptr};
-	_device->CreateBuffer(&desc, &resData, &buffer);
-	return buffer;
-}
-
-ID3D11Buffer* DX11RHI::createIndexBuffer(const void* memPtr, uint32_t memSize)
-{
-	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, memSize);
-	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
-	ID3D11Buffer* buffer{nullptr};
-	_device->CreateBuffer(&desc, &resData, &buffer);
-	return buffer;
-}
-
-ID3D11Buffer* DX11RHI::createConstantBuffer(const void* memPtr, uint32_t memSize)
-{
-	ID3D11Buffer* buffer{nullptr};
-	D3D11_BUFFER_DESC desc = createDx11DynamicBufferDesc(D3D11_USAGE_DYNAMIC, D3D11_BIND_CONSTANT_BUFFER, memSize);
-	if (memPtr != nullptr)
-	{
-		D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
-		_device->CreateBuffer(&desc, &resData, &buffer);
-	}
-	else
-	{
-		_device->CreateBuffer(&desc, nullptr, &buffer);
-	}
-	return buffer;
-}
-
-ID3D11VertexShader* DX11RHI::createVertexShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength)
-{
-	ID3D11VertexShader* outShader{nullptr};
-	_device->CreateVertexShader(bytecode, bytecodeLength, nullptr, &outShader);
-	return outShader;
-}
-
-ID3D11PixelShader* DX11RHI::createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength)
-{
-	ID3D11PixelShader* outShader{nullptr};
-	_device->CreatePixelShader(bytecode, bytecodeLength, nullptr, &outShader);
-	return outShader;
-}
-
-ID3D11InputLayout* DX11RHI::createInputLayout(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ID3DBlob* vertexShaderBytecode)
-{
-	ID3D11InputLayout* inputLayout{nullptr};
-	_device->CreateInputLayout(desc, descElemCnt, vertexShaderBytecode->GetBufferPointer(), vertexShaderBytecode->GetBufferSize(), &inputLayout);
-	return inputLayout;
-}
-
-ID3D11SamplerState* DX11RHI::createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode)
-{
-	ID3D11SamplerState* samp{nullptr};
-	D3D11_SAMPLER_DESC sampDesc = createDx11SamplerDesc(filter, addressMode);
-	_device->CreateSamplerState(&sampDesc, &samp);
-	return samp;
-}
-
-ID3D11Texture2D* DX11RHI::createTexture2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags)
-{
-	ID3D11Texture2D* tex{nullptr};
-	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
-	desc.BindFlags = bindFlags;
-	_device->CreateTexture2D(&desc, nullptr, &tex);
-	return tex;
-}
-
-ID3D11Texture2D* DX11RHI::createTexture2DFromSwapChain(IDXGISwapChain* swapChain)
-{
-	ID3D11Texture2D* tex{nullptr};
-	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&tex));
-	return tex;
-}
-
-ID3D11ShaderResourceView* DX11RHI::createShaderResourceViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT srvFormat, uint32_t numMipmap)
-{
-	ID3D11ShaderResourceView* textureSRV{nullptr};
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = createDx11ShaderResourceViewDescTex2d(srvFormat, numMipmap);
-	_device->CreateShaderResourceView(texture, &srvDesc, &textureSRV);
-	return textureSRV;
-}
-
-ID3D11RenderTargetView* DX11RHI::createRenderTargetViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice)
-{
-	ID3D11RenderTargetView* rtv{nullptr};
-	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2d(rtvFormat, mipSlice);
-	_device->CreateRenderTargetView(texture, &rtvDesc, &rtv);
-	return rtv;
-}
-
-ID3D11DepthStencilView* DX11RHI::createDepthStencilViewTex2d(ID3D11Texture2D* texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice)
-{
-	ID3D11DepthStencilView* dsv{nullptr};
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = createDx11DepthStencilViewDescTex2d(dsvFormat, mipSlice);
-	_device->CreateDepthStencilView(texture, &dsvDesc, &dsv);
-	return dsv;
-}
-
-void DX11RHI::destroyDeviceContext(ID3D11DeviceContext * ctxToDelete)
-{
-	if (ctxToDelete)
-		ctxToDelete->Release();
-}
-
-void DX11RHI::destroySwapChain(IDXGISwapChain* swapChainToDelete)
-{
-	if (swapChainToDelete)
-		swapChainToDelete->Release();
-}
-
-void DX11RHI::destroyResource(ID3D11Resource* resourceToDelete)
-{
-	if (resourceToDelete)
-		resourceToDelete->Release();
-}
-
-void DX11RHI::destroyVertexShader(ID3D11VertexShader* shaderToDelete)
-{
-	if (shaderToDelete)
-		shaderToDelete->Release();
-}
-
-void DX11RHI::destroyInputLayout(ID3D11InputLayout* layoutToDelete)
-{
-	if (layoutToDelete)
-		layoutToDelete->Release();
-}
-
-void DX11RHI::destroySamplerState(ID3D11SamplerState* sampToDelete)
-{
-	if (sampToDelete)
-		sampToDelete->Release();
-}
-
-void DX11RHI::destroyPixelShader(ID3D11PixelShader* shaderToDelete)
-{
-	if (shaderToDelete)
-		shaderToDelete->Release();
-}
-
-void DX11RHI::destroyView(ID3D11View* viewToDelete)
-{
-	if (viewToDelete)
-		viewToDelete->Release();
-}
-
-void DX11RHI::destroyBlob(ID3DBlob * blobToDelete)
-{
-	if (blobToDelete)
-		blobToDelete->Release();
+	return _device;
 }
 
 std::shared_ptr<DX11GraphicContext> DX11RHI::getContext() const
@@ -275,12 +97,12 @@ std::shared_ptr<DX11RenderStateSet> DX11RHI::getRenderStateSet() const
 	return _renderStateSet;
 }
 
-ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint, const char* profile)
+ComPtr<ID3DBlob> DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint, const char* profile)
 {
 	uint32_t compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-	ID3DBlob* blob{nullptr};
-	ID3DBlob* err{nullptr};
-	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, profile, compileFlags, 0, &blob, &err);
+	ComPtr<ID3DBlob> blob;
+	ComPtr<ID3DBlob> err;
+	D3DCompileFromFile(filename, nullptr, nullptr, entryPoint, profile, compileFlags, 0, blob.GetAddressOf(), err.GetAddressOf());
 	if (err != nullptr)
 	{
 		char mbsFilename[1024];
@@ -297,22 +119,21 @@ ID3DBlob* DX11RHI::compileShader(const wchar_t* filename, const char* entryPoint
 	return blob;
 }
 
-ID3DBlob* DX11RHI::compileVertexShader(const wchar_t* filename, const char* entryPoint)
+ComPtr<ID3DBlob> DX11RHI::compileVertexShader(const wchar_t* filename, const char* entryPoint)
 {
 	return compileShader(filename, entryPoint, "vs_5_0");
 }
 
-ID3DBlob* DX11RHI::compilePixelShader(const wchar_t* filename, const char* entryPoint)
+ComPtr<ID3DBlob> DX11RHI::compilePixelShader(const wchar_t* filename, const char* entryPoint)
 {
 	return compileShader(filename, entryPoint, "ps_5_0");
 }
 
 void DX11RHI::submit()
 {
-	ID3D11CommandList* cmdlist;
-	_deferredContext->finishCommandList(false, &cmdlist);
+	ComPtr<ID3D11CommandList> cmdlist;
+	_deferredContext->finishCommandList(false, cmdlist.GetAddressOf());
 	_immediateContext->executeCommandList(cmdlist, false);
-	cmdlist->Release();
 }
 
 

@@ -9,8 +9,8 @@ public:
 	DX11VertexShader(const void* bytecode, std::size_t bytecodeLength);
 	virtual ~DX11VertexShader();
 
-	ID3D11VertexShader* getShader() const;
+	ComPtr<ID3D11VertexShader> getShader() const;
 
 private:
-	ID3D11VertexShader* _vertexShader;
+	ComPtr<ID3D11VertexShader> _vertexShader;
 };

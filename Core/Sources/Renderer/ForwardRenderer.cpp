@@ -18,7 +18,7 @@ ForwardRenderer::ForwardRenderer()
 {
 	// TODO: hard code window size
 
-	_swapChain = RHI::getInst().createSwapChain(Win32Application::GetHwnd(), FRAME_COUNT, WIN_WIDTH, WIN_HEIGHT);
+	_swapChain = RHI::getInst().getDevice()->createSwapChain(Win32Application::GetHwnd(), FRAME_COUNT, WIN_WIDTH, WIN_HEIGHT);
 	_backbufferRT = std::make_shared<DX11RenderTarget>(_swapChain);
 
 	_sceneRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R16G16B16A16_TYPELESS, DXGI_FORMAT_R16G16B16A16_UNORM, DXGI_FORMAT_R16G16B16A16_UNORM);
@@ -32,7 +32,6 @@ ForwardRenderer::ForwardRenderer()
 
 ForwardRenderer::~ForwardRenderer()
 {
-	RHI::getInst().destroySwapChain(_swapChain);
 }
 
 
@@ -40,7 +39,7 @@ void ForwardRenderer::beginFrame()
 {
 	RHI::getInst().getContext()->resetDefaultRenderStates(RHI::getInst().getRenderStateSet());
 
-	RHI::getInst().getContext()->clear(_backbufferRT->getRenderTarget(), 0, 0, 0, 0);
+	RHI::getInst().getContext()->clear(_backbufferRT->getRenderTarget().Get(), 0, 0, 0, 0);
 }
 
 
@@ -48,15 +47,15 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
 
-	gfxContext->clear(_sceneRT->getRenderTarget(), 0.f, 0.f, 0.f, 0.f);
-	gfxContext->clear(_sceneDepthRT->getRenderTarget(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0f);
+	gfxContext->clear(_sceneRT->getRenderTarget().Get(), 0.f, 0.f, 0.f, 0.f);
+	gfxContext->clear(_sceneDepthRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0f);
 
 	uint32_t x, y, w, h;
 	viewport->getViewport(x, y, w, h);
 	gfxContext->RSSetViewport(x, y, w, h);
 
-	ID3D11RenderTargetView* rtvs[] = {_sceneRT->getRenderTarget()};
-	gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget());
+	ID3D11RenderTargetView* rtvs[] = {_sceneRT->getRenderTarget().Get()};
+	gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget().Get());
 
 	auto models = scene->getModels();
 	auto pointLights = scene->getPointLights(); 

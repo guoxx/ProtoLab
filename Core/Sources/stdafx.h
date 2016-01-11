@@ -20,6 +20,7 @@
 #include <DirectXMath.h>
 
 #include <wrl.h>
+using Microsoft::WRL::ComPtr;
 #include <shellapi.h>
 
 // c++ std lib

@@ -3,12 +3,12 @@
 class DX11Shader
 {
 public:
-	DX11Shader(ID3DBlob* bin);
+	DX11Shader(ComPtr<ID3DBlob> bin);
 	virtual ~DX11Shader();
 
-	ID3DBlob* getBinaryData() const;
+	ComPtr<ID3DBlob> getBinaryData() const;
 
 protected:
-	ID3DBlob* _binaryData{nullptr};
+	ComPtr<ID3DBlob> _binaryData{nullptr};
 };
 

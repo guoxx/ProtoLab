@@ -50,11 +50,11 @@ void PointLight::debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::
 	DirectX::XMMATRIX mModel = getWorldMatrix();
 
 	{
-		ID3D11Buffer* pointLightCB = _sphere->getMaterial()->getPsConstantBuffer(MaterialCB::EmissiveMaterial::PointLightReg);
+		ComPtr<ID3D11Buffer> pointLightCB = _sphere->getMaterial()->getPsConstantBuffer(MaterialCB::EmissiveMaterial::PointLightReg);
 
 		// update point light constant buffer
 		D3D11_MAPPED_SUBRESOURCE pointLightRes;
-		gfxContext->mapResource(pointLightCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &pointLightRes);
+		gfxContext->mapResource(pointLightCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pointLightRes);
 		MaterialCB::EmissiveMaterial::PointLight* dataPtr = (MaterialCB::EmissiveMaterial::PointLight*)pointLightRes.pData;
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMVECTOR lightPositionInLocalSpace = getPosition();
@@ -65,7 +65,7 @@ void PointLight::debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::
 		dataPtr->intensity = DirectX::XMFLOAT4{ intensity.x, intensity.y, intensity.z, 0 };
 		dataPtr->radiusStart = getRadiusStart();
 		dataPtr->radiusEnd = getRadiusEnd();
-		gfxContext->unmapResource(pointLightCB, 0);
+		gfxContext->unmapResource(pointLightCB.Get(), 0);
 	}
 
 	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Additive());

@@ -62,8 +62,8 @@ public:
 	void createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg);
 	void createPsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg);
 
-	ID3D11Buffer* getVsConstantBuffer(uint32_t reg);
-	ID3D11Buffer* getPsConstantBuffer(uint32_t reg);
+	ComPtr<ID3D11Buffer> getVsConstantBuffer(uint32_t reg);
+	ComPtr<ID3D11Buffer> getPsConstantBuffer(uint32_t reg);
 
 	void setVertexBuffer(VEX_INPUT_SLOT slot, ID3D11Buffer* buffer, uint32_t stride, uint32_t offset);
 	void unsetVertexBuffers();
@@ -73,17 +73,17 @@ protected:
 	class VertBufferDesc
 	{
 	public:
-		ID3D11Buffer*	_buffer{nullptr};
-		uint32_t		_stride{0};
-		uint32_t		_offset{0};
-		bool			_used{false};
+		ComPtr<ID3D11Buffer>	_buffer{nullptr};
+		uint32_t				_stride{0};
+		uint32_t				_offset{0};
+		bool					_used{false};
 	};
 
 	class ConstantBufferDesc
 	{
 	public:
-		ID3D11Buffer*	_buffer{nullptr};
-		bool			_used{false};
+		ComPtr<ID3D11Buffer>	_buffer{nullptr};
+		bool					_used{false};
 	};
 
 	// TODO: hard code the size for the moment
@@ -93,6 +93,6 @@ protected:
 
 	std::shared_ptr<DX11VertexShader> _vertShader;
 	std::shared_ptr<DX11PixelShader> _fragShader;
-	ID3D11InputLayout* _inputLayout;
+	ComPtr<ID3D11InputLayout> _inputLayout;
 };
 

@@ -28,8 +28,8 @@ void Mesh::loadCoordinateSystemFrame()
 	xAxis->_name = "x-axis";
 	xAxis->_matIdx = 0;
 	xAxis->_materialId = Primitive::MATERIAL_ID::MATERIAL_VERTEX_COLOR;
-	xAxis->_positionBuffer = RHI::getInst().createVertexBuffer(pVexBuf+0, sizeof(Vertex)*2);
-	xAxis->_indexBuffer = RHI::getInst().createIndexBuffer(idxBuf, sizeof(idxBuf));
+	xAxis->_positionBuffer = RHI::getInst().getDevice()->createVertexBuffer(pVexBuf+0, sizeof(Vertex)*2);
+	xAxis->_indexBuffer = RHI::getInst().getDevice()->createIndexBuffer(idxBuf, sizeof(idxBuf));
 	xAxis->_topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	xAxis->_indicesFormat = DXGI_FORMAT_R32_UINT;
 	xAxis->_indicesCount = 2;
@@ -39,8 +39,8 @@ void Mesh::loadCoordinateSystemFrame()
 	yAxis->_name = "y-axis";
 	yAxis->_matIdx = 1;
 	yAxis->_materialId = Primitive::MATERIAL_ID::MATERIAL_VERTEX_COLOR;
-	yAxis->_positionBuffer = RHI::getInst().createVertexBuffer(pVexBuf+2, sizeof(Vertex)*2);
-	yAxis->_indexBuffer = RHI::getInst().createIndexBuffer(idxBuf, sizeof(idxBuf));
+	yAxis->_positionBuffer = RHI::getInst().getDevice()->createVertexBuffer(pVexBuf+2, sizeof(Vertex)*2);
+	yAxis->_indexBuffer = RHI::getInst().getDevice()->createIndexBuffer(idxBuf, sizeof(idxBuf));
 	yAxis->_topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	yAxis->_indicesFormat = DXGI_FORMAT_R32_UINT;
 	yAxis->_indicesCount = 2;
@@ -50,8 +50,8 @@ void Mesh::loadCoordinateSystemFrame()
 	zAxis->_name = "z-axis";
 	zAxis->_matIdx = 2;
 	zAxis->_materialId = Primitive::MATERIAL_ID::MATERIAL_VERTEX_COLOR;
-	zAxis->_positionBuffer = RHI::getInst().createVertexBuffer(pVexBuf+4, sizeof(Vertex)*2);
-	zAxis->_indexBuffer = RHI::getInst().createIndexBuffer(idxBuf, sizeof(idxBuf));
+	zAxis->_positionBuffer = RHI::getInst().getDevice()->createVertexBuffer(pVexBuf+4, sizeof(Vertex)*2);
+	zAxis->_indexBuffer = RHI::getInst().getDevice()->createIndexBuffer(idxBuf, sizeof(idxBuf));
 	zAxis->_topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 	zAxis->_indicesFormat = DXGI_FORMAT_R32_UINT;
 	zAxis->_indicesCount = 2;
@@ -86,8 +86,8 @@ std::shared_ptr<Mesh> Mesh::createSphere(float diameter, size_t tessellation, bo
 	DirectX::GeometricPrimitive::CreateSphere(vertices, indices, diameter, tessellation, rhcoords, invertn);
 
 	std::shared_ptr<Primitive> prim = std::make_shared<Primitive>();
-	prim->_positionBuffer = RHI::getInst().createVertexBuffer(vertices.data(), vertices.size() * sizeof(DirectX::VertexPositionNormalTexture));
-	prim->_indexBuffer = RHI::getInst().createIndexBuffer(indices.data(), indices.size() * sizeof(uint16_t));
+	prim->_positionBuffer = RHI::getInst().getDevice()->createVertexBuffer(vertices.data(), vertices.size() * sizeof(DirectX::VertexPositionNormalTexture));
+	prim->_indexBuffer = RHI::getInst().getDevice()->createIndexBuffer(indices.data(), indices.size() * sizeof(uint16_t));
 	prim->_matIdx = 0;
 	prim->_materialId = Primitive::MATERIAL_ID::MATERIAL_EMISSIVE;
 	prim->_topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;

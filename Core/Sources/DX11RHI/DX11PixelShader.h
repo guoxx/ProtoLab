@@ -9,8 +9,8 @@ public:
 	DX11PixelShader(const void* bytecode, std::size_t bytecodeLength);
 	virtual ~DX11PixelShader();
 
-	ID3D11PixelShader* getShader() const;
+	ComPtr<ID3D11PixelShader> getShader() const;
 
 private:
-	ID3D11PixelShader* _pixelShader;
+	ComPtr<ID3D11PixelShader> _pixelShader;
 };

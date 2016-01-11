@@ -70,33 +70,18 @@ Material::Material()
 
 Material::~Material()
 {
-	RHI::getInst().destroyInputLayout(_inputLayout);
-	for (auto desc : _vsConstantBuffers)
-	{
-		if (desc._used)
-		{
-			RHI::getInst().destroyResource(desc._buffer);
-		}
-	}
-	for (auto desc : _psConstantBuffers)
-	{
-		if (desc._used)
-		{
-			RHI::getInst().destroyResource(desc._buffer);
-		}
-	}
 }
 
 void Material::initialize(std::shared_ptr<DX11VertexShader> vertShader, std::shared_ptr<DX11PixelShader> fragShader, const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt)
 {
 	_vertShader = vertShader;
 	_fragShader = fragShader;
-	_inputLayout = RHI::getInst().createInputLayout(desc, descElemCnt, _vertShader->getBinaryData());
+	_inputLayout = RHI::getInst().getDevice()->createInputLayout(desc, descElemCnt, _vertShader->getBinaryData());
 }
 
 void Material::createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg)
 {
-	ID3D11Buffer* buffer = RHI::getInst().createConstantBuffer(memPtr, memSize);
+	ComPtr<ID3D11Buffer> buffer = RHI::getInst().getDevice()->createConstantBuffer(memPtr, memSize);
 	ConstantBufferDesc& desc = _vsConstantBuffers[reg];
 	CHECK(!desc._used);
 	desc._used = true;	
@@ -105,21 +90,21 @@ void Material::createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uin
 
 void Material::createPsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg)
 {
-	ID3D11Buffer* buffer = RHI::getInst().createConstantBuffer(memPtr, memSize);
+	ComPtr<ID3D11Buffer> buffer = RHI::getInst().getDevice()->createConstantBuffer(memPtr, memSize);
 	ConstantBufferDesc& desc = _psConstantBuffers[reg];
 	CHECK(!desc._used);
 	desc._used = true;	
 	desc._buffer = buffer;
 }
 
-ID3D11Buffer* Material::getVsConstantBuffer(uint32_t reg)
+ComPtr<ID3D11Buffer> Material::getVsConstantBuffer(uint32_t reg)
 {
 	ConstantBufferDesc& desc = _vsConstantBuffers[reg];
 	CHECK(desc._used);
 	return desc._buffer;
 }
 
-ID3D11Buffer* Material::getPsConstantBuffer(uint32_t reg)
+ComPtr<ID3D11Buffer> Material::getPsConstantBuffer(uint32_t reg)
 {
 	ConstantBufferDesc& desc = _psConstantBuffers[reg];
 	CHECK(desc._used);
@@ -159,7 +144,7 @@ void Material::apply(std::shared_ptr<DX11GraphicContext> gfxContext)
 			uint32_t idxBuffers = numBuffers;
 			numBuffers += 1;
 
-			buffers[idxBuffers] = desc._buffer;
+			buffers[idxBuffers] = desc._buffer.Get();
 			strides[idxBuffers] = desc._stride;
 			offsets[idxBuffers] = desc._offset;
 		}
@@ -167,7 +152,7 @@ void Material::apply(std::shared_ptr<DX11GraphicContext> gfxContext)
 
 	// IA
 	gfxContext->IASetVertexBuffers(0, numBuffers, buffers, strides, offsets);
-	gfxContext->IASetInputLayout(_inputLayout);
+	gfxContext->IASetInputLayout(_inputLayout.Get());
 
 	// VS
 	gfxContext->VSSetShader(_vertShader.get(), nullptr, 0);
@@ -176,7 +161,8 @@ void Material::apply(std::shared_ptr<DX11GraphicContext> gfxContext)
 		ConstantBufferDesc& desc = _vsConstantBuffers[i];
 		if (desc._used)
 		{
-			gfxContext->VSSetConstantBuffers(i, 1, &desc._buffer);
+			ID3D11Buffer* buffers[] = {desc._buffer.Get()};
+			gfxContext->VSSetConstantBuffers(i, 1, buffers);
 		}
 	}
 
@@ -187,7 +173,8 @@ void Material::apply(std::shared_ptr<DX11GraphicContext> gfxContext)
 		ConstantBufferDesc& desc = _psConstantBuffers[i];
 		if (desc._used)
 		{
-			gfxContext->PSSetConstantBuffers(i, 1, &desc._buffer);
+			ID3D11Buffer* buffers[] = {desc._buffer.Get()};
+			gfxContext->PSSetConstantBuffers(i, 1, buffers);
 		}
 	}
 

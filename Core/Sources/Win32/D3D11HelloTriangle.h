@@ -2,9 +2,6 @@
 
 #include "DXSample.h"
 
-using namespace DirectX;
-using Microsoft::WRL::ComPtr;
-
 class Model;
 class Scene;
 class Camera;

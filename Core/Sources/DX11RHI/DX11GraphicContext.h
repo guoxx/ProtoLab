@@ -14,13 +14,13 @@ public:
 		RHI_CLEAR_DEPTH_STENCIL = RHI_CLEAR_DEPTH | RHI_CLEAR_STENCIL
 	};
 
-	DX11GraphicContext(ID3D11DeviceContext* ctx);
+	explicit DX11GraphicContext(ComPtr<ID3D11DeviceContext> ctx);
 	~DX11GraphicContext();
 
 	void resetDefaultRenderStates(std::shared_ptr<DX11RenderStateSet> stateSet);
 
 	// input assembler
-	void IASetInputLayout(ID3D11InputLayout* vertexDecl);
+	void IASetInputLayout(ID3D11InputLayout* inputLayout);
 	void IASetVertexBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppVertexBuffers, const uint32_t *pStrides, const uint32_t *pOffsets);
 	void IASetIndexBuffer(ID3D11Buffer* pIndexBuffer, DXGI_FORMAT format, uint32_t offset);
 	void IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY topology);
@@ -59,9 +59,9 @@ public:
 
 	// command list
 	HRESULT finishCommandList(bool restoreDeferredContextState, ID3D11CommandList **ppCommandList);
-	void executeCommandList(ID3D11CommandList *pCommandList, bool restoreContextState);
+	void executeCommandList(ComPtr<ID3D11CommandList> pCommandList, bool restoreContextState);
 
 private:
-	ID3D11DeviceContext*			_context{nullptr};
+	ComPtr<ID3D11DeviceContext>	_context;
 };
 

@@ -21,7 +21,7 @@ private:
 	std::shared_ptr<DX11RenderTarget>				_sceneRT;
 	std::shared_ptr<DX11DepthStencilRenderTarget>	_sceneDepthRT;
 
-	IDXGISwapChain*									_swapChain;	
+	ComPtr<IDXGISwapChain>							_swapChain;	
 	std::shared_ptr<DX11RenderTarget>				_backbufferRT;
 
 	std::shared_ptr<Filter2D>						_filterIdentity;
