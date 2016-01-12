@@ -91,9 +91,8 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 	{
 		// update view constant buffer
 		ComPtr<ID3D11Buffer> viewCB = _material->getVsConstantBuffer(MaterialCB::BaseMaterial::ViewReg);
-		D3D11_MAPPED_SUBRESOURCE viewRes;
-		gfxContext->mapResource(viewCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
-		MaterialCB::BaseMaterial::View* dataPtr = (MaterialCB::BaseMaterial::View*)viewRes.pData;
+		DX11ResourceMapGuard viewRes{ gfxContext.get(), viewCB.Get() };
+		MaterialCB::BaseMaterial::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMMATRIX mModelViewInv = DirectX::XMMatrixInverse(nullptr, mModelView);
@@ -101,15 +100,13 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewInvTrans, DirectX::XMMatrixTranspose(mModelViewInvTrans));
-		gfxContext->unmapResource(viewCB.Get(), 0);
 	}
 
 	{
-		ComPtr<ID3D11Buffer> materialCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::MaterialReg);
 		// update material constant buffer
-		D3D11_MAPPED_SUBRESOURCE materialRes;
-		gfxContext->mapResource(materialCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &materialRes);
-		MaterialCB::BaseMaterial::Material* matPtr = (MaterialCB::BaseMaterial::Material*)materialRes.pData;
+		ComPtr<ID3D11Buffer> materialCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::MaterialReg);
+		DX11ResourceMapGuard materialRes{ gfxContext.get(), materialCB.Get() };
+		MaterialCB::BaseMaterial::Material* matPtr = materialRes.getPtr<std::remove_pointer_t<decltype(matPtr)>>();
 		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
 		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
 		matPtr->specular = DirectX::XMFLOAT4(mat.specular[0], mat.specular[1], mat.specular[2], 0);
@@ -119,15 +116,13 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		matPtr->ior = mat.ior;
 		matPtr->dissolve = mat.dissolve;
 		matPtr->illum = mat.illum;
-		gfxContext->unmapResource(materialCB.Get(), 0);
 	}
 
 	{
-		ComPtr<ID3D11Buffer> pointLightCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::PointLightReg);
 		// update point light constant buffer
-		D3D11_MAPPED_SUBRESOURCE pointLightRes;
-		gfxContext->mapResource(pointLightCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pointLightRes);
-		MaterialCB::BaseMaterial::PointLight* dataPtr = (MaterialCB::BaseMaterial::PointLight*)pointLightRes.pData;
+		ComPtr<ID3D11Buffer> pointLightCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::PointLightReg);
+		DX11ResourceMapGuard pointLightRes{ gfxContext.get(), pointLightCB.Get() };
+		MaterialCB::BaseMaterial::PointLight* dataPtr = pointLightRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMVECTOR lightPositionInLocalSpace = pointLight->getPosition();
 		lightPositionInLocalSpace = DirectX::XMVectorSetW(lightPositionInLocalSpace, 1);
@@ -137,7 +132,6 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		dataPtr->intensity = DirectX::XMFLOAT4{intensity.x, intensity.y, intensity.z, 0};
 		dataPtr->radiusStart = pointLight->getRadiusStart();
 		dataPtr->radiusEnd = pointLight->getRadiusEnd();
-		gfxContext->unmapResource(pointLightCB.Get(), 0);
 	}
 
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
@@ -157,20 +151,17 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 	{
 		// update view constant buffer
 		ComPtr<ID3D11Buffer> viewCB = _material->getVsConstantBuffer(MaterialCB::PerVertexColor::ViewReg);
-		D3D11_MAPPED_SUBRESOURCE viewRes;
-		gfxContext->mapResource(viewCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
-		MaterialCB::PerVertexColor::View* dataPtr = (MaterialCB::PerVertexColor::View*)viewRes.pData;
+		DX11ResourceMapGuard viewRes{ gfxContext.get(), viewCB.Get() };
+		MaterialCB::PerVertexColor::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMStoreFloat4x4(&dataPtr->modelViewProjMatrix, DirectX::XMMatrixTranspose(mModelViewProj));
-		gfxContext->unmapResource(viewCB.Get(), 0);
 	}
 
 	{
 		// update material constant buffer
 		ComPtr<ID3D11Buffer> materialCB = _material->getPsConstantBuffer(MaterialCB::PerVertexColor::MaterialReg);
-		D3D11_MAPPED_SUBRESOURCE matSubResource;
-		gfxContext->mapResource(materialCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &matSubResource);
-		MaterialCB::PerVertexColor::Material* matPtr = (MaterialCB::PerVertexColor::Material*)matSubResource.pData;
+		DX11ResourceMapGuard materialRes{ gfxContext.get(), materialCB.Get() };
+		MaterialCB::PerVertexColor::Material* matPtr = materialRes.getPtr<std::remove_pointer_t<decltype(matPtr)>>();
 		matPtr->ambient = DirectX::XMFLOAT4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 0);
 		matPtr->diffuse = DirectX::XMFLOAT4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 0);
 		matPtr->specular = DirectX::XMFLOAT4(mat.specular[0], mat.specular[1], mat.specular[2], 0);
@@ -180,7 +171,6 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 		matPtr->ior = mat.ior;
 		matPtr->dissolve = mat.dissolve;
 		matPtr->illum = mat.illum;
-		gfxContext->unmapResource(materialCB.Get(), 0);
 	}
 
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
@@ -200,14 +190,12 @@ void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::sh
 	{
 		// update view constant buffer
 		ComPtr<ID3D11Buffer> viewCB = _material->getVsConstantBuffer(MaterialCB::EmissiveMaterial::ViewReg);
-		D3D11_MAPPED_SUBRESOURCE viewRes;
-		gfxContext->mapResource(viewCB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &viewRes);
-		MaterialCB::EmissiveMaterial::View* dataPtr = (MaterialCB::EmissiveMaterial::View*)viewRes.pData;
+		DX11ResourceMapGuard viewRes{ gfxContext.get(), viewCB.Get() };
+		MaterialCB::EmissiveMaterial::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
 		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
-		gfxContext->unmapResource(viewCB.Get(), 0);
 	}
 
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(DirectX::VertexPositionNormalTexture), 0);

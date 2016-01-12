@@ -70,7 +70,7 @@ private:
 class DX11ResourceMapGuard : public Noncopyable, Nonmovable, Heaponly
 {
 public:
-	explicit DX11ResourceMapGuard(DX11GraphicContext* ctx, ID3D11Resource* resource, uint32_t subresource, D3D11_MAP mapType, uint32_t mapFlags)
+	explicit DX11ResourceMapGuard(DX11GraphicContext* ctx, ID3D11Resource* resource, uint32_t subresource = 0, D3D11_MAP mapType = D3D11_MAP_WRITE_DISCARD, uint32_t mapFlags = 0)
 		: _context{ ctx }
 		, _resource{ resource }
 		, subresource{ subresource }
@@ -86,7 +86,7 @@ public:
 	template<class T>
 	T* getPtr()
 	{
-		return static_cast<T>(_mappedSubresource->pData);
+		return static_cast<T*>(_mappedSubresource.pData);
 	}
 
 private:
