@@ -4,6 +4,7 @@ class DX11VertexShader;
 class DX11PixelShader;
 class DX11RenderStateSet;
 
+
 class DX11GraphicContext : public Noncopyable
 {
 public:
@@ -65,3 +66,32 @@ private:
 	ComPtr<ID3D11DeviceContext>	_context;
 };
 
+
+class DX11ResourceMapGuard : public Noncopyable, Nonmovable, Heaponly
+{
+public:
+	explicit DX11ResourceMapGuard(DX11GraphicContext* ctx, ID3D11Resource* resource, uint32_t subresource, D3D11_MAP mapType, uint32_t mapFlags)
+		: _context{ ctx }
+		, _resource{ resource }
+		, subresource{ subresource }
+	{
+		_context->mapResource(resource, subresource, mapType, mapFlags, &_mappedSubresource);
+	}
+
+	~DX11ResourceMapGuard()
+	{
+		_context->unmapResource(_resource, subresource);
+	}
+
+	template<class T>
+	T* getPtr()
+	{
+		return static_cast<T>(_mappedSubresource->pData);
+	}
+
+private:
+	DX11GraphicContext* _context;
+	ID3D11Resource* _resource;
+	uint32_t subresource;
+	D3D11_MAPPED_SUBRESOURCE _mappedSubresource;
+};

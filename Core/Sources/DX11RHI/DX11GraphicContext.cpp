@@ -117,12 +117,12 @@ void DX11GraphicContext::OMSetRenderTargets(uint32_t numViews, ID3D11RenderTarge
 
 void DX11GraphicContext::mapResource(ID3D11Resource* resource, uint32_t subresource, D3D11_MAP mapType, uint32_t mapFlags, D3D11_MAPPED_SUBRESOURCE* mappedResource)
 {
-	_context->Map(resource, 0, D3D11_MAP_WRITE_DISCARD, 0, mappedResource);
+	_context->Map(resource, subresource, mapType, mapFlags, mappedResource);
 }
 
 void DX11GraphicContext::unmapResource(ID3D11Resource * resource, uint32_t subresource)
 {
-	_context->Unmap(resource, 0);
+	_context->Unmap(resource, subresource);
 }
 
 void DX11GraphicContext::clear(ID3D11RenderTargetView* rtv, float r, float g, float b, float a)
