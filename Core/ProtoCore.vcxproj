@@ -19,13 +19,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -100,6 +100,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11Device.h" />
     <ClInclude Include="Sources\DX11RHI\DX11GraphicContext.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11Limits.h" />
     <ClInclude Include="Sources\DX11RHI\DX11PixelShader.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RenderStateCache.h" />
     <ClInclude Include="Sources\DX11RHI\DX11RenderStateSet.h" />
@@ -268,13 +269,13 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ThirdParty\DirectXTK\DirectXTK_Desktop_2013.vcxproj">
-      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Shaders\BRDF.hlsli" />
     <None Include="Shaders\PointLight.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ThirdParty\DirectXTK\DirectXTK_Desktop_2015.vcxproj">
+      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

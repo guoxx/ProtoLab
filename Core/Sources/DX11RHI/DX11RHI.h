@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DX11Limits.h"
 #include "DX11Device.h"
 #include "DX11RenderTarget.h"
 #include "DX11DepthStencilRenderTarget.h"

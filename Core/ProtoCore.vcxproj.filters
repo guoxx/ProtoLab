@@ -160,6 +160,9 @@
     <ClInclude Include="Sources\DX11RHI\DX11Device.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11Limits.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
