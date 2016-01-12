@@ -62,6 +62,11 @@ public:
 	HRESULT finishCommandList(bool restoreDeferredContextState, ID3D11CommandList **ppCommandList);
 	void executeCommandList(ComPtr<ID3D11CommandList> pCommandList, bool restoreContextState);
 
+	// query api
+	void begin(ComPtr<ID3D11Asynchronous> async);
+	void end(ComPtr<ID3D11Asynchronous> async);
+	void getData(ComPtr<ID3D11Asynchronous> async, void *pData, uint32_t dataSize, uint32_t getDataFlags);
+
 private:
 	ComPtr<ID3D11DeviceContext>	_context;
 };

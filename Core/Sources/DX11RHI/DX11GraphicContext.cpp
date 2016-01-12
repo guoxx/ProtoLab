@@ -155,3 +155,18 @@ void DX11GraphicContext::executeCommandList(ComPtr<ID3D11CommandList> pCommandLi
 {
 	_context->ExecuteCommandList(pCommandList.Get(), restoreContextState);
 }
+
+void DX11GraphicContext::begin(ComPtr<ID3D11Asynchronous> async)
+{
+	_context->Begin(async.Get());
+}
+
+void DX11GraphicContext::end(ComPtr<ID3D11Asynchronous> async)
+{
+	_context->End(async.Get());
+}
+
+void DX11GraphicContext::getData(ComPtr<ID3D11Asynchronous> async, void * pData, uint32_t dataSize, uint32_t getDataFlags)
+{
+	_context->GetData(async.Get(), pData, dataSize, getDataFlags);
+}
