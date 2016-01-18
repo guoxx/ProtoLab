@@ -142,3 +142,14 @@ ComPtr<ID3D11DepthStencilView> DX11Device::createDepthStencilViewTex2d(ComPtr<ID
 	_device->CreateDepthStencilView(texture.Get(), &dsvDesc, dsv.GetAddressOf());
 	return dsv;
 }
+
+ComPtr<ID3D11Query> DX11Device::createQuery(D3D11_QUERY query, uint32_t miscFlags)
+{
+	D3D11_QUERY_DESC desc;
+	desc.Query = query;
+	desc.MiscFlags = miscFlags;
+
+	ComPtr<ID3D11Query> outQuery;
+	_device->CreateQuery(&desc, outQuery.GetAddressOf());
+	return outQuery;
+}

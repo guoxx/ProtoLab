@@ -15,6 +15,9 @@
 
 // DirectX
 #include <d3d11.h>
+#include <d3d11_1.h>
+#include <d3d11_2.h>
+
 #include <dxgi1_3.h>
 #include <D3Dcompiler.h>
 #include <DirectXMath.h>

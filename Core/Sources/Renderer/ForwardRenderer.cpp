@@ -18,7 +18,7 @@ ForwardRenderer::ForwardRenderer()
 {
 	// TODO: hard code window size
 
-	_swapChain = RHI::getInst().getDevice()->createSwapChain(Win32Application::GetHwnd(), FRAME_COUNT, WIN_WIDTH, WIN_HEIGHT);
+	_swapChain = RHI::getInst().getDevice()->createSwapChain(Win32Application::GetHwnd(), DX11Limits::FRAME_COUNT, WIN_WIDTH, WIN_HEIGHT);
 	_backbufferRT = std::make_shared<DX11RenderTarget>(_swapChain);
 
 	_sceneRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R16G16B16A16_TYPELESS, DXGI_FORMAT_R16G16B16A16_UNORM, DXGI_FORMAT_R16G16B16A16_UNORM);
@@ -84,5 +84,5 @@ void ForwardRenderer::endFrame()
 
 void ForwardRenderer::present()
 {
-	_swapChain->Present(0, 0);
+	_swapChain->Present(2, 0);
 }

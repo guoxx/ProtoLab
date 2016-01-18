@@ -27,6 +27,9 @@ public:
 	ComPtr<ID3D11RenderTargetView> createRenderTargetViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice);
 	ComPtr<ID3D11DepthStencilView> createDepthStencilViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice);
 
+	// query interface
+	ComPtr<ID3D11Query> createQuery(D3D11_QUERY query, uint32_t miscFlags = 0);
+
 private:
 	ComPtr<ID3D11Device> _device;
 };

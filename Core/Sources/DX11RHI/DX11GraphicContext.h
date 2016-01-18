@@ -63,9 +63,9 @@ public:
 	void executeCommandList(ComPtr<ID3D11CommandList> pCommandList, bool restoreContextState);
 
 	// query api
-	void begin(ComPtr<ID3D11Asynchronous> async);
-	void end(ComPtr<ID3D11Asynchronous> async);
-	void getData(ComPtr<ID3D11Asynchronous> async, void *pData, uint32_t dataSize, uint32_t getDataFlags);
+	void begin(ID3D11Asynchronous* async);
+	void end(ID3D11Asynchronous* async);
+	HRESULT getData(ID3D11Asynchronous* async, void *pData, uint32_t dataSize, uint32_t getDataFlags);
 
 private:
 	ComPtr<ID3D11DeviceContext>	_context;
