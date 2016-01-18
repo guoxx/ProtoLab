@@ -78,14 +78,14 @@ public:
 	explicit DX11ResourceMapGuard(DX11GraphicContext* ctx, ID3D11Resource* resource, uint32_t subresource = 0, D3D11_MAP mapType = D3D11_MAP_WRITE_DISCARD, uint32_t mapFlags = 0)
 		: _context{ ctx }
 		, _resource{ resource }
-		, subresource{ subresource }
+		, _subresource{ subresource }
 	{
 		_context->mapResource(resource, subresource, mapType, mapFlags, &_mappedSubresource);
 	}
 
 	~DX11ResourceMapGuard()
 	{
-		_context->unmapResource(_resource, subresource);
+		_context->unmapResource(_resource, _subresource);
 	}
 
 	template<class T>
@@ -97,6 +97,6 @@ public:
 private:
 	DX11GraphicContext* _context;
 	ID3D11Resource* _resource;
-	uint32_t subresource;
+	uint32_t _subresource;
 	D3D11_MAPPED_SUBRESOURCE _mappedSubresource;
 };
