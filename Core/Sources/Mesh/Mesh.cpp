@@ -22,7 +22,7 @@ std::shared_ptr<Material> Mesh::getMaterial() const
 	return _material;
 }
 
-void Mesh::draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight) const
+void Mesh::draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<Material> materialReplacement) const
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
 

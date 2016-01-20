@@ -18,7 +18,7 @@ public:
 
 	std::shared_ptr<Material> getMaterial() const;
 
-	void draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight) const;
+	void draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<Material> materialReplacement = nullptr) const;
 
 	void loadMeshFromFile(const wchar_t* objFileName);
 	void loadCoordinateSystemFrame();

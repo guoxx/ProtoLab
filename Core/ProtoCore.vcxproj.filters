@@ -163,6 +163,9 @@
     <ClInclude Include="Sources\DX11RHI\DX11Limits.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\ShadowMapMaterial_common.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -282,6 +285,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\EmissiveMaterial_vs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowMapMaterial_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

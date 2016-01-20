@@ -8,6 +8,7 @@
 #include "../../Shaders/PerVertexColor_ps.h"
 #include "../../Shaders/EmissiveMaterial_vs.h"
 #include "../../Shaders/EmissiveMaterial_ps.h"
+#include "../../Shaders/ShadowMapMaterial_vs.h"
 
 
 std::shared_ptr<Material> Material::createMaterialBase()
@@ -61,6 +62,21 @@ std::shared_ptr<Material> Material::createMaterialEmissive()
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	mat->initialize(vertShader, fragShader, inputDesc, COUNT_OF_C_ARRAY(inputDesc));
+	return mat;
+}
+
+std::shared_ptr<Material> Material::createMaterialShadowMap()
+{
+	std::shared_ptr<Material> mat = std::make_shared<Material>();
+
+	mat->createVsConstantsBuffer(nullptr, sizeof(MaterialCB::ShadowMapMaterial::View), MaterialCB::ShadowMapMaterial::ViewReg);
+
+	auto vertShader = std::make_shared<DX11VertexShader>(g_ShadowMapMaterial_vs, sizeof(g_ShadowMapMaterial_vs));
+
+	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+		{ "SV_POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	mat->initialize(vertShader, nullptr, inputDesc, COUNT_OF_C_ARRAY(inputDesc));
 	return mat;
 }
 
