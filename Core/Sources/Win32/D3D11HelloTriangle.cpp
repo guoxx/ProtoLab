@@ -78,7 +78,7 @@ void D3D11HelloTriangle::OnUpdate()
 	DirectX::Keyboard::State keyboardState = DirectX::Keyboard::Get().GetState();
 	DirectX::Mouse::State mouseState = DirectX::Mouse::Get().GetState();
 
-	float spd = 0.1f;
+	float spd = 0.01f;
 	if (keyboardState.IsKeyDown(DirectX::Keyboard::W))
 	{
 		_camera->move(_camera->getForward(), spd);
@@ -96,7 +96,7 @@ void D3D11HelloTriangle::OnUpdate()
 		_camera->move(_camera->getLeft(), spd);
 	}
 
-	float mouseScale = 1.0f;
+	float mouseScale = 0.1f;
 	if (mouseState.leftButton)
 	{
 		_camera->rotatePitchYawRoll(-mouseState.y*mouseScale, -mouseState.x*mouseScale, 0);

@@ -84,5 +84,5 @@ void ForwardRenderer::endFrame()
 
 void ForwardRenderer::present()
 {
-	_swapChain->Present(2, 0);
+	_swapChain->Present(0, 0);
 }
