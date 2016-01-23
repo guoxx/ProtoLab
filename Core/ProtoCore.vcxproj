@@ -124,10 +124,12 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\Renderer\Filter2D.h" />
     <ClInclude Include="Sources\Renderer\ForwardRenderer.h" />
     <ClInclude Include="Sources\Renderer\RenderDoc.h" />
+    <ClInclude Include="Sources\Renderer\RenderResources.h" />
     <ClInclude Include="Sources\Renderer\Viewport.h" />
     <ClInclude Include="Sources\Utils\Heaponly.h" />
     <ClInclude Include="Sources\Utils\Noncopyable.h" />
     <ClInclude Include="Sources\Utils\Nonmovable.h" />
+    <ClInclude Include="Sources\Utils\Singleton.h" />
     <ClInclude Include="Sources\Utils\utDefines.h" />
     <ClInclude Include="Sources\Utils\utFuncs.h" />
     <ClInclude Include="Sources\Win32\D3D11HelloTriangle.h" />
@@ -165,6 +167,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\Renderer\Filter2D.cpp" />
     <ClCompile Include="Sources\Renderer\ForwardRenderer.cpp" />
     <ClCompile Include="Sources\Renderer\RenderDoc.cpp" />
+    <ClCompile Include="Sources\Renderer\RenderResources.cpp" />
     <ClCompile Include="Sources\Renderer\Viewport.cpp" />
     <ClCompile Include="Sources\Utils\utFuncs.cpp" />
     <ClCompile Include="Sources\Win32\D3D11HelloTriangle.cpp" />

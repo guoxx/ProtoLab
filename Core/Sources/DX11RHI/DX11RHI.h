@@ -13,8 +13,10 @@
 // TODO:
 // 2. use draw command list to cache each draw call so that we can flush it on another thread
 // 3. deferred context
-class DX11RHI : public Noncopyable, Nonmovable
+class DX11RHI : public Singleton<DX11RHI>
 {
+	friend class Singleton<DX11RHI>;
+
 public:
 	enum class RHI_CLEAR_FLAG
 	{
@@ -22,8 +24,6 @@ public:
 		RHI_CLEAR_STENCIL = D3D11_CLEAR_STENCIL,
 		RHI_CLEAR_DEPTH_STENCIL = RHI_CLEAR_DEPTH | RHI_CLEAR_STENCIL
 	};
-
-	static DX11RHI& getInst();
 
 	void initialize();
 	void finalize();
@@ -41,12 +41,11 @@ public:
 	void submit();
 
 private:
+	DX11RHI() {};
+	~DX11RHI() {};
+
 	std::shared_ptr<DX11Device>			_device{nullptr};
 	std::shared_ptr<DX11GraphicContext>	_immediateContext{nullptr};
 	std::shared_ptr<DX11GraphicContext>	_deferredContext{nullptr};
 	std::shared_ptr<DX11RenderStateSet> _renderStateSet{nullptr};
-
-private:
-	DX11RHI();
-	~DX11RHI();
 };

@@ -24,7 +24,7 @@ std::shared_ptr<Material> Mesh::getMaterial() const
 
 void Mesh::draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<Material> materialReplacement) const
 {
-	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
+	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();
 
 	for (auto prim : _primitives)
 	{
@@ -64,16 +64,16 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 		std::shared_ptr<Primitive> prim = std::make_shared<Primitive>();
 		prim->_name = shape.name;
 		prim->_matIdx = shape.mesh.material_ids[0];
-		prim->_positionBuffer = RHI::getInst().getDevice()->createVertexBuffer(shape.mesh.positions.data(), uint32_t(shape.mesh.positions.size()*sizeof(float)));
+		prim->_positionBuffer = RHI::getInstance().getDevice()->createVertexBuffer(shape.mesh.positions.data(), uint32_t(shape.mesh.positions.size()*sizeof(float)));
 		if (shape.mesh.normals.size() > 0)
 		{
-			prim->_normalBuffer = RHI::getInst().getDevice()->createVertexBuffer(shape.mesh.normals.data(), uint32_t(shape.mesh.normals.size()*sizeof(float)));
+			prim->_normalBuffer = RHI::getInstance().getDevice()->createVertexBuffer(shape.mesh.normals.data(), uint32_t(shape.mesh.normals.size()*sizeof(float)));
 		}
 		if (shape.mesh.texcoords.size() > 0)
 		{
-			prim->_texcoordBuffer = RHI::getInst().getDevice()->createVertexBuffer(shape.mesh.texcoords.data(), uint32_t(shape.mesh.texcoords.size()*sizeof(float)));
+			prim->_texcoordBuffer = RHI::getInstance().getDevice()->createVertexBuffer(shape.mesh.texcoords.data(), uint32_t(shape.mesh.texcoords.size()*sizeof(float)));
 		}
-		prim->_indexBuffer = RHI::getInst().getDevice()->createIndexBuffer(shape.mesh.indices.data(), uint32_t(shape.mesh.indices.size()*sizeof(unsigned int)));
+		prim->_indexBuffer = RHI::getInstance().getDevice()->createIndexBuffer(shape.mesh.indices.data(), uint32_t(shape.mesh.indices.size()*sizeof(unsigned int)));
 		prim->_topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		prim->_indicesFormat = DXGI_FORMAT_R32_UINT;
 		prim->_indicesCount = static_cast<uint32_t>(shape.mesh.indices.size());
@@ -185,7 +185,7 @@ void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, s
 
 void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera) const
 {
-	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Additive());
+	gfxContext->OMSetBlendState(RHI::getInstance().getRenderStateSet()->Additive());
 
 	{
 		// update view constant buffer
@@ -205,5 +205,5 @@ void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::sh
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 
-	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Opaque());
+	gfxContext->OMSetBlendState(RHI::getInstance().getRenderStateSet()->Opaque());
 }

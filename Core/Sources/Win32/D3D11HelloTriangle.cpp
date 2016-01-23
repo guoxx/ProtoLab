@@ -24,7 +24,7 @@ void D3D11HelloTriangle::OnInit()
 // Load the rendering pipeline dependencies.
 void D3D11HelloTriangle::LoadPipeline()
 {
-	RHI::getInst().initialize();
+	RHI::getInstance().initialize();
 }
 
 // Load the sample assets.

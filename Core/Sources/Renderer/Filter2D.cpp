@@ -13,9 +13,9 @@ Filter2D::Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11Pix
 		{DirectX::XMFLOAT3{ 3, -1, 0}, DirectX::XMFLOAT2{2, 1}},
 	};
 
-	_vertexBuffer = RHI::getInst().getDevice()->createVertexBuffer(vertexs, sizeof(vertexs));
-	_inputLayout = RHI::getInst().getDevice()->createInputLayout(DirectX::VertexPositionTexture::InputElements, DirectX::VertexPositionTexture::InputElementCount, _vertexShader->getBinaryData());
-	_textureSamp = RHI::getInst().getDevice()->createSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP);
+	_vertexBuffer = RHI::getInstance().getDevice()->createVertexBuffer(vertexs, sizeof(vertexs));
+	_inputLayout = RHI::getInstance().getDevice()->createInputLayout(DirectX::VertexPositionTexture::InputElements, DirectX::VertexPositionTexture::InputElementCount, _vertexShader->getBinaryData());
+	_textureSamp = RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_CLAMP);
 }
 
 Filter2D::~Filter2D()
@@ -24,7 +24,7 @@ Filter2D::~Filter2D()
 
 void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<DX11RenderTarget> dest)
 {
-	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInst().getContext();
+	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();
 
 	ID3D11RenderTargetView* rtvs[] = {dest->getRenderTarget().Get()};
 	gfxContext->OMSetRenderTargets(1, rtvs, nullptr);

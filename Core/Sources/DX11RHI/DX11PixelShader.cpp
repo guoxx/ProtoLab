@@ -5,8 +5,8 @@
 DX11PixelShader::DX11PixelShader(const wchar_t* filename, const char* entryPoint)
 	: DX11Shader{nullptr}
 {
-	_binaryData = RHI::getInst().compilePixelShader(filename, entryPoint);
-	_pixelShader = RHI::getInst().getDevice()->createPixelShaderFromBytecodes(_binaryData->GetBufferPointer(), _binaryData->GetBufferSize());
+	_binaryData = RHI::getInstance().compilePixelShader(filename, entryPoint);
+	_pixelShader = RHI::getInstance().getDevice()->createPixelShaderFromBytecodes(_binaryData->GetBufferPointer(), _binaryData->GetBufferSize());
 }
 
 DX11PixelShader::DX11PixelShader(const void* bytecode, std::size_t bytecodeLength)
@@ -15,7 +15,7 @@ DX11PixelShader::DX11PixelShader(const void* bytecode, std::size_t bytecodeLengt
 	D3DCreateBlob(bytecodeLength, &_binaryData);
 	std::memcpy(_binaryData->GetBufferPointer(), bytecode, bytecodeLength);
 
-	_pixelShader = RHI::getInst().getDevice()->createPixelShaderFromBytecodes(_binaryData->GetBufferPointer(), _binaryData->GetBufferSize());
+	_pixelShader = RHI::getInstance().getDevice()->createPixelShaderFromBytecodes(_binaryData->GetBufferPointer(), _binaryData->GetBufferSize());
 }
 
 DX11PixelShader::~DX11PixelShader()

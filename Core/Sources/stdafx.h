@@ -39,6 +39,7 @@ using Microsoft::WRL::ComPtr;
 #include "Utils/Nonmovable.h"
 #include "Utils/Noncopyable.h"
 #include "Utils/Heaponly.h"
+#include "Utils/Singleton.h"
 
 #include "../Shaders/HLSLCommon.h"
 

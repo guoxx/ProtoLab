@@ -1,13 +1,6 @@
 #include "stdafx.h"
 #include "DX11RHI.h"
 
-
-DX11RHI& DX11RHI::getInst()
-{
-	static DX11RHI _inst;
-	return _inst;
-}
-
 void DX11RHI::initialize()
 {
 	HRESULT hr;
@@ -136,11 +129,3 @@ void DX11RHI::submit()
 }
 
 
-DX11RHI::DX11RHI()
-{
-}
-
-
-DX11RHI::~DX11RHI()
-{
-}

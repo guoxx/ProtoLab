@@ -92,12 +92,12 @@ void Material::initialize(std::shared_ptr<DX11VertexShader> vertShader, std::sha
 {
 	_vertShader = vertShader;
 	_fragShader = fragShader;
-	_inputLayout = RHI::getInst().getDevice()->createInputLayout(desc, descElemCnt, _vertShader->getBinaryData());
+	_inputLayout = RHI::getInstance().getDevice()->createInputLayout(desc, descElemCnt, _vertShader->getBinaryData());
 }
 
 void Material::createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg)
 {
-	ComPtr<ID3D11Buffer> buffer = RHI::getInst().getDevice()->createConstantBuffer(memPtr, memSize);
+	ComPtr<ID3D11Buffer> buffer = RHI::getInstance().getDevice()->createConstantBuffer(memPtr, memSize);
 	ConstantBufferDesc& desc = _vsConstantBuffers[reg];
 	CHECK(!desc._used);
 	desc._used = true;	
@@ -106,7 +106,7 @@ void Material::createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uin
 
 void Material::createPsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg)
 {
-	ComPtr<ID3D11Buffer> buffer = RHI::getInst().getDevice()->createConstantBuffer(memPtr, memSize);
+	ComPtr<ID3D11Buffer> buffer = RHI::getInstance().getDevice()->createConstantBuffer(memPtr, memSize);
 	ConstantBufferDesc& desc = _psConstantBuffers[reg];
 	CHECK(!desc._used);
 	desc._used = true;	

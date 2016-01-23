@@ -166,6 +166,12 @@
     <ClInclude Include="Shaders\ShadowMapMaterial_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Utils\Singleton.h">
+      <Filter>Sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Renderer\RenderResources.h">
+      <Filter>Sources\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -260,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11Device.cpp">
       <Filter>Sources\DX11RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Renderer\RenderResources.cpp">
+      <Filter>Sources\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

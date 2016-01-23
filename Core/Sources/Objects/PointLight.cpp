@@ -66,7 +66,7 @@ void PointLight::debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::
 		dataPtr->radiusEnd = getRadiusEnd();
 	}
 
-	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Additive());
+	gfxContext->OMSetBlendState(RHI::getInstance().getRenderStateSet()->Additive());
 	_sphere->draw(mModel, camera, nullptr);
-	gfxContext->OMSetBlendState(RHI::getInst().getRenderStateSet()->Opaque());
+	gfxContext->OMSetBlendState(RHI::getInstance().getRenderStateSet()->Opaque());
 }
