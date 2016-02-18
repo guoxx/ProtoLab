@@ -10,10 +10,13 @@
 static const uint32_t typename##Reg = reg; \
 struct __declspec(align(16)) typename
 
-#define float4x4	DirectX::XMFLOAT4X4
-#define float4		DirectX::XMFLOAT4
-#define float3		DirectX::XMFLOAT3
-#define float2		DirectX::XMFLOAT2
+typedef DirectX::XMINT4		int4;
+typedef DirectX::XMINT3		int3;
+typedef DirectX::XMINT2		int2;
+typedef DirectX::XMFLOAT4X4 float4x4;
+typedef DirectX::XMFLOAT4	float4;
+typedef DirectX::XMFLOAT3	float3;
+typedef DirectX::XMFLOAT2	float2;
 
 #elif defined(__clang__)
 
