@@ -7,6 +7,18 @@ class Mesh;
 class PointLight : public ILight
 {
 public:
+	enum AXIS
+	{
+		AXIS_START = 0,
+		POSITIVE_X = AXIS_START,
+		NEGATIVE_X,
+		POSITIVE_Y,
+		NEGATIVE_Y,
+		POSITIVE_Z,
+		NEGATIVE_Z,
+		AXIS_END,
+	};
+
 	PointLight();
 	virtual ~PointLight();
 
@@ -17,6 +29,9 @@ public:
 	float getRadiusStart() const;
 	float getRadiusEnd() const;
 
+	DirectX::XMMATRIX getViewProj(AXIS axis) const;
+
+	virtual DX11DepthStencilRenderTarget* getShadowMapRenderTarget() override final;
 	virtual void debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera) override final;
 
 private:

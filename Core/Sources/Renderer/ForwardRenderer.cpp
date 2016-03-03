@@ -24,8 +24,6 @@ ForwardRenderer::ForwardRenderer()
 	_sceneRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R16G16B16A16_TYPELESS, DXGI_FORMAT_R16G16B16A16_UNORM, DXGI_FORMAT_R16G16B16A16_UNORM);
 	_sceneDepthRT = std::make_shared<DX11DepthStencilRenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
 
-	_shadowMapRT = std::make_shared<DX11DepthStencilRenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
-
 	std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
 	std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_FilterIdentity_ps, sizeof(g_FilterIdentity_ps));
 	_filterIdentity = std::make_shared<Filter2D>(vs, ps);
@@ -94,16 +92,32 @@ void ForwardRenderer::_renderShadowMapPass(std::shared_ptr<Scene> scene)
 	auto gfxContext = RHI::getInstance().getContext();
 
 	// clear shadow map
-	gfxContext->clear(_shadowMapRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0);
-
 	auto models = scene->getModels();
 	auto pointLights = scene->getPointLights();
 
-	for (auto model : models)
+	for (auto light : pointLights)
 	{
-		auto mesh = model->getMesh();
-		for (auto light : pointLights)
+		PointLight* pl = dynamic_cast<PointLight*>(light.get());
+
+		if (pl != nullptr)
 		{
+			// setup shadow map render target
+			DX11DepthStencilRenderTarget* shadowMapRT = pl->getShadowMapRenderTarget();
+			gfxContext->clear(shadowMapRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH);
+			gfxContext->OMSetRenderTargets(0, nullptr, shadowMapRT->getRenderTarget().Get());
+
+			// setup proj matrix
+			DirectX::XMMATRIX mViewProj[PointLight::AXIS_END];
+			for (int32_t axis = PointLight::AXIS_START; axis < PointLight::AXIS_END; ++axis)
+			{
+				mViewProj[axis] = pl->getViewProj(static_cast<PointLight::AXIS>(axis));
+			}
+
+			for (auto model : models)
+			{
+				auto mesh = model->getMesh();
+				mesh->drawShadowMap(model->getWorldMatrix(), mViewProj);
+			}
 		}
 	}
 }

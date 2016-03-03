@@ -2,7 +2,8 @@
 
 ConstantsBuffer(View, vs, 0)
 {
-	float4x4 mModelViewProj;
+	float4x4 mModel;
+	float4x4 mViewProj[6];
 };
 
 #ifdef __HLSL__

@@ -18,13 +18,6 @@ class DX11RHI : public Singleton<DX11RHI>
 	friend class Singleton<DX11RHI>;
 
 public:
-	enum class RHI_CLEAR_FLAG
-	{
-		RHI_CLEAR_DEPTH = D3D11_CLEAR_DEPTH,
-		RHI_CLEAR_STENCIL = D3D11_CLEAR_STENCIL,
-		RHI_CLEAR_DEPTH_STENCIL = RHI_CLEAR_DEPTH | RHI_CLEAR_STENCIL
-	};
-
 	void initialize();
 	void finalize();
 

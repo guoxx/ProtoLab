@@ -88,10 +88,17 @@ public:
 		_context->unmapResource(_resource, _subresource);
 	}
 
+	// TODO: remove later
 	template<class T>
 	T* getPtr()
 	{
 		return static_cast<T*>(_mappedSubresource.pData);
+	}
+
+	template<class T>
+	void getPtr(T* &ptr)
+	{
+		ptr = static_cast<T*>(_mappedSubresource.pData);
 	}
 
 private:

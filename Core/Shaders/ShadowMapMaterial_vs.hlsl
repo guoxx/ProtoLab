@@ -3,6 +3,6 @@
 PSInput main(VSInput input)
 {
 	PSInput result;
-	result.position = mul(float4(input.position, 1), mModelViewProj);
+	result.position = mul(float4(input.position, 1), mModel);
 	return result;
 }

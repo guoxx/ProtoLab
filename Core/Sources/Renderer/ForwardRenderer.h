@@ -21,7 +21,6 @@ private:
 	void _renderShadowMapPass(std::shared_ptr<Scene> scene);
 
 private:
-	std::shared_ptr<DX11DepthStencilRenderTarget>	_shadowMapRT;
 	std::shared_ptr<DX11RenderTarget>				_sceneRT;
 	std::shared_ptr<DX11DepthStencilRenderTarget>	_sceneDepthRT;
 

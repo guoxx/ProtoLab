@@ -11,6 +11,7 @@
 
 Mesh::Mesh()
 {
+	_shadowMapMaterial = Material::createMaterialShadowMap();
 }
 
 Mesh::~Mesh()
@@ -22,7 +23,7 @@ std::shared_ptr<Material> Mesh::getMaterial() const
 	return _material;
 }
 
-void Mesh::draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight, std::shared_ptr<Material> materialReplacement) const
+void Mesh::draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> pointLight) const
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();
 
@@ -40,6 +41,16 @@ void Mesh::draw(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera, std::
 		{
 			_drawEmissive(gfxContext, prim, mModel, camera);
 		}
+	}
+}
+
+void Mesh::drawShadowMap(DirectX::XMMATRIX mModel, DirectX::XMMATRIX mViewProj[6]) const
+{
+	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();
+
+	for (auto prim : _primitives)
+	{
+		_drawShadowMap(gfxContext, prim, mModel, mViewProj);
 	}
 }
 
@@ -206,4 +217,27 @@ void Mesh::_drawEmissive(std::shared_ptr<DX11GraphicContext> gfxContext, std::sh
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 
 	gfxContext->OMSetBlendState(RHI::getInstance().getRenderStateSet()->Opaque());
+}
+
+void Mesh::_drawShadowMap(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::XMMATRIX mModel, DirectX::XMMATRIX mViewProj[6]) const
+{
+	gfxContext->OMSetBlendState(RHI::getInstance().getRenderStateSet()->Opaque());
+
+	ComPtr<ID3D11Buffer> viewCB = _shadowMapMaterial->getVsConstantBuffer(MaterialCB::ShadowMapMaterial::ViewReg);
+	DX11ResourceMapGuard viewRes{ gfxContext.get(), viewCB.Get() };
+	MaterialCB::ShadowMapMaterial::View* dataPtr;
+	viewRes.getPtr(dataPtr);
+	DirectX::XMStoreFloat4x4(&dataPtr->mModel, DirectX::XMMatrixTranspose(mModel));
+	for (int i = 0; i < 6; ++i)
+	{
+		DirectX::XMStoreFloat4x4(&dataPtr->mViewProj[i], DirectX::XMMatrixTranspose(mViewProj[i]));
+	}
+
+	_shadowMapMaterial->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(float3), 0);
+	_shadowMapMaterial->apply(gfxContext);
+
+	gfxContext->IASetIndexBuffer(prim->_indexBuffer.Get(), prim->_indicesFormat, 0);
+	gfxContext->IASetPrimitiveTopology(prim->_topology);
+	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
+
 }

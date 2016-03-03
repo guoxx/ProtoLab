@@ -40,6 +40,46 @@ float PointLight::getRadiusEnd() const
 	return _radiusEnd;
 }
 
+DirectX::XMMATRIX PointLight::getViewProj(AXIS axis) const
+{
+	float fov = 90.0f;
+	float zNear = 0.01f;
+	float zFar = _radiusEnd;
+	float aspect = 1.0f;
+	assert(zFar > zNear);
+
+	DirectX::XMMATRIX mProj = DirectX::XMMatrixPerspectiveFovRH(fov, aspect, zNear, zFar);
+
+	static const DirectX::XMVECTOR axes[AXIS_END] = {
+		{1.0f, 0.0f, 0.0f, 0.0f},		// POSITIVE_X
+		{-1.0f, 0.0f, 0.0f, 0.0f},		// NEGATIVE_X
+		{0.0f, 1.0f, 0.0f, 0.0f},		// POSITIVE_Y
+		{0.0f, -1.0f, 0.0f, 0.0f},		// NEGATIVE_Y
+		{0.0f, 0.0f, 1.0f, 0.0f},		// POSITIVE_Z
+		{0.0f, 0.0f, -1.0f, 0.0f},		// NEGATIVE_Z
+	};
+	static const DirectX::XMVECTOR upDir[AXIS_END] = {
+		{0.0f, 1.0f, 0.0f, 0.0f},		// POSITIVE_X
+		{0.0f, 1.0f, 0.0f, 0.0f},		// NEGATIVE_X
+		{0.0f, 0.0f, 1.0f, 0.0f},		// POSITIVE_Y
+		{0.0f, 0.0f, -1.0f, 0.0f},		// NEGATIVE_Y
+		{0.0f, 1.0f, 0.0f, 0.0f},		// POSITIVE_Z
+		{0.0f, 1.0f, 0.0f, 0.0f},		// NEGATIVE_Z
+	};
+
+	DirectX::XMVECTOR position = getPosition();
+	DirectX::XMMATRIX mView = DirectX::XMMatrixLookToRH(position, axes[axis], upDir[axis]);
+	
+	DirectX::XMMATRIX mViewProj = DirectX::XMMatrixMultiply(mView, mProj);
+	return mViewProj;
+}
+
+DX11DepthStencilRenderTarget* PointLight::getShadowMapRenderTarget()
+{
+	// TODO
+	return nullptr;
+}
+
 void PointLight::debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera)
 {
 	if (!_sphere)
