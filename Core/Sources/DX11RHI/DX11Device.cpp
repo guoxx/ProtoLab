@@ -143,6 +143,39 @@ ComPtr<ID3D11DepthStencilView> DX11Device::createDepthStencilViewTex2d(ComPtr<ID
 	return dsv;
 }
 
+ComPtr<ID3D11Texture2D> DX11Device::createTextureCube(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags)
+{
+	ComPtr<ID3D11Texture2D> tex;
+	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
+	desc.BindFlags = bindFlags;
+	_device->CreateTexture2D(&desc, nullptr, tex.GetAddressOf());
+	return tex;
+}
+
+ComPtr<ID3D11ShaderResourceView> DX11Device::createShaderResourceViewTexCube(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT srvFormat, uint32_t numMipmap)
+{
+	ComPtr<ID3D11ShaderResourceView> srv;
+	auto srvDesc = createDx11ShaderResourceViewDescTexCube(srvFormat, numMipmap);
+	_device->CreateShaderResourceView(texture.Get(), &srvDesc, srv.GetAddressOf());
+	return srv;
+}
+
+ComPtr<ID3D11RenderTargetView> DX11Device::createRenderTargetViewTexCube(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice)
+{
+	ComPtr<ID3D11RenderTargetView> rtv;
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTexCube(rtvFormat, mipSlice);
+	_device->CreateRenderTargetView(texture.Get(), &rtvDesc, rtv.GetAddressOf());
+	return rtv;
+}
+
+ComPtr<ID3D11DepthStencilView> DX11Device::createDepthStencilViewTexCube(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice)
+{
+	ComPtr<ID3D11DepthStencilView> dsv;
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = createDx11DepthStencilViewDescTexCube(dsvFormat, mipSlice);
+	_device->CreateDepthStencilView(texture.Get(), &dsvDesc, dsv.GetAddressOf());
+	return dsv;
+}
+
 ComPtr<ID3D11Query> DX11Device::createQuery(D3D11_QUERY query, uint32_t miscFlags)
 {
 	D3D11_QUERY_DESC desc;

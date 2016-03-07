@@ -76,8 +76,13 @@ DirectX::XMMATRIX PointLight::getViewProj(AXIS axis) const
 
 DX11DepthStencilRenderTarget* PointLight::getShadowMapRenderTarget()
 {
-	// TODO
-	return nullptr;
+	if (!_shadowMapRT)
+	{
+		_shadowMapRT = std::make_shared<DX11DepthStencilRenderTarget>();
+		_shadowMapRT->initializeAsCube(256, 256, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
+	}
+
+	return _shadowMapRT.get();
 }
 
 void PointLight::debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera)

@@ -27,6 +27,11 @@ public:
 	ComPtr<ID3D11RenderTargetView> createRenderTargetViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice);
 	ComPtr<ID3D11DepthStencilView> createDepthStencilViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice);
 
+	ComPtr<ID3D11Texture2D> createTextureCube(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags);
+	ComPtr<ID3D11ShaderResourceView> createShaderResourceViewTexCube(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT srvFormat, uint32_t numMipmap);
+	ComPtr<ID3D11RenderTargetView> createRenderTargetViewTexCube(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice);
+	ComPtr<ID3D11DepthStencilView> createDepthStencilViewTexCube(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice);
+
 	// query interface
 	ComPtr<ID3D11Query> createQuery(D3D11_QUERY query, uint32_t miscFlags = 0);
 

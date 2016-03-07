@@ -1,8 +1,8 @@
 #include "ShadowMapMaterial_common.h"
 
-PSInput main(VSInput input)
+VSOutput main(VSInput input)
 {
-	PSInput result;
-	result.position = mul(float4(input.position, 1), mModel);
+	VSOutput result;
+	result.positionWS = mul(float4(input.position, 1), mModel);
 	return result;
 }

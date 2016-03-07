@@ -40,5 +40,7 @@ private:
 	float _radiusEnd;
 
 	std::shared_ptr<Mesh> _sphere;
+
+	std::shared_ptr<DX11DepthStencilRenderTarget> _shadowMapRT;
 };
 

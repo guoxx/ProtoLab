@@ -80,6 +80,7 @@ std::shared_ptr<DX11Device> DX11RHI::getDevice() const
 
 std::shared_ptr<DX11GraphicContext> DX11RHI::getContext() const
 {
+	return _immediateContext;
 	// TODO: each need to have own context
 	return _deferredContext;
 }

@@ -228,10 +228,10 @@ void Mesh::_drawShadowMap(std::shared_ptr<DX11GraphicContext> gfxContext, std::s
 	MaterialCB::ShadowMapMaterial::View* dataPtr;
 	viewRes.getPtr(dataPtr);
 	DirectX::XMStoreFloat4x4(&dataPtr->mModel, DirectX::XMMatrixTranspose(mModel));
-	for (int i = 0; i < 6; ++i)
-	{
-		DirectX::XMStoreFloat4x4(&dataPtr->mViewProj[i], DirectX::XMMatrixTranspose(mViewProj[i]));
-	}
+	//for (int i = 0; i < 6; ++i)
+	//{
+	//	DirectX::XMStoreFloat4x4(&dataPtr->mViewProj[i], DirectX::XMMatrixTranspose(mViewProj[i]));
+	//}
 
 	_shadowMapMaterial->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(float3), 0);
 	_shadowMapMaterial->apply(gfxContext);
