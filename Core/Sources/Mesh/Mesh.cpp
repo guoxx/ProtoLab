@@ -111,6 +111,7 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
 		DirectX::XMMATRIX mModelViewInv = DirectX::XMMatrixInverse(nullptr, mModelView);
 		DirectX::XMMATRIX mModelViewInvTrans = DirectX::XMMatrixTranspose(mModelViewInv);
+		DirectX::XMStoreFloat4x4(&dataPtr->mModel, DirectX::XMMatrixTranspose(mModel));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewInvTrans, DirectX::XMMatrixTranspose(mModelViewInvTrans));
@@ -141,7 +142,14 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		DirectX::XMVECTOR lightPositionInLocalSpace = pointLight->getPosition();
 		lightPositionInLocalSpace = DirectX::XMVectorSetW(lightPositionInLocalSpace, 1);
 		DirectX::XMVECTOR lightPositionInCameraSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModelView);
+		DirectX::XMVECTOR lightPositionInWorldSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModel);
+		for (int i = 0; i < 6; ++i)
+		{
+			DirectX::XMMATRIX mvp = pointLight->getViewProj(static_cast<PointLight::AXIS>(i));
+			DirectX::XMStoreFloat4x4(&dataPtr->mViewProjInLightSpace[i], DirectX::XMMatrixTranspose(mvp));
+		}
 		DirectX::XMStoreFloat4(&dataPtr->lightPositionInCameraSpace, lightPositionInCameraSpace);
+		DirectX::XMStoreFloat4(&dataPtr->lightPositionInWorldSpace, lightPositionInWorldSpace);
 		DirectX::XMFLOAT3 intensity = pointLight->getIntensity();
 		dataPtr->intensity = DirectX::XMFLOAT4{intensity.x, intensity.y, intensity.z, 0};
 		dataPtr->radiusStart = pointLight->getRadiusStart();
@@ -152,6 +160,19 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::NORMAL, prim->_normalBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::TEXCOORD0, prim->_texcoordBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
 	_material->apply(gfxContext);
+
+
+	ID3D11ShaderResourceView* shadowmaps[] = {pointLight->getShadowMapRenderTarget()->getTextureSRV().Get()};
+	gfxContext->PSSetShaderResources(0, 1, shadowmaps);
+	static ID3D11SamplerState* shadowSampler = nullptr;
+	if (shadowSampler == nullptr)
+	{
+		ComPtr<ID3D11SamplerState> samp = DX11RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_CLAMP, D3D11_COMPARISON_LESS);
+		shadowSampler = samp.Get();
+		shadowSampler->AddRef();
+	}
+	ID3D11SamplerState* samps[] = {shadowSampler};
+	gfxContext->PSSetSamplers(0, 1, samps);
 
 	gfxContext->IASetIndexBuffer(prim->_indexBuffer.Get(), prim->_indicesFormat, 0);
 	gfxContext->IASetPrimitiveTopology(prim->_topology);

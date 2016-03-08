@@ -2,6 +2,7 @@
 
 ConstantsBuffer(View, vs, 0)
 {
+	float4x4 mModel;
 	float4x4 mModelView;
 	float4x4 mModelViewProj;
 	float4x4 mModelViewInvTrans;
@@ -24,8 +25,9 @@ ConstantsBuffer(Material, ps, 0)
 
 ConstantsBuffer(PointLight, ps, 1)
 {
-	// TODO: use float3 if possible
+	float4x4 mViewProjInLightSpace[6];
 	float4 lightPositionInCameraSpace;
+	float4 lightPositionInWorldSpace;
 	float4 intensity;
 	float radiusStart;
 	float radiusEnd;
@@ -45,6 +47,7 @@ struct PSInput
 	float3 normalCS : NORMAL;
 	float2 texcoord : TEXCOORD;
 	float3 positionCS : POSITION1;
+	float3 positionWS : POSITION2;
 };
 
 struct PSOutput

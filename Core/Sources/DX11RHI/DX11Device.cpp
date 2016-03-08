@@ -102,10 +102,10 @@ ComPtr<ID3D11InputLayout> DX11Device::createInputLayout(const D3D11_INPUT_ELEMEN
 	return inputLayout;
 }
 
-ComPtr<ID3D11SamplerState> DX11Device::createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode)
+ComPtr<ID3D11SamplerState> DX11Device::createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode, D3D11_COMPARISON_FUNC cmpFunc)
 {
 	ComPtr<ID3D11SamplerState> samp;
-	D3D11_SAMPLER_DESC sampDesc = createDx11SamplerDesc(filter, addressMode);
+	D3D11_SAMPLER_DESC sampDesc = createDx11SamplerDesc(filter, addressMode, cmpFunc);
 	_device->CreateSamplerState(&sampDesc, samp.GetAddressOf());
 	return samp;
 }

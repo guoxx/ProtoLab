@@ -19,7 +19,7 @@ public:
 	ComPtr<ID3D11PixelShader> createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ComPtr<ID3D11InputLayout> createInputLayout(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ComPtr<ID3DBlob> vertexShaderBytecode);
 
-	ComPtr<ID3D11SamplerState> createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode);
+	ComPtr<ID3D11SamplerState> createSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode, D3D11_COMPARISON_FUNC cmpFunc = D3D11_COMPARISON_NEVER);
 
 	// number of mipmap levels include base
 	ComPtr<ID3D11Texture2D> createTexture2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags);

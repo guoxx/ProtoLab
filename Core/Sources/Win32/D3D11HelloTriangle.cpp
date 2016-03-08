@@ -41,16 +41,6 @@ void D3D11HelloTriangle::LoadAssets()
 	_scene = std::make_shared<Scene>();
 
 	{
-		// cornell box
-		_cornellBox = std::make_shared<Model>();
-		_scene->attachModel(_cornellBox);
-
-		auto mesh = std::make_shared<Mesh>();
-		mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Glossy.obj").c_str());
-		_cornellBox->setMesh(mesh);
-	}
-
-	{
 		// coordiante basis
 		auto mod = std::make_shared<Model>();
 		_scene->attachModel(mod);
@@ -58,6 +48,16 @@ void D3D11HelloTriangle::LoadAssets()
 		auto mesh = std::make_shared<Mesh>();
 		mesh->loadCoordinateSystemFrame();
 		mod->setMesh(mesh);
+	}
+
+	{
+		// cornell box
+		_cornellBox = std::make_shared<Model>();
+		_scene->attachModel(_cornellBox);
+
+		auto mesh = std::make_shared<Mesh>();
+		mesh->loadMeshFromFile(GetAssetFullPath(L"CornellBox-Glossy.obj").c_str());
+		_cornellBox->setMesh(mesh);
 	}
 
 	{

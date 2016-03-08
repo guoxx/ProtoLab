@@ -149,12 +149,13 @@ D3D11_DEPTH_STENCIL_VIEW_DESC createDx11DepthStencilViewDescTexCube(DXGI_FORMAT 
 	return dsvDesc;
 }
 
-D3D11_SAMPLER_DESC createDx11SamplerDesc(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode)
+D3D11_SAMPLER_DESC createDx11SamplerDesc(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE addressMode, D3D11_COMPARISON_FUNC comparisonFunc)
 {
 	CD3D11_SAMPLER_DESC sampDesc{CD3D11_DEFAULT{}};
 	sampDesc.Filter = filter;
 	sampDesc.AddressU = addressMode;
 	sampDesc.AddressV = addressMode;
 	sampDesc.AddressW = addressMode;
+	sampDesc.ComparisonFunc = comparisonFunc;
 	return sampDesc;
 }
