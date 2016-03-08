@@ -9,6 +9,7 @@
 #include "../../Shaders/EmissiveMaterial_vs.h"
 #include "../../Shaders/EmissiveMaterial_ps.h"
 #include "../../Shaders/ShadowMapMaterial_vs.h"
+#include "../../Shaders/ShadowMapMaterial_gs.h"
 
 
 std::shared_ptr<Material> Material::createMaterialBase()
@@ -70,13 +71,16 @@ std::shared_ptr<Material> Material::createMaterialShadowMap()
 	std::shared_ptr<Material> mat = std::make_shared<Material>();
 
 	mat->createVsConstantsBuffer(nullptr, sizeof(MaterialCB::ShadowMapMaterial::View), MaterialCB::ShadowMapMaterial::ViewReg);
+	mat->createGsConstantsBuffer(nullptr, sizeof(MaterialCB::ShadowMapMaterial::ViewGS), MaterialCB::ShadowMapMaterial::ViewGSReg);
 
 	auto vertShader = std::make_shared<DX11VertexShader>(g_ShadowMapMaterial_vs, sizeof(g_ShadowMapMaterial_vs));
+	auto geomShader = std::make_shared<DX11GeometryShader>(g_ShadowMapMaterial_gs, sizeof(g_ShadowMapMaterial_gs));
 
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{ "SV_POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	mat->initialize(vertShader, nullptr, inputDesc, COUNT_OF_C_ARRAY(inputDesc));
+	mat->setGeometryShader(geomShader);
 	return mat;
 }
 
@@ -95,12 +99,26 @@ void Material::initialize(std::shared_ptr<DX11VertexShader> vertShader, std::sha
 	_inputLayout = RHI::getInstance().getDevice()->createInputLayout(desc, descElemCnt, _vertShader->getBinaryData());
 }
 
+void Material::setGeometryShader(std::shared_ptr<DX11GeometryShader> geomShader)
+{
+	_geomShader = geomShader;
+}
+
 void Material::createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg)
 {
 	ComPtr<ID3D11Buffer> buffer = RHI::getInstance().getDevice()->createConstantBuffer(memPtr, memSize);
 	ConstantBufferDesc& desc = _vsConstantBuffers[reg];
 	CHECK(!desc._used);
 	desc._used = true;	
+	desc._buffer = buffer;
+}
+
+void Material::createGsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg)
+{
+	ComPtr<ID3D11Buffer> buffer = RHI::getInstance().getDevice()->createConstantBuffer(memPtr, memSize);
+	ConstantBufferDesc& desc = _gsConstantBuffers[reg];
+	CHECK(!desc._used);
+	desc._used = true;
 	desc._buffer = buffer;
 }
 
@@ -116,6 +134,13 @@ void Material::createPsConstantsBuffer(const void* memPtr, uint32_t memSize, uin
 ComPtr<ID3D11Buffer> Material::getVsConstantBuffer(uint32_t reg)
 {
 	ConstantBufferDesc& desc = _vsConstantBuffers[reg];
+	CHECK(desc._used);
+	return desc._buffer;
+}
+
+ComPtr<ID3D11Buffer> Material::getGsConstantBuffer(uint32_t reg)
+{
+	ConstantBufferDesc& desc = _gsConstantBuffers[reg];
 	CHECK(desc._used);
 	return desc._buffer;
 }
@@ -182,15 +207,33 @@ void Material::apply(std::shared_ptr<DX11GraphicContext> gfxContext)
 		}
 	}
 
-	// PS
-	gfxContext->PSSetShader(_fragShader.get(), nullptr, 0);
-	for (uint32_t i = 0; i < _vsConstantBuffers.size(); ++i)
+	if (_geomShader)
 	{
-		ConstantBufferDesc& desc = _psConstantBuffers[i];
-		if (desc._used)
+		// GS
+		gfxContext->GSSetShader(_geomShader.get(), nullptr, 0);
+		for (uint32_t i = 0; i < _gsConstantBuffers.size(); ++i)
 		{
-			ID3D11Buffer* buffers[] = {desc._buffer.Get()};
-			gfxContext->PSSetConstantBuffers(i, 1, buffers);
+			ConstantBufferDesc& desc = _gsConstantBuffers[i];
+			if (desc._used)
+			{
+				ID3D11Buffer* buffers[] = { desc._buffer.Get() };
+				gfxContext->GSSetConstantBuffers(i, 1, buffers);
+			}
+		}
+	}
+
+	if (_fragShader)
+	{
+		// PS
+		gfxContext->PSSetShader(_fragShader.get(), nullptr, 0);
+		for (uint32_t i = 0; i < _vsConstantBuffers.size(); ++i)
+		{
+			ConstantBufferDesc& desc = _psConstantBuffers[i];
+			if (desc._used)
+			{
+				ID3D11Buffer* buffers[] = { desc._buffer.Get() };
+				gfxContext->PSSetConstantBuffers(i, 1, buffers);
+			}
 		}
 	}
 

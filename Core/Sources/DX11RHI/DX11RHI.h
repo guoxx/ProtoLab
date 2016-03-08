@@ -6,6 +6,7 @@
 #include "DX11DepthStencilRenderTarget.h"
 #include "DX11GraphicContext.h"
 #include "DX11VertexShader.h"
+#include "DX11GeometryShader.h"
 #include "DX11PixelShader.h"
 #include "DX11RenderStateSet.h"
 

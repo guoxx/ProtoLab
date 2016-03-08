@@ -65,10 +65,14 @@ public:
 
 	void initialize(std::shared_ptr<DX11VertexShader> vertShader, std::shared_ptr<DX11PixelShader> fragShader, const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt);
 
+	void setGeometryShader(std::shared_ptr<DX11GeometryShader> geomShader);
+
 	void createVsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg);
+	void createGsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg);
 	void createPsConstantsBuffer(const void* memPtr, uint32_t memSize, uint32_t reg);
 
 	ComPtr<ID3D11Buffer> getVsConstantBuffer(uint32_t reg);
+	ComPtr<ID3D11Buffer> getGsConstantBuffer(uint32_t reg);
 	ComPtr<ID3D11Buffer> getPsConstantBuffer(uint32_t reg);
 
 	void setVertexBuffer(VEX_INPUT_SLOT slot, ID3D11Buffer* buffer, uint32_t stride, uint32_t offset);
@@ -94,10 +98,12 @@ protected:
 
 	// TODO: hard code the size for the moment
 	std::array<ConstantBufferDesc, 32> _vsConstantBuffers;
+	std::array<ConstantBufferDesc, 32> _gsConstantBuffers;
 	std::array<ConstantBufferDesc, 32> _psConstantBuffers;
 	std::array<VertBufferDesc, VEX_INPUT_SLOT_NUM> _vertexBuffers;
 
 	std::shared_ptr<DX11VertexShader> _vertShader;
+	std::shared_ptr<DX11GeometryShader> _geomShader;
 	std::shared_ptr<DX11PixelShader> _fragShader;
 	ComPtr<ID3D11InputLayout> _inputLayout;
 };

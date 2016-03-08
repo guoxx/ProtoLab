@@ -50,6 +50,8 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 	gfxContext->clear(_sceneRT->getRenderTarget().Get(), 0.f, 0.f, 0.f, 0.f);
 	gfxContext->clear(_sceneDepthRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0f);
 
+	_renderShadowMapPass(scene);
+
 	uint32_t x, y, w, h;
 	viewport->getViewport(x, y, w, h);
 	gfxContext->RSSetViewport(x, y, w, h);
@@ -105,6 +107,8 @@ void ForwardRenderer::_renderShadowMapPass(std::shared_ptr<Scene> scene)
 			DX11DepthStencilRenderTarget* shadowMapRT = pl->getShadowMapRenderTarget();
 			gfxContext->clear(shadowMapRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH);
 			gfxContext->OMSetRenderTargets(0, nullptr, shadowMapRT->getRenderTarget().Get());
+
+			gfxContext->RSSetViewport(0, 0, 256, 256);
 
 			// setup proj matrix
 			DirectX::XMMATRIX mViewProj[PointLight::AXIS_END];

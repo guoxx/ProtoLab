@@ -100,6 +100,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources/targetver.h" />
     <ClInclude Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11Device.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11GeometryShader.h" />
     <ClInclude Include="Sources\DX11RHI\DX11GraphicContext.h" />
     <ClInclude Include="Sources\DX11RHI\DX11Limits.h" />
     <ClInclude Include="Sources\DX11RHI\DX11PixelShader.h" />
@@ -145,6 +146,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11Device.cpp" />
+    <ClCompile Include="Sources\DX11RHI\DX11GeometryShader.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11GraphicContext.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11PixelShader.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11RenderStateCache.cpp" />

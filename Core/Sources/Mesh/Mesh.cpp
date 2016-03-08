@@ -50,7 +50,10 @@ void Mesh::drawShadowMap(DirectX::XMMATRIX mModel, DirectX::XMMATRIX mViewProj[6
 
 	for (auto prim : _primitives)
 	{
-		_drawShadowMap(gfxContext, prim, mModel, mViewProj);
+		if (prim->_materialId == Primitive::MATERIAL_ID::MATERIAL_DEFAULT)
+		{
+			_drawShadowMap(gfxContext, prim, mModel, mViewProj);
+		}
 	}
 }
 
@@ -223,15 +226,25 @@ void Mesh::_drawShadowMap(std::shared_ptr<DX11GraphicContext> gfxContext, std::s
 {
 	gfxContext->OMSetBlendState(RHI::getInstance().getRenderStateSet()->Opaque());
 
-	ComPtr<ID3D11Buffer> viewCB = _shadowMapMaterial->getVsConstantBuffer(MaterialCB::ShadowMapMaterial::ViewReg);
-	DX11ResourceMapGuard viewRes{ gfxContext.get(), viewCB.Get() };
-	MaterialCB::ShadowMapMaterial::View* dataPtr;
-	viewRes.getPtr(dataPtr);
-	DirectX::XMStoreFloat4x4(&dataPtr->mModel, DirectX::XMMatrixTranspose(mModel));
-	//for (int i = 0; i < 6; ++i)
-	//{
-	//	DirectX::XMStoreFloat4x4(&dataPtr->mViewProj[i], DirectX::XMMatrixTranspose(mViewProj[i]));
-	//}
+	{
+		ComPtr<ID3D11Buffer> viewCB = _shadowMapMaterial->getVsConstantBuffer(MaterialCB::ShadowMapMaterial::ViewReg);
+		DX11ResourceMapGuard viewRes{ gfxContext.get(), viewCB.Get() };
+		MaterialCB::ShadowMapMaterial::View* dataPtr;
+		viewRes.getPtr(dataPtr);
+		DirectX::XMStoreFloat4x4(&dataPtr->mModel, DirectX::XMMatrixTranspose(mModel));
+	}
+
+	{
+		ComPtr<ID3D11Buffer> viewGSCB = _shadowMapMaterial->getGsConstantBuffer(MaterialCB::ShadowMapMaterial::ViewGSReg);
+		DX11ResourceMapGuard viewRes{ gfxContext.get(), viewGSCB.Get() };
+		MaterialCB::ShadowMapMaterial::ViewGS* dataPtr;
+		viewRes.getPtr(dataPtr);
+		for (int i = 0; i < 6; ++i)
+		{
+			DirectX::XMStoreFloat4x4(&dataPtr->mViewProj[i], DirectX::XMMatrixTranspose(mViewProj[i]));
+		}
+	}
+
 
 	_shadowMapMaterial->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(float3), 0);
 	_shadowMapMaterial->apply(gfxContext);
@@ -240,4 +253,5 @@ void Mesh::_drawShadowMap(std::shared_ptr<DX11GraphicContext> gfxContext, std::s
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
 
+	gfxContext->GSUnsetShader();
 }

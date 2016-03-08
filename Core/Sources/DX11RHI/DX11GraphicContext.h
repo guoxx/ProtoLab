@@ -1,6 +1,7 @@
 #pragma once
 
 class DX11VertexShader;
+class DX11GeometryShader;
 class DX11PixelShader;
 class DX11RenderStateSet;
 
@@ -30,6 +31,11 @@ public:
 	void VSSetShader(DX11VertexShader* pVertexShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
 	void VSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppConstantBuffers);
 	void VSSetShaderResources(uint32_t startSlot, uint32_t numViews, ID3D11ShaderResourceView *const *ppShaderResourceViews);
+
+	// geometry state
+	void GSSetShader(DX11GeometryShader* pGeomShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
+	void GSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppConstantBuffers);
+	void GSUnsetShader();
 
 	// rasterizer stage
 	void RSSetState(ID3D11RasterizerState *pRasterizerState);

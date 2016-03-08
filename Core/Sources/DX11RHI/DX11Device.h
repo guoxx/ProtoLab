@@ -15,6 +15,7 @@ public:
 	ComPtr<ID3D11Buffer> createConstantBuffer(const void* memPtr, uint32_t memSize);
 
 	ComPtr<ID3D11VertexShader> createVertexShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
+	ComPtr<ID3D11GeometryShader> createGeometryShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ComPtr<ID3D11PixelShader> createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ComPtr<ID3D11InputLayout> createInputLayout(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ComPtr<ID3DBlob> vertexShaderBytecode);
 

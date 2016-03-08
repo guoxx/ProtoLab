@@ -172,6 +172,9 @@
     <ClInclude Include="Sources\Renderer\RenderResources.h">
       <Filter>Sources\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11GeometryShader.h">
+      <Filter>Sources\DX11RHI\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -269,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="Sources\Renderer\RenderResources.cpp">
       <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11GeometryShader.cpp">
+      <Filter>Sources\DX11RHI\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

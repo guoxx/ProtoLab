@@ -81,6 +81,13 @@ ComPtr<ID3D11VertexShader> DX11Device::createVertexShaderFromBytecodes(const voi
 	return outShader;
 }
 
+ComPtr<ID3D11GeometryShader> DX11Device::createGeometryShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength)
+{
+	ComPtr<ID3D11GeometryShader> outShader;
+	_device->CreateGeometryShader(bytecode, bytecodeLength, nullptr, outShader.GetAddressOf());
+	return outShader;
+}
+
 ComPtr<ID3D11PixelShader> DX11Device::createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength)
 {
 	ComPtr<ID3D11PixelShader> outShader;
@@ -146,7 +153,7 @@ ComPtr<ID3D11DepthStencilView> DX11Device::createDepthStencilViewTex2d(ComPtr<ID
 ComPtr<ID3D11Texture2D> DX11Device::createTextureCube(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags)
 {
 	ComPtr<ID3D11Texture2D> tex;
-	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dDesc(width, height, numMipmap, texFormat);
+	D3D11_TEXTURE2D_DESC desc = createDx11TextureCubeDesc(width, height, numMipmap, texFormat);
 	desc.BindFlags = bindFlags;
 	_device->CreateTexture2D(&desc, nullptr, tex.GetAddressOf());
 	return tex;

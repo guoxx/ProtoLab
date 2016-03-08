@@ -109,6 +109,7 @@ D3D11_TEXTURE2D_DESC createDx11TextureCubeDesc(uint32_t width, uint32_t height, 
 {
 	D3D11_TEXTURE2D_DESC texDesc = createDx11Texture2dDesc(width, height, numMipmap, texelFormat);
 	texDesc.ArraySize = 6;
+	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 	return texDesc;
 }
 
@@ -129,7 +130,9 @@ D3D11_RENDER_TARGET_VIEW_DESC createDx11RenderTargetViewDescTexCube(DXGI_FORMAT 
 	memset(&rtvDesc, 0x00, sizeof(rtvDesc));
 	rtvDesc.Format = texelFormat;
 	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
-	rtvDesc.Texture2D.MipSlice = mipSlice;
+	rtvDesc.Texture2DArray.MipSlice = mipSlice;
+	rtvDesc.Texture2DArray.FirstArraySlice = 0;
+	rtvDesc.Texture2DArray.ArraySize = 6;
 	return rtvDesc;
 }
 
@@ -140,7 +143,9 @@ D3D11_DEPTH_STENCIL_VIEW_DESC createDx11DepthStencilViewDescTexCube(DXGI_FORMAT 
 	dsvDesc.Format = texelFormat;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 	dsvDesc.Flags = 0;
-	dsvDesc.Texture2D.MipSlice = mipSlice;
+	dsvDesc.Texture2DArray.MipSlice = mipSlice;
+	dsvDesc.Texture2DArray.FirstArraySlice = 0;
+	dsvDesc.Texture2DArray.ArraySize = 6;
 	return dsvDesc;
 }
 

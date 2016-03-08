@@ -52,6 +52,21 @@ void DX11GraphicContext::VSSetShaderResources(uint32_t startSlot, uint32_t numVi
 	_context->VSSetShaderResources(startSlot, numViews, ppShaderResourceViews);
 }
 
+void DX11GraphicContext::GSSetShader(DX11GeometryShader * pGeomShader, ID3D11ClassInstance * const * ppClassInstances, uint32_t numClassInstances)
+{
+	_context->GSSetShader(pGeomShader->getShader().Get(), ppClassInstances, numClassInstances);
+}
+
+void DX11GraphicContext::GSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer * const * ppConstantBuffers)
+{
+	_context->GSSetConstantBuffers(startSlot, numBuffers, ppConstantBuffers);
+}
+
+void DX11GraphicContext::GSUnsetShader()
+{
+	_context->GSSetShader(nullptr, nullptr, 0);
+}
+
 void DX11GraphicContext::RSSetState(ID3D11RasterizerState * pRasterizerState)
 {
 	_context->RSSetState(pRasterizerState);
