@@ -42,7 +42,11 @@ float PointLight::getRadiusEnd() const
 
 DirectX::XMMATRIX PointLight::getViewProj(AXIS axis) const
 {
-	float fov = 90.0f;
+	// tricks for seamless cubemap filtering
+	// http://www.gamedev.net/blog/73/entry-2005516-seamless-filtering-across-faces-of-dynamic-cube-map/
+	float halfSize = DX11Limits::POINT_LIGHT_SHADOW_MAP_SIZE/1.0f;
+	float fov = 2.0 * atanf(halfSize/(halfSize-0.5f));
+
 	float zNear = 0.01f;
 	float zFar = _radiusEnd;
 	float aspect = 1.0f;
@@ -55,8 +59,8 @@ DirectX::XMMATRIX PointLight::getViewProj(AXIS axis) const
 		{-1.0f, 0.0f, 0.0f, 0.0f},		// NEGATIVE_X
 		{0.0f, 1.0f, 0.0f, 0.0f},		// POSITIVE_Y
 		{0.0f, -1.0f, 0.0f, 0.0f},		// NEGATIVE_Y
-		{0.0f, 0.0f, 1.0f, 0.0f},		// POSITIVE_Z
-		{0.0f, 0.0f, -1.0f, 0.0f},		// NEGATIVE_Z
+		{0.0f, 0.0f, -1.0f, 0.0f},		// POSITIVE_Z
+		{0.0f, 0.0f, 1.0f, 0.0f},		// NEGATIVE_Z
 	};
 	static const DirectX::XMVECTOR upDir[AXIS_END] = {
 		{0.0f, 1.0f, 0.0f, 0.0f},		// POSITIVE_X
@@ -79,7 +83,7 @@ DX11DepthStencilRenderTarget* PointLight::getShadowMapRenderTarget()
 	if (!_shadowMapRT)
 	{
 		_shadowMapRT = std::make_shared<DX11DepthStencilRenderTarget>();
-		_shadowMapRT->initializeAsCube(256, 256, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
+		_shadowMapRT->initializeAsCube(DX11Limits::POINT_LIGHT_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_SHADOW_MAP_SIZE, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
 	}
 
 	return _shadowMapRT.get();

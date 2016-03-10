@@ -19,7 +19,7 @@ PSOutput main(PSInput input)
 	float3 diffuseLight = Diffuse_Lambert(diffuse.xyz) * E * cosineTheaI;
 
 	float3 LightVector = input.positionWS.xyz - lightPositionInWorldSpace.xyz;
-	float3 NormalizedLightVector = normalize(NormalizedLightVector);
+	float3 NormalizedLightVector = normalize(LightVector);
 	float3 AbsLightVector = abs(LightVector);
 	float MaxCoordinate = max(AbsLightVector.x, max(AbsLightVector.y, AbsLightVector.z));
 	int CubeFaceIndex = 0;
@@ -33,13 +33,16 @@ PSOutput main(PSInput input)
 	}
 	else
 	{
-		CubeFaceIndex = AbsLightVector.z == LightVector.z ? 4 : 5;
+		// we use right hand coordinate
+		CubeFaceIndex = AbsLightVector.z == LightVector.z ? 5 : 4;
 	}
 
 	// Transform the position into light space
 	float4 ShadowPosition = mul(float4(input.positionWS.xyz, 1), mViewProjInLightSpace[CubeFaceIndex]);
 	float shadowDepth = ShadowPosition.z / ShadowPosition.w;
-	float lightVisibility = g_CubeShadowMap.SampleCmpLevelZero(ShadowSampler, LightVector, shadowDepth);
+	shadowDepth -= 0.001;
+	NormalizedLightVector.z = -NormalizedLightVector.z;
+	float lightVisibility = g_CubeShadowMap.SampleCmpLevelZero(ShadowSampler, NormalizedLightVector, shadowDepth);
 	E = E * lightVisibility;
 	diffuseLight = diffuseLight * lightVisibility;
 
@@ -51,7 +54,7 @@ PSOutput main(PSInput input)
 	float specularPower = shininess;
 	float3 specularLight = (specularPower + 8.0) / (8.0 * PI) * pow(cosineTheaH, specularPower) * E * specular.xyz;
 #endif
-	result.color.rgb = diffuseLight + specularLight;
+	result.color.rgb = diffuseLight + specularLight + ambient * diffuse * 0.2;
 	result.color.a = 1.0;
 	return result;
 }

@@ -79,21 +79,34 @@ void D3D11HelloTriangle::OnUpdate()
 	DirectX::Mouse::State mouseState = DirectX::Mouse::Get().GetState();
 
 	float spd = 0.01f;
+
+	bool moveLight = false;
+	if (keyboardState.IsKeyDown(DirectX::Keyboard::L))
+	{
+		moveLight = true;
+	}
+
+	Actor* actorToMove = _camera.get();
+	if (moveLight)
+	{
+		actorToMove = _pointLight.get();
+	}
+
 	if (keyboardState.IsKeyDown(DirectX::Keyboard::W))
 	{
-		_camera->move(_camera->getForward(), spd);
+		actorToMove->move(actorToMove->getForward(), spd);
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::S))
 	{
-		_camera->move(_camera->getBackward(), spd);
+		actorToMove->move(actorToMove->getBackward(), spd);
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::A))
 	{
-		_camera->move(_camera->getRight(), spd);
+		actorToMove->move(actorToMove->getRight(), spd);
 	}
 	else if (keyboardState.IsKeyDown(DirectX::Keyboard::D))
 	{
-		_camera->move(_camera->getLeft(), spd);
+		actorToMove->move(actorToMove->getLeft(), spd);
 	}
 
 	float mouseScale = 0.1f;

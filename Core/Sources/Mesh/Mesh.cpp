@@ -167,7 +167,7 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 	static ID3D11SamplerState* shadowSampler = nullptr;
 	if (shadowSampler == nullptr)
 	{
-		ComPtr<ID3D11SamplerState> samp = DX11RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_CLAMP, D3D11_COMPARISON_LESS);
+		ComPtr<ID3D11SamplerState> samp = DX11RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_COMPARISON_LESS_EQUAL);
 		shadowSampler = samp.Get();
 		shadowSampler->AddRef();
 	}
