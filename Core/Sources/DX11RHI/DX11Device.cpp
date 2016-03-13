@@ -49,6 +49,15 @@ ComPtr<ID3D11Buffer> DX11Device::createVertexBuffer(const void* memPtr, uint32_t
 	return buffer;
 }
 
+ComPtr<ID3D11Buffer> DX11Device::createStreamOutputVertexBuffer(const void * memPtr, uint32_t memSize)
+{
+	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT, memSize);
+	D3D11_SUBRESOURCE_DATA resData = createDx11SubresourceData(memPtr);
+	ComPtr<ID3D11Buffer> buffer;
+	_device->CreateBuffer(&desc, memPtr != nullptr ? &resData : NULL, buffer.GetAddressOf());
+	return buffer;
+}
+
 ComPtr<ID3D11Buffer> DX11Device::createIndexBuffer(const void* memPtr, uint32_t memSize)
 {
 	D3D11_BUFFER_DESC desc = createDx11BufferDesc(D3D11_USAGE_DEFAULT, D3D11_BIND_INDEX_BUFFER, memSize);
@@ -85,6 +94,19 @@ ComPtr<ID3D11GeometryShader> DX11Device::createGeometryShaderFromBytecodes(const
 {
 	ComPtr<ID3D11GeometryShader> outShader;
 	_device->CreateGeometryShader(bytecode, bytecodeLength, nullptr, outShader.GetAddressOf());
+	return outShader;
+}
+
+ComPtr<ID3D11GeometryShader> DX11Device::createGeometryShaderWithStreamOutputFromBytecodes(const void *bytecode,
+																							std::size_t bytecodeLength,
+																							const D3D11_SO_DECLARATION_ENTRY *pSODeclaration,
+																							uint32_t numEntries,
+																							const uint32_t *pBufferStrides,
+																							uint32_t numStrides,
+																							uint32_t rasterizedStream)
+{
+	ComPtr<ID3D11GeometryShader> outShader;
+	_device->CreateGeometryShaderWithStreamOutput(bytecode, bytecodeLength, pSODeclaration, numEntries, pBufferStrides, numStrides, rasterizedStream, nullptr, outShader.GetAddressOf());
 	return outShader;
 }
 

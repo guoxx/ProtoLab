@@ -9,6 +9,8 @@
 #include <DirectXTK/Inc/GeometricPrimitive.h>
 
 
+#include "../../Shaders/BaseMaterial_passthrough_vs.h"
+
 Mesh::Mesh()
 {
 	_shadowMapMaterial = Material::createMaterialShadowMap();
@@ -92,6 +94,9 @@ void Mesh::loadMeshFromFile(const wchar_t* objFileName)
 		prim->_indicesFormat = DXGI_FORMAT_R32_UINT;
 		prim->_indicesCount = static_cast<uint32_t>(shape.mesh.indices.size());
 
+		uint32_t streamOutputVertexBufferSize = (sizeof(float4) + sizeof(float3) + sizeof(float2) + sizeof(float3) + sizeof(float3)) * prim->_indicesCount;
+		prim->_streamOutputBuffer = RHI::getInstance().getDevice()->createStreamOutputVertexBuffer(nullptr, streamOutputVertexBufferSize);
+
 		_primitives.push_back(prim);
 	}
 
@@ -162,6 +167,10 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 	_material->apply(gfxContext);
 
 
+	ID3D11Buffer* streamOutputBuffers[] = {prim->_streamOutputBuffer.Get()};
+	uint32_t streamOutpoutOffset[] = {0};
+	gfxContext->SOSetTargets(1, streamOutputBuffers, streamOutpoutOffset);
+
 	ID3D11ShaderResourceView* shadowmaps[] = {pointLight->getShadowMapRenderTarget()->getTextureSRV().Get()};
 	gfxContext->PSSetShaderResources(0, 1, shadowmaps);
 	static ID3D11SamplerState* shadowSampler = nullptr;
@@ -177,6 +186,34 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 	gfxContext->IASetIndexBuffer(prim->_indexBuffer.Get(), prim->_indicesFormat, 0);
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
+
+	static std::shared_ptr<DX11VertexShader> passthroughVS{ nullptr };
+	static ID3D11InputLayout* passthroughInputLayout{ nullptr };
+
+	if (!passthroughVS)
+	{
+		passthroughVS = std::make_shared<DX11VertexShader>(g_BaseMaterial_passthrough_vs, sizeof(g_BaseMaterial_passthrough_vs));
+
+		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+			{ "SV_POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float4) + sizeof(float3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 1, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float4) + sizeof(float3) + sizeof(float2), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 2, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float4) + sizeof(float3) + sizeof(float2) + sizeof(float3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		auto inputLayout = DX11RHI::getInstance().getDevice()->createInputLayout(inputDesc, COUNT_OF_C_ARRAY(inputDesc), passthroughVS->getBinaryData());
+		passthroughInputLayout = inputLayout.Get();
+		passthroughInputLayout->AddRef();
+	}
+
+	gfxContext->VSSetShader(passthroughVS.get());
+	gfxContext->GSUnsetShader();
+	gfxContext->SOSetTargets(0, nullptr, nullptr);
+	uint32_t stride[] = {(sizeof(float4) + sizeof(float3) + sizeof(float2) + sizeof(float3) + sizeof(float3))};
+	uint32_t offset[] = {0};
+	gfxContext->IASetVertexBuffers(0, 1, streamOutputBuffers, stride, offset);
+	gfxContext->IASetInputLayout(passthroughInputLayout);
+	gfxContext->drawAuto();
 }
 
 void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera) const

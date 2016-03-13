@@ -1,6 +1,6 @@
 #pragma once
 
-D3D11_BUFFER_DESC createDx11BufferDesc(D3D11_USAGE usage, D3D11_BIND_FLAG bindFlag, UINT byteWidth)
+D3D11_BUFFER_DESC createDx11BufferDesc(D3D11_USAGE usage, uint32_t bindFlag, UINT byteWidth)
 {
 	D3D11_BUFFER_DESC bufferDesc;	
 	memset(&bufferDesc, 0x00, sizeof(bufferDesc));

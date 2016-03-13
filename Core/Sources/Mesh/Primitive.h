@@ -29,6 +29,8 @@ private:
 	// TODO: rename 
 	ComPtr<ID3D11InputLayout>		_vertexDeclaration{nullptr};
 
+	ComPtr<ID3D11Buffer>			_streamOutputBuffer{nullptr};
+
 	D3D_PRIMITIVE_TOPOLOGY	_topology;
 	DXGI_FORMAT				_indicesFormat;
 	uint32_t				_indicesCount;

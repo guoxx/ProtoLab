@@ -1,8 +1,8 @@
 #include "BaseMaterial_common.h"
 
-PSInput main(VSInput input)
+VSOutput main(VSInput input)
 {
-	PSInput result;
+	VSOutput result;
 	result.position = mul(float4(input.position, 1), mModelViewProj);
 	result.positionCS = mul(float4(input.position, 1), mModelView).xyz;
 	result.positionWS = mul(float4(input.position, 1), mModel).xyz;

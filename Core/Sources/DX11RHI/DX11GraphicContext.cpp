@@ -67,6 +67,11 @@ void DX11GraphicContext::GSUnsetShader()
 	_context->GSSetShader(nullptr, nullptr, 0);
 }
 
+void DX11GraphicContext::SOSetTargets(uint32_t numBuffers, ID3D11Buffer * const * ppSOTargets, const uint32_t * pOffsets)
+{
+	_context->SOSetTargets(numBuffers, ppSOTargets, pOffsets);
+}
+
 void DX11GraphicContext::RSSetState(ID3D11RasterizerState * pRasterizerState)
 {
 	_context->RSSetState(pRasterizerState);
@@ -159,6 +164,11 @@ void DX11GraphicContext::draw(uint32_t vertexCount, uint32_t startVertexLocation
 void DX11GraphicContext::drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation)
 {
 	_context->DrawIndexed(indexCount, startIndexLoccation, baseVertexLocation);
+}
+
+void DX11GraphicContext::drawAuto()
+{
+	_context->DrawAuto();
 }
 
 HRESULT DX11GraphicContext::finishCommandList(bool restoreDeferredContextState, ID3D11CommandList ** ppCommandList)

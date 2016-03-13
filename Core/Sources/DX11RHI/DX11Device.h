@@ -11,11 +11,19 @@ public:
 	ComPtr<IDXGISwapChain> createSwapChain(HWND hwnd, uint32_t frameCount, uint32_t winWidth, uint32_t winHeight);
 
 	ComPtr<ID3D11Buffer> createVertexBuffer(const void* memPtr, uint32_t memSize);
+	ComPtr<ID3D11Buffer> createStreamOutputVertexBuffer(const void* memPtr, uint32_t memSize);
 	ComPtr<ID3D11Buffer> createIndexBuffer(const void* memPtr, uint32_t memSize);
 	ComPtr<ID3D11Buffer> createConstantBuffer(const void* memPtr, uint32_t memSize);
 
 	ComPtr<ID3D11VertexShader> createVertexShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ComPtr<ID3D11GeometryShader> createGeometryShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
+	ComPtr<ID3D11GeometryShader> createGeometryShaderWithStreamOutputFromBytecodes(const void *bytecode,
+																					std::size_t bytecodeLength,
+																					const D3D11_SO_DECLARATION_ENTRY *pSODeclaration,
+																					uint32_t numEntries,
+																					const uint32_t *pBufferStrides,
+																					uint32_t numStrides,
+																					uint32_t rasterizedStream);
 	ComPtr<ID3D11PixelShader> createPixelShaderFromBytecodes(const void *bytecode, std::size_t bytecodeLength);
 	ComPtr<ID3D11InputLayout> createInputLayout(const D3D11_INPUT_ELEMENT_DESC* desc, uint32_t descElemCnt, ComPtr<ID3DBlob> vertexShaderBytecode);
 

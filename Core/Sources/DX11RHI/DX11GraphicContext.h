@@ -28,7 +28,7 @@ public:
 	void IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY topology);
 
 	// vertex stage
-	void VSSetShader(DX11VertexShader* pVertexShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
+	void VSSetShader(DX11VertexShader* pVertexShader, ID3D11ClassInstance *const *ppClassInstances = nullptr, uint32_t numClassInstances = 0);
 	void VSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppConstantBuffers);
 	void VSSetShaderResources(uint32_t startSlot, uint32_t numViews, ID3D11ShaderResourceView *const *ppShaderResourceViews);
 
@@ -36,6 +36,9 @@ public:
 	void GSSetShader(DX11GeometryShader* pGeomShader, ID3D11ClassInstance *const *ppClassInstances, uint32_t numClassInstances);
 	void GSSetConstantBuffers(uint32_t startSlot, uint32_t numBuffers, ID3D11Buffer *const *ppConstantBuffers);
 	void GSUnsetShader();
+
+	// stream output
+	void SOSetTargets(uint32_t numBuffers, ID3D11Buffer *const *ppSOTargets, const uint32_t *pOffsets);
 
 	// rasterizer stage
 	void RSSetState(ID3D11RasterizerState *pRasterizerState);
@@ -63,6 +66,7 @@ public:
 	void clear(ID3D11DepthStencilView* dsv, RHI_CLEAR_FLAG clearFlag, float depth = 1.0, uint8_t stencil = 0);
 	void draw(uint32_t vertexCount, uint32_t startVertexLocation);
 	void drawIndex(uint32_t indexCount, uint32_t startIndexLoccation, uint32_t baseVertexLocation);
+	void drawAuto();
 
 	// command list
 	HRESULT finishCommandList(bool restoreDeferredContextState, ID3D11CommandList **ppCommandList);

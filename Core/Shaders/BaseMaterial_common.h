@@ -41,7 +41,16 @@ struct VSInput
 	float2 texcoord : TEXCOORD;
 };
 
-struct PSInput
+struct VSOutput
+{
+	float4 position : SV_POSITION;
+	float3 normalCS : NORMAL;
+	float2 texcoord : TEXCOORD;
+	float3 positionCS : POSITION1;
+	float3 positionWS : POSITION2;
+};
+
+struct GSOutput
 {
 	float4 position : SV_POSITION;
 	float3 normalCS : NORMAL;

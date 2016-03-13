@@ -6,7 +6,7 @@ TextureCube g_CubeShadowMap;
 
 SamplerComparisonState ShadowSampler;
 
-PSOutput main(PSInput input)
+PSOutput main(GSOutput input)
 {
 	PSOutput result;
 	float d = length(lightPositionInCameraSpace.xyz - input.positionCS);
@@ -54,7 +54,7 @@ PSOutput main(PSInput input)
 	float specularPower = shininess;
 	float3 specularLight = (specularPower + 8.0) / (8.0 * PI) * pow(cosineTheaH, specularPower) * E * specular.xyz;
 #endif
-	result.color.rgb = diffuseLight + specularLight + ambient * diffuse * 0.2;
+	result.color.rgb = diffuseLight + specularLight + (ambient * diffuse * 0.2).rgb;
 	result.color.a = 1.0;
 	return result;
 }
