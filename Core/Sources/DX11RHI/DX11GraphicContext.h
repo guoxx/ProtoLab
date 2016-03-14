@@ -75,7 +75,7 @@ public:
 	// query api
 	void begin(ID3D11Asynchronous* async);
 	void end(ID3D11Asynchronous* async);
-	HRESULT getData(ID3D11Asynchronous* async, void *pData, uint32_t dataSize, uint32_t getDataFlags);
+	HRESULT getData(ID3D11Asynchronous* async, void *pData, uint32_t dataSize, uint32_t getDataFlags = D3D11_ASYNC_GETDATA_DONOTFLUSH);
 
 private:
 	ComPtr<ID3D11DeviceContext>	_context;

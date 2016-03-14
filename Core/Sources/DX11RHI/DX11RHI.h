@@ -32,7 +32,8 @@ public:
 	ComPtr<ID3DBlob> compileVertexShader(const wchar_t* filename, const char* entryPoint);
 	ComPtr<ID3DBlob> compilePixelShader(const wchar_t* filename, const char* entryPoint);
 
-	void submit();
+	void beginFrame();
+	void endFrame();
 
 private:
 	DX11RHI() {};
@@ -42,4 +43,5 @@ private:
 	std::shared_ptr<DX11GraphicContext>	_immediateContext{nullptr};
 	std::shared_ptr<DX11GraphicContext>	_deferredContext{nullptr};
 	std::shared_ptr<DX11RenderStateSet> _renderStateSet{nullptr};
+	ComPtr<ID3D11Query>					_fence;
 };

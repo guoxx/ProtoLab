@@ -42,6 +42,8 @@ void DX11RHI::initialize()
 
 	_renderStateSet = std::make_shared<DX11RenderStateSet>(device.Get());
 
+	_fence = _device->createQuery(D3D11_QUERY_PIPELINE_STATISTICS);
+
 #ifdef _DEBUG
 	ComPtr<ID3D11Debug> d3dDebug;
 	hr = device.As(&d3dDebug);
@@ -57,7 +59,7 @@ void DX11RHI::initialize()
 		D3D11_MESSAGE_ID hide[] =
 		{
 			D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
-			D3D11_MESSAGE_ID_DEVICE_DRAW_SAMPLER_MISMATCH,
+			D3D11_MESSAGE_ID_QUERY_BEGIN_ABANDONING_PREVIOUS_RESULTS,
 			// TODO: Add more message IDs here as needed 
 		};
 		D3D11_INFO_QUEUE_FILTER filter;
@@ -81,7 +83,6 @@ std::shared_ptr<DX11Device> DX11RHI::getDevice() const
 
 std::shared_ptr<DX11GraphicContext> DX11RHI::getContext() const
 {
-	return _immediateContext;
 	// TODO: each need to have own context
 	return _deferredContext;
 }
@@ -123,11 +124,18 @@ ComPtr<ID3DBlob> DX11RHI::compilePixelShader(const wchar_t* filename, const char
 	return compileShader(filename, entryPoint, "ps_5_0");
 }
 
-void DX11RHI::submit()
+void DX11RHI::beginFrame()
+{
+	_immediateContext->begin(_fence.Get());
+}
+
+void DX11RHI::endFrame()
 {
 	ComPtr<ID3D11CommandList> cmdlist;
 	_deferredContext->finishCommandList(false, cmdlist.GetAddressOf());
 	_immediateContext->executeCommandList(cmdlist, false);
+
+	// force to flush command list
+	_immediateContext->end(_fence.Get());
+	_immediateContext->getData(_fence.Get(), nullptr, 0, 0);
 }
-
-

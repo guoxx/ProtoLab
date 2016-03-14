@@ -37,6 +37,8 @@ ForwardRenderer::~ForwardRenderer()
 
 void ForwardRenderer::beginFrame()
 {
+	RHI::getInstance().beginFrame();
+
 	RHI::getInstance().getContext()->resetDefaultRenderStates(RHI::getInstance().getRenderStateSet());
 
 	RHI::getInstance().getContext()->clear(_backbufferRT->getRenderTarget().Get(), 0, 0, 0, 0);
@@ -81,7 +83,7 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 
 void ForwardRenderer::endFrame()
 {
-	RHI::getInstance().submit();
+	RHI::getInstance().endFrame();
 }
 
 void ForwardRenderer::present()
