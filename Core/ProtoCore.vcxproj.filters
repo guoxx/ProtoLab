@@ -175,6 +175,9 @@
     <ClInclude Include="Sources\DX11RHI\DX11GeometryShader.h">
       <Filter>Sources\DX11RHI\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11GPUMaker.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">

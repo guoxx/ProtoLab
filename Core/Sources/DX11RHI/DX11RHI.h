@@ -9,6 +9,7 @@
 #include "DX11GeometryShader.h"
 #include "DX11PixelShader.h"
 #include "DX11RenderStateSet.h"
+#include "DX11GPUMaker.h"
 
 
 // TODO:

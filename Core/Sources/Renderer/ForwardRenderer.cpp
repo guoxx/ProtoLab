@@ -54,28 +54,37 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 
 	_renderShadowMapPass(scene);
 
-	uint32_t x, y, w, h;
-	viewport->getViewport(x, y, w, h);
-	gfxContext->RSSetViewport(x, y, w, h);
-
-	ID3D11RenderTargetView* rtvs[] = {_sceneRT->getRenderTarget().Get()};
-	gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget().Get());
-
-	auto models = scene->getModels();
-	auto pointLights = scene->getPointLights(); 
-	for (auto model : models)
 	{
-		auto mesh = model->getMesh();
-		for (auto pl : pointLights)
+		GPU_MARKER(gfxContext.get(), Lighting);
+
+		uint32_t x, y, w, h;
+		viewport->getViewport(x, y, w, h);
+		gfxContext->RSSetViewport(x, y, w, h);
+
+		ID3D11RenderTargetView* rtvs[] = { _sceneRT->getRenderTarget().Get() };
+		gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget().Get());
+
+		auto models = scene->getModels();
+		auto pointLights = scene->getPointLights();
+		for (auto model : models)
 		{
-			mesh->draw(model->getWorldMatrix(), camera, pl);
+			auto mesh = model->getMesh();
+			for (auto pl : pointLights)
+			{
+				mesh->draw(model->getWorldMatrix(), camera, pl);
+			}
 		}
 	}
 
 
-	for (auto light : pointLights)
 	{
-		light->debugDraw(gfxContext, camera);
+		GPU_MARKER(gfxContext.get(), DebugDisplay);
+
+		auto pointLights = scene->getPointLights();
+		for (auto light : pointLights)
+		{
+			light->debugDraw(gfxContext, camera);
+		}
 	}
 
 	_filterIdentity->apply(_sceneRT, _backbufferRT);
@@ -94,6 +103,8 @@ void ForwardRenderer::present()
 void ForwardRenderer::_renderShadowMapPass(std::shared_ptr<Scene> scene)
 {
 	auto gfxContext = RHI::getInstance().getContext();
+
+	GPU_MARKER(gfxContext.get(), ShadowMapPass);
 
 	// clear shadow map
 	auto models = scene->getModels();

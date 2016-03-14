@@ -77,8 +77,13 @@ public:
 	void end(ID3D11Asynchronous* async);
 	HRESULT getData(ID3D11Asynchronous* async, void *pData, uint32_t dataSize, uint32_t getDataFlags = D3D11_ASYNC_GETDATA_DONOTFLUSH);
 
+	// GPU marker
+	void pushMarker(const wchar_t* name);
+	void popMarker();
+
 private:
-	ComPtr<ID3D11DeviceContext>	_context;
+	ComPtr<ID3D11DeviceContext>			_context;
+	ComPtr<ID3DUserDefinedAnnotation>	_perf;
 };
 
 

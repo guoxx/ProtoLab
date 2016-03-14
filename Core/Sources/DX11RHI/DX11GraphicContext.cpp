@@ -5,6 +5,7 @@
 DX11GraphicContext::DX11GraphicContext(ComPtr<ID3D11DeviceContext> ctx)
 	: _context{ctx}
 {
+	_context.As(&_perf);
 }
 
 DX11GraphicContext::~DX11GraphicContext()
@@ -194,4 +195,14 @@ void DX11GraphicContext::end(ID3D11Asynchronous* async)
 HRESULT DX11GraphicContext::getData(ID3D11Asynchronous* async, void * pData, uint32_t dataSize, uint32_t getDataFlags)
 {
 	return _context->GetData(async, pData, dataSize, getDataFlags);
+}
+
+void DX11GraphicContext::pushMarker(const wchar_t * name)
+{
+	_perf->BeginEvent(name);
+}
+
+void DX11GraphicContext::popMarker()
+{
+	_perf->EndEvent();
 }
