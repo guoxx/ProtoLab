@@ -3,6 +3,9 @@
 #define __HLSL__
 #endif
 
+#define MAT_BASE			1
+#define MAT_LIT				2
+
 #if defined(_MSC_VER)
 
 // VC++
@@ -38,5 +41,7 @@ const static float PI           = 3.141592654f;
 const static float DIVPI		= 0.318309886f;
 
 #include "BRDF.hlsli"
+#include "GBuffer.hlsli"
+#include "PointLight.hlsli"
 
 #endif

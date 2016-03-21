@@ -4,6 +4,7 @@ class DX11VertexShader;
 class DX11GeometryShader;
 class DX11PixelShader;
 class DX11RenderStateSet;
+class Viewport;
 
 
 class DX11GraphicContext : public Noncopyable
@@ -42,6 +43,7 @@ public:
 
 	// rasterizer stage
 	void RSSetState(ID3D11RasterizerState *pRasterizerState);
+	void RSSetViewport(Viewport* vp);
 	void RSSetViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height, float minDepth = 0.0f, float maxDepth = 1.0f);
 	void RSSetViewports(uint32_t numViewports, const D3D11_VIEWPORT *pViewports);
 

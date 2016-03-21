@@ -1,11 +1,6 @@
 #include "BaseMaterial_common.h"
-#include "PointLight.hlsli"
 
-
-TextureCube g_CubeShadowMap;
-
-SamplerComparisonState ShadowSampler;
-
+/*
 PSOutput main(GSOutput input)
 {
 	PSOutput result;
@@ -57,4 +52,10 @@ PSOutput main(GSOutput input)
 	result.color.rgb = diffuseLight + specularLight + (ambient * diffuse * 0.2).rgb;
 	result.color.a = 1.0;
 	return result;
+}
+*/
+
+GBuffer main(VSOutput input)
+{
+	return EncodeGBuffer(MAT_BASE, diffuse.xyz, input.normal);
 }

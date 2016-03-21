@@ -178,6 +178,9 @@
     <ClInclude Include="Sources\DX11RHI\DX11GPUMaker.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\Renderer\DeferredRenderer.h">
+      <Filter>Sources\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -279,6 +282,9 @@
     <ClCompile Include="Sources\DX11RHI\DX11GeometryShader.cpp">
       <Filter>Sources\DX11RHI\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Sources\Renderer\DeferredRenderer.cpp">
+      <Filter>Sources\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PerVertexColor_vs.hlsl">
@@ -311,18 +317,15 @@
     <FxCompile Include="Shaders\ShadowMapMaterial_gs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\BaseMaterial_gs.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\BaseMaterial_passthrough_vs.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\PointLight.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\BRDF.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\GBuffer.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

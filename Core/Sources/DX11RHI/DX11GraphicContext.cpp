@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DX11GraphicContext.h"
+#include "Renderer/Viewport.h"
 
 
 DX11GraphicContext::DX11GraphicContext(ComPtr<ID3D11DeviceContext> ctx)
@@ -76,6 +77,15 @@ void DX11GraphicContext::SOSetTargets(uint32_t numBuffers, ID3D11Buffer * const 
 void DX11GraphicContext::RSSetState(ID3D11RasterizerState * pRasterizerState)
 {
 	_context->RSSetState(pRasterizerState);
+}
+
+void DX11GraphicContext::RSSetViewport(Viewport* viewport)
+{
+	D3D11_VIEWPORT vp{};
+	viewport->getViewport(vp.TopLeftX, vp.TopLeftY, vp.Width, vp.Height);
+	vp.MaxDepth = viewport->getMaxDepth();
+	vp.MinDepth = viewport->getMinDepth();
+	RSSetViewports(1, &vp);
 }
 
 void DX11GraphicContext::RSSetViewport(uint32_t topLeftX, uint32_t topLeftY, uint32_t width, uint32_t height, float minDepth, float maxDepth)

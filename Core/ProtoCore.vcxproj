@@ -56,7 +56,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Sources;$(SolutionDir)/ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -75,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Sources;$(SolutionDir)/ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,6 +123,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\Objects\Model.h" />
     <ClInclude Include="Sources\Objects\PointLight.h" />
     <ClInclude Include="Sources\Objects\Scene.h" />
+    <ClInclude Include="Sources\Renderer\DeferredRenderer.h" />
     <ClInclude Include="Sources\Renderer\Filter2D.h" />
     <ClInclude Include="Sources\Renderer\ForwardRenderer.h" />
     <ClInclude Include="Sources\Renderer\RenderDoc.h" />
@@ -167,6 +168,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\Objects\Model.cpp" />
     <ClCompile Include="Sources\Objects\PointLight.cpp" />
     <ClCompile Include="Sources\Objects\Scene.cpp" />
+    <ClCompile Include="Sources\Renderer\DeferredRenderer.cpp" />
     <ClCompile Include="Sources\Renderer\Filter2D.cpp" />
     <ClCompile Include="Sources\Renderer\ForwardRenderer.cpp" />
     <ClCompile Include="Sources\Renderer\RenderDoc.cpp" />
@@ -178,22 +180,6 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\Win32\Win32Application.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\BaseMaterial_gs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_%(Filename)</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="Shaders\BaseMaterial_passthrough_vs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_%(Filename)</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
     <FxCompile Include="Shaders\BaseMaterial_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -311,6 +297,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\BRDF.hlsli" />
+    <None Include="Shaders\GBuffer.hlsli" />
     <None Include="Shaders\PointLight.hlsli" />
   </ItemGroup>
   <ItemGroup>

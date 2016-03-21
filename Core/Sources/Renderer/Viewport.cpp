@@ -12,7 +12,7 @@ Viewport::~Viewport()
 }
 
 
-void Viewport::setViewport(uint32_t leftTopX, uint32_t leftTopY, uint32_t width, uint32_t height)
+void Viewport::setViewport(float leftTopX, float leftTopY, float width, float height)
 {
 	_leftTopX = leftTopX;
 	_leftTopY = leftTopY;
@@ -21,7 +21,7 @@ void Viewport::setViewport(uint32_t leftTopX, uint32_t leftTopY, uint32_t width,
 }
 
 
-void Viewport::getViewport(uint32_t& leftTopX, uint32_t& leftTopY, uint32_t& width, uint32_t& height) const
+void Viewport::getViewport(float& leftTopX, float& leftTopY, float& width, float& height) const
 {
 	leftTopX = _leftTopX;
 	leftTopY = _leftTopY;
