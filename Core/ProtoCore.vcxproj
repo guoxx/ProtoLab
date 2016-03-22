@@ -252,6 +252,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <FxCompile Include="Shaders\Lighting_cs.hlsl" />
     <FxCompile Include="Shaders\PerVertexColor_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -298,6 +299,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
   <ItemGroup>
     <None Include="Shaders\BRDF.hlsli" />
     <None Include="Shaders\GBuffer.hlsli" />
+    <None Include="Shaders\Lighting.hlsli" />
     <None Include="Shaders\PointLight.hlsli" />
   </ItemGroup>
   <ItemGroup>
