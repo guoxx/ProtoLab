@@ -32,6 +32,9 @@
     <Filter Include="Sources\Objects\Lights">
       <UniqueIdentifier>{f299d1a2-4cc9-48a1-a918-bc618acc25db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Material">
+      <UniqueIdentifier>{5cbdec00-7832-40e8-a9d6-3868f1d7f22f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources/stdafx.h">
@@ -148,9 +151,6 @@
     <ClInclude Include="Shaders\BaseMaterial_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="Sources\Mesh\Material.h">
-      <Filter>Sources\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="Shaders\EmissiveMaterial_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
@@ -180,6 +180,9 @@
     </ClInclude>
     <ClInclude Include="Sources\Renderer\DeferredRenderer.h">
       <Filter>Sources\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Sources\Material\Material.h">
+      <Filter>Sources\Material</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -267,9 +270,6 @@
     <ClCompile Include="Sources\Objects\PointLight.cpp">
       <Filter>Sources\Objects\Lights</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\Mesh\Material.cpp">
-      <Filter>Sources\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\DX11RHI\DX11RenderStateSet.cpp">
       <Filter>Sources\DX11RHI</Filter>
     </ClCompile>
@@ -284,6 +284,9 @@
     </ClCompile>
     <ClCompile Include="Sources\Renderer\DeferredRenderer.cpp">
       <Filter>Sources\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\Material\Material.cpp">
+      <Filter>Sources\Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

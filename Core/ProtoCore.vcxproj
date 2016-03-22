@@ -112,7 +112,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Sources\DX11RHI\DX11RHI.h" />
     <ClInclude Include="Sources\DX11RHI\DX11Shader.h" />
     <ClInclude Include="Sources\DX11RHI\DX11VertexShader.h" />
-    <ClInclude Include="Sources\Mesh\Material.h" />
+    <ClInclude Include="Sources\Material\Material.h" />
     <ClInclude Include="Sources\Mesh\Mesh.h" />
     <ClInclude Include="Sources\Mesh\Primitive.h" />
     <ClInclude Include="Sources\Mesh\tiny_obj_loader.h" />
@@ -157,7 +157,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClCompile Include="Sources\DX11RHI\DX11RHI.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11Shader.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11VertexShader.cpp" />
-    <ClCompile Include="Sources\Mesh\Material.cpp" />
+    <ClCompile Include="Sources\Material\Material.cpp" />
     <ClCompile Include="Sources\Mesh\Mesh.cpp" />
     <ClCompile Include="Sources\Mesh\Mesh_GeometricPrimitive.cpp" />
     <ClCompile Include="Sources\Mesh\Primitive.cpp" />
