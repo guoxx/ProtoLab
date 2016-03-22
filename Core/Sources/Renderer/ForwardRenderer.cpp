@@ -57,7 +57,7 @@ void ForwardRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sce
 	{
 		GPU_MARKER(gfxContext.get(), Lighting);
 
-		uint32_t x, y, w, h;
+		float x, y, w, h;
 		viewport->getViewport(x, y, w, h);
 		gfxContext->RSSetViewport(x, y, w, h);
 

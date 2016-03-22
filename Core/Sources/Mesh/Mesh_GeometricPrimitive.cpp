@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Mesh.h"
 #include "Primitive.h"
-#include "Material.h"
+#include "Material/Material.h"
 
 #include <DirectXTK/Inc/GeometricPrimitive.h>
 

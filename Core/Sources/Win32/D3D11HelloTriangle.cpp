@@ -31,7 +31,7 @@ void D3D11HelloTriangle::LoadPipeline()
 void D3D11HelloTriangle::LoadAssets()
 {
 	_viewport = std::make_shared<Viewport>();
-	_viewport->setViewport(uint32_t{0}, uint32_t{0}, GetWidth(), GetHeight());
+	_viewport->setViewport(0, 0, (float)GetWidth(), (float)GetHeight());
 
 	_camera = std::make_shared<Camera>();
 	_camera->setPosition(DirectX::XMVECTOR{0, 0, 3});

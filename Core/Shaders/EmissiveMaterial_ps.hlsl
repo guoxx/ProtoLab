@@ -1,5 +1,4 @@
 #include "EmissiveMaterial_common.h"
-#include "PointLight.hlsli"
 
 PSOutput main(PSInput input)
 {

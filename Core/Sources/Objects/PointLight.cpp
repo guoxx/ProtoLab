@@ -2,7 +2,7 @@
 #include "PointLight.h"
 #include "Camera.h"
 #include "../Mesh/Mesh.h"
-#include "../Mesh/Material.h"
+#include "../Material/Material.h"
 #include "../DX11RHI/DX11GraphicContext.h"
 
 

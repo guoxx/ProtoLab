@@ -3,7 +3,6 @@
 #include "../DX11RHI/DX11GraphicContext.h"
 
 #include "../../Shaders/BaseMaterial_vs.h"
-#include "../../Shaders/BaseMaterial_gs.h"
 #include "../../Shaders/BaseMaterial_ps.h"
 #include "../../Shaders/PerVertexColor_vs.h"
 #include "../../Shaders/PerVertexColor_ps.h"
@@ -19,22 +18,8 @@ std::shared_ptr<Material> Material::createMaterialBase()
 
 	mat->createVsConstantsBuffer(nullptr, sizeof(MaterialCB::BaseMaterial::View), MaterialCB::BaseMaterial::ViewReg);
 	mat->createPsConstantsBuffer(nullptr, sizeof(MaterialCB::BaseMaterial::Material), MaterialCB::BaseMaterial::MaterialReg);
-	mat->createPsConstantsBuffer(nullptr, sizeof(MaterialCB::BaseMaterial::PointLight), MaterialCB::BaseMaterial::PointLightReg);
-
-
-	D3D11_SO_DECLARATION_ENTRY soDeclaration[] = {
-		// Stream SemanticName SemanticIndex StartComponent ComponentCount OutputSlot
-		{0, "SV_POSITION", 0, 0, 4, 0},
-		{0, "NORMAL", 0, 0, 3, 0},
-		{0, "TEXCOORD", 0, 0, 2, 0},
-		{0, "POSITION", 1, 0, 3, 0},
-		{0, "POSITION", 2, 0, 3, 0},
-	};
-
-	uint32_t bufferStrides[] = {sizeof(float4) + sizeof(float3) + sizeof(float2) + sizeof(float3) + sizeof(float3)};
 
 	auto vertShader = std::make_shared<DX11VertexShader>(g_BaseMaterial_vs, sizeof(g_BaseMaterial_vs));
-	auto geomShader = std::make_shared<DX11GeometryShader>(g_BaseMaterial_gs, sizeof(g_BaseMaterial_gs), soDeclaration, COUNT_OF_C_ARRAY(soDeclaration), bufferStrides, COUNT_OF_C_ARRAY(bufferStrides), D3D11_SO_NO_RASTERIZED_STREAM);
 	auto fragShader = std::make_shared<DX11PixelShader>(g_BaseMaterial_ps, sizeof(g_BaseMaterial_ps));
 
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
@@ -43,7 +28,6 @@ std::shared_ptr<Material> Material::createMaterialBase()
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 2, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	mat->initialize(vertShader, fragShader, inputDesc, COUNT_OF_C_ARRAY(inputDesc));
-	mat->setGeometryShader(geomShader);
 	return mat;
 }
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Primitive.h"
-#include "Material.h"
+#include "Material/Material.h"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 #include "Mesh.h"
@@ -8,8 +8,6 @@
 #include "../Objects/PointLight.h"
 #include <DirectXTK/Inc/GeometricPrimitive.h>
 
-
-#include "../../Shaders/BaseMaterial_passthrough_vs.h"
 
 Mesh::Mesh()
 {
@@ -112,14 +110,11 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		ComPtr<ID3D11Buffer> viewCB = _material->getVsConstantBuffer(MaterialCB::BaseMaterial::ViewReg);
 		DX11ResourceMapGuard viewRes{ gfxContext.get(), viewCB.Get() };
 		MaterialCB::BaseMaterial::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
-		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
+		DirectX::XMMATRIX mModelInv = DirectX::XMMatrixInverse(nullptr, mModel);
+		DirectX::XMMATRIX mModelInvTrans = DirectX::XMMatrixTranspose(mModelInv);
 		DirectX::XMMATRIX mModelViewProj = DirectX::XMMatrixMultiply(mModel, camera->getViewProjectionMatrix());
-		DirectX::XMMATRIX mModelViewInv = DirectX::XMMatrixInverse(nullptr, mModelView);
-		DirectX::XMMATRIX mModelViewInvTrans = DirectX::XMMatrixTranspose(mModelViewInv);
-		DirectX::XMStoreFloat4x4(&dataPtr->mModel, DirectX::XMMatrixTranspose(mModel));
-		DirectX::XMStoreFloat4x4(&dataPtr->mModelView, DirectX::XMMatrixTranspose(mModelView));
+		DirectX::XMStoreFloat4x4(&dataPtr->mModelInvTrans, DirectX::XMMatrixTranspose(mModelInvTrans));
 		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewProj, DirectX::XMMatrixTranspose(mModelViewProj));
-		DirectX::XMStoreFloat4x4(&dataPtr->mModelViewInvTrans, DirectX::XMMatrixTranspose(mModelViewInvTrans));
 	}
 
 	{
@@ -136,29 +131,6 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 		matPtr->ior = mat.ior;
 		matPtr->dissolve = mat.dissolve;
 		matPtr->illum = mat.illum;
-	}
-
-	{
-		// update point light constant buffer
-		ComPtr<ID3D11Buffer> pointLightCB = _material->getPsConstantBuffer(MaterialCB::BaseMaterial::PointLightReg);
-		DX11ResourceMapGuard pointLightRes{ gfxContext.get(), pointLightCB.Get() };
-		MaterialCB::BaseMaterial::PointLight* dataPtr = pointLightRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
-		DirectX::XMMATRIX mModelView = DirectX::XMMatrixMultiply(mModel, camera->getViewMatrix());
-		DirectX::XMVECTOR lightPositionInLocalSpace = pointLight->getPosition();
-		lightPositionInLocalSpace = DirectX::XMVectorSetW(lightPositionInLocalSpace, 1);
-		DirectX::XMVECTOR lightPositionInCameraSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModelView);
-		DirectX::XMVECTOR lightPositionInWorldSpace = DirectX::XMVector4Transform(lightPositionInLocalSpace, mModel);
-		for (int i = 0; i < 6; ++i)
-		{
-			DirectX::XMMATRIX mvp = pointLight->getViewProj(static_cast<PointLight::AXIS>(i));
-			DirectX::XMStoreFloat4x4(&dataPtr->mViewProjInLightSpace[i], DirectX::XMMatrixTranspose(mvp));
-		}
-		DirectX::XMStoreFloat4(&dataPtr->lightPositionInCameraSpace, lightPositionInCameraSpace);
-		DirectX::XMStoreFloat4(&dataPtr->lightPositionInWorldSpace, lightPositionInWorldSpace);
-		DirectX::XMFLOAT3 intensity = pointLight->getIntensity();
-		dataPtr->intensity = DirectX::XMFLOAT4{intensity.x, intensity.y, intensity.z, 0};
-		dataPtr->radiusStart = pointLight->getRadiusStart();
-		dataPtr->radiusEnd = pointLight->getRadiusEnd();
 	}
 
 	_material->setVertexBuffer(Material::VEX_INPUT_SLOT::POSITION, prim->_positionBuffer.Get(), sizeof(DirectX::XMFLOAT3), 0);
@@ -186,34 +158,6 @@ void Mesh::_drawBaseMaterial(DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> 
 	gfxContext->IASetIndexBuffer(prim->_indexBuffer.Get(), prim->_indicesFormat, 0);
 	gfxContext->IASetPrimitiveTopology(prim->_topology);
 	gfxContext->drawIndex(prim->_indicesCount, 0, 0);
-
-	static std::shared_ptr<DX11VertexShader> passthroughVS{ nullptr };
-	static ID3D11InputLayout* passthroughInputLayout{ nullptr };
-
-	if (!passthroughVS)
-	{
-		passthroughVS = std::make_shared<DX11VertexShader>(g_BaseMaterial_passthrough_vs, sizeof(g_BaseMaterial_passthrough_vs));
-
-		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
-			{ "SV_POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float4) + sizeof(float3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "POSITION", 1, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float4) + sizeof(float3) + sizeof(float2), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "POSITION", 2, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float4) + sizeof(float3) + sizeof(float2) + sizeof(float3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		};
-		auto inputLayout = DX11RHI::getInstance().getDevice()->createInputLayout(inputDesc, COUNT_OF_C_ARRAY(inputDesc), passthroughVS->getBinaryData());
-		passthroughInputLayout = inputLayout.Get();
-		passthroughInputLayout->AddRef();
-	}
-
-	gfxContext->VSSetShader(passthroughVS.get());
-	gfxContext->GSUnsetShader();
-	gfxContext->SOSetTargets(0, nullptr, nullptr);
-	uint32_t stride[] = {(sizeof(float4) + sizeof(float3) + sizeof(float2) + sizeof(float3) + sizeof(float3))};
-	uint32_t offset[] = {0};
-	gfxContext->IASetVertexBuffers(0, 1, streamOutputBuffers, stride, offset);
-	gfxContext->IASetInputLayout(passthroughInputLayout);
-	gfxContext->drawAuto();
 }
 
 void Mesh::_drawPerVertexColor(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Primitive> prim, DirectX::CXMMATRIX mModel, std::shared_ptr<Camera> camera) const
