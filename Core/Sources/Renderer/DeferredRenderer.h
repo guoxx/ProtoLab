@@ -12,14 +12,16 @@ public:
 	~DeferredRenderer();
 
 	void beginFrame();
-	void renderGBuffer(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
 	void render(std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
 	void endFrame();
 
 	void present();
 
 private:
-	void _renderShadowMapPass(std::shared_ptr<Scene> scene);
+	void _renderShadowMap(std::shared_ptr<Scene> scene);
+	void _renderGBuffer(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
+	void _renderLighting(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
+	void _renderDebugDisplay(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
 
 private:
 	std::shared_ptr<DX11RenderTarget>				_gbuffer_Albedo_MatId;

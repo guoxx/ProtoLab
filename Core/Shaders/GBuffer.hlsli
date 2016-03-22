@@ -9,6 +9,6 @@ GBuffer EncodeGBuffer(int MatId, float3 Albedo, float3 Normal)
 	GBuffer output;
 	output.Albedo_MatId.a = float(MatId)/255.0f;
 	output.Albedo_MatId.rgb = Albedo;
-	output.Normal.xyz = Normal;
+	output.Normal.xyz = (Normal + 1) * 0.5;
 	return output;
 }

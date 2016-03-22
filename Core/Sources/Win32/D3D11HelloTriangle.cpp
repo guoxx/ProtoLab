@@ -7,7 +7,7 @@
 #include "../Objects/Camera.h"
 #include "../Objects/PointLight.h"
 #include "../Mesh/Mesh.h"
-#include "../Renderer/ForwardRenderer.h"
+#include "../Renderer/DeferredRenderer.h"
 #include "../Renderer/Viewport.h"
 
 D3D11HelloTriangle::D3D11HelloTriangle(UINT width, UINT height, std::wstring name) :
@@ -69,7 +69,7 @@ void D3D11HelloTriangle::LoadAssets()
 		_scene->attachPointLight(_pointLight);
 	}
 
-	_renderer = std::make_shared<ForwardRenderer>();
+	_renderer = std::make_shared<DeferredRenderer>();
 }
 
 // Update frame-based values.

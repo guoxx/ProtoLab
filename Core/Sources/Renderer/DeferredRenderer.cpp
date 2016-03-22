@@ -47,27 +47,6 @@ void DeferredRenderer::beginFrame()
 	RHI::getInstance().getContext()->clear(_backbufferRT->getRenderTarget().Get(), 0, 0, 0, 0);
 }
 
-void DeferredRenderer::renderGBuffer(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
-{
-	GPU_MARKER(gfxContext.get(), GBuffer);
-
-	gfxContext->RSSetViewport(viewport.get());
-
-	ID3D11RenderTargetView* rtvs[] = { _gbuffer_Albedo_MatId->getRenderTarget().Get(), _gbuffer_Normal->getRenderTarget().Get() };
-	gfxContext->OMSetRenderTargets(COUNT_OF_C_ARRAY(rtvs), rtvs, _sceneDepthRT->getRenderTarget().Get());
-
-	auto models = scene->getModels();
-	auto pointLights = scene->getPointLights();
-	for (auto model : models)
-	{
-		auto mesh = model->getMesh();
-		for (auto pl : pointLights)
-		{
-			mesh->draw(model->getWorldMatrix(), camera, pl);
-		}
-	}
-}
-
 void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();
@@ -75,40 +54,14 @@ void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sc
 	gfxContext->clear(_sceneRT->getRenderTarget().Get(), 0.f, 0.f, 0.f, 0.f);
 	gfxContext->clear(_sceneDepthRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0f);
 
-	_renderShadowMapPass(scene);
+	_renderShadowMap(scene);
 
-	{
-		GPU_MARKER(gfxContext.get(), Lighting);
-
-		gfxContext->RSSetViewport(viewport.get());
-
-		ID3D11RenderTargetView* rtvs[] = { _sceneRT->getRenderTarget().Get() };
-		gfxContext->OMSetRenderTargets(1, rtvs, _sceneDepthRT->getRenderTarget().Get());
-
-		auto models = scene->getModels();
-		auto pointLights = scene->getPointLights();
-		for (auto model : models)
-		{
-			auto mesh = model->getMesh();
-			for (auto pl : pointLights)
-			{
-				mesh->draw(model->getWorldMatrix(), camera, pl);
-			}
-		}
-	}
-
-
-	{
-		GPU_MARKER(gfxContext.get(), DebugDisplay);
-
-		auto pointLights = scene->getPointLights();
-		for (auto light : pointLights)
-		{
-			light->debugDraw(gfxContext, camera);
-		}
-	}
+	_renderGBuffer(gfxContext, camera, scene, viewport);
+	_renderLighting(gfxContext, camera, scene, viewport);
 
 	_filterIdentity->apply(_sceneRT, _backbufferRT);
+
+	_renderDebugDisplay(gfxContext, camera, scene, viewport);
 }
 
 void DeferredRenderer::endFrame()
@@ -121,7 +74,7 @@ void DeferredRenderer::present()
 	_swapChain->Present(0, 0);
 }
 
-void DeferredRenderer::_renderShadowMapPass(std::shared_ptr<Scene> scene)
+void DeferredRenderer::_renderShadowMap(std::shared_ptr<Scene> scene)
 {
 	auto gfxContext = RHI::getInstance().getContext();
 
@@ -157,5 +110,57 @@ void DeferredRenderer::_renderShadowMapPass(std::shared_ptr<Scene> scene)
 				mesh->drawShadowMap(model->getWorldMatrix(), mViewProj);
 			}
 		}
+	}
+}
+
+void DeferredRenderer::_renderGBuffer(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
+{
+	GPU_MARKER(gfxContext.get(), GBuffer);
+
+	gfxContext->RSSetViewport(viewport.get());
+
+	ID3D11RenderTargetView* rtvs[] = { _gbuffer_Albedo_MatId->getRenderTarget().Get(), _gbuffer_Normal->getRenderTarget().Get() };
+	gfxContext->OMSetRenderTargets(COUNT_OF_C_ARRAY(rtvs), rtvs, _sceneDepthRT->getRenderTarget().Get());
+
+	auto models = scene->getModels();
+	auto pointLights = scene->getPointLights();
+	for (auto model : models)
+	{
+		auto mesh = model->getMesh();
+		for (auto pl : pointLights)
+		{
+			mesh->draw(model->getWorldMatrix(), camera, pl);
+		}
+	}
+}
+
+void DeferredRenderer::_renderLighting(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
+{
+	GPU_MARKER(gfxContext.get(), Lighting);
+
+	gfxContext->RSSetViewport(viewport.get());
+
+	ID3D11RenderTargetView* rtvs[] = { _sceneRT->getRenderTarget().Get() };
+	gfxContext->OMSetRenderTargets(COUNT_OF_C_ARRAY(rtvs), rtvs, nullptr);
+
+	//auto pointLights = scene->getPointLights();
+	//for (auto model : models)
+	//{
+	//	auto mesh = model->getMesh();
+	//	for (auto pl : pointLights)
+	//	{
+	//		mesh->draw(model->getWorldMatrix(), camera, pl);
+	//	}
+	//}
+}
+
+void DeferredRenderer::_renderDebugDisplay(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
+{
+	GPU_MARKER(gfxContext.get(), DebugDisplay);
+
+	auto pointLights = scene->getPointLights();
+	for (auto light : pointLights)
+	{
+		light->debugDraw(gfxContext, camera);
 	}
 }
