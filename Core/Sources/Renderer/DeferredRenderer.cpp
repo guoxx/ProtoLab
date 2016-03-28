@@ -57,7 +57,7 @@ void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sc
 	_renderShadowMap(scene);
 
 	_renderGBuffer(gfxContext, camera, scene, viewport);
-	_renderLighting(gfxContext, camera, scene, viewport);
+	_lighting(gfxContext, camera, scene, viewport);
 
 	_filterIdentity->apply(_sceneRT, _backbufferRT);
 
@@ -134,7 +134,11 @@ void DeferredRenderer::_renderGBuffer(std::shared_ptr<DX11GraphicContext> gfxCon
 	}
 }
 
-void DeferredRenderer::_renderLighting(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
+void DeferredRenderer::_lightsTileAssignment(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
+{
+}
+
+void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
 {
 	GPU_MARKER(gfxContext.get(), Lighting);
 

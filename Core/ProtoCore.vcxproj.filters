@@ -323,6 +323,9 @@
     <FxCompile Include="Shaders\Lighting_cs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\LightTileAssignment_cs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\PointLight.hlsli">
