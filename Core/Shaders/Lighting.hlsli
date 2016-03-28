@@ -1,4 +1,5 @@
-ConstantsBuffer(PointLight, cs, 0)
+struct PointLight
 {
-	float4 lightPosition;
+	float3 position;
+	float radius;
 };

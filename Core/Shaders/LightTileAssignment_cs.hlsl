@@ -1,0 +1,2 @@
+StructuredBuffer<PointLight> AllPointLights;
+
