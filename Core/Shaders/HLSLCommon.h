@@ -6,6 +6,8 @@
 #define MAT_BASE			1
 #define MAT_LIT				2
 
+#define PIXELS_PER_TILE		32
+
 #if defined(_MSC_VER)
 
 // VC++
@@ -43,5 +45,6 @@ const static float DIVPI		= 0.318309886f;
 #include "BRDF.hlsli"
 #include "GBuffer.hlsli"
 #include "PointLight.hlsli"
+#include "Utils.hlsli"
 
 #endif

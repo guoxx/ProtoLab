@@ -340,5 +340,8 @@
     <None Include="Shaders\Lighting.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\Utils.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

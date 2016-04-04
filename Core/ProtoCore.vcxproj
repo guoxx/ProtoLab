@@ -324,6 +324,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <None Include="Shaders\GBuffer.hlsli" />
     <None Include="Shaders\Lighting.hlsli" />
     <None Include="Shaders\PointLight.hlsli" />
+    <None Include="Shaders\Utils.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ThirdParty\DirectXTK\DirectXTK_Desktop_2015.vcxproj">
