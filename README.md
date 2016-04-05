@@ -21,6 +21,7 @@ Before you launch this project, here are few steps that you need to do.
 * Right hand coordinate system
 * Column major matrix
 * Matrix multiplication : post-multiply  (or right multiply), same rule applied on c++ and HLSL 
+* Make all lightings in world space
 
 ## Shader debugging
 

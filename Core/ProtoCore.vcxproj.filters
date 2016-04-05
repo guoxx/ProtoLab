@@ -184,6 +184,9 @@
     <ClInclude Include="Sources\Material\Material.h">
       <Filter>Sources\Material</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\Lighting_common.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -324,6 +327,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LightTileAssignment_cs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Lighting_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
