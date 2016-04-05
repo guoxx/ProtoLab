@@ -10,3 +10,4 @@ ThirdParty/DirectXTK/Bin/
 Core/Shaders/*_vs.h
 Core/Shaders/*_gs.h
 Core/Shaders/*_ps.h
+Core/Shaders/*_cs.h
