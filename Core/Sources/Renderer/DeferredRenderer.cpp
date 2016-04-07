@@ -12,7 +12,15 @@
 
 #include "../../Shaders/FilterIdentity_vs.h"
 #include "../../Shaders/FilterIdentity_ps.h"
+#include "../../Shaders/Lighting_ps.h"
 
+namespace MaterialCB
+{
+	namespace Lighting
+	{
+		#include "../../Shaders/Lighting_common.h"
+	}
+}
 
 DeferredRenderer::DeferredRenderer()
 {
@@ -27,9 +35,20 @@ DeferredRenderer::DeferredRenderer()
 	_sceneRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM);
 	_sceneDepthRT = std::make_shared<DX11DepthStencilRenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
 
-	std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
-	std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_FilterIdentity_ps, sizeof(g_FilterIdentity_ps));
-	_filterIdentity = std::make_shared<Filter2D>(vs, ps);
+	{
+		std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
+		std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_FilterIdentity_ps, sizeof(g_FilterIdentity_ps));
+		_filterIdentity = std::make_shared<Filter2D>(vs, ps);
+	}
+
+	{
+		std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
+		std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_Lighting_ps, sizeof(g_Lighting_ps));
+		_filterLighting = std::make_shared<Filter2D>(vs, ps);
+
+		_filterLightingViewBuffer = RHI::getInstance().getDevice()->createConstantBuffer(nullptr, sizeof(MaterialCB::Lighting::View));
+		_filterLightintPointLightBuffer = RHI::getInstance().getDevice()->createConstantBuffer(nullptr, sizeof(MaterialCB::Lighting::PointLightParam));
+	}
 }
 
 
@@ -147,15 +166,38 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 	ID3D11RenderTargetView* rtvs[] = { _sceneRT->getRenderTarget().Get() };
 	gfxContext->OMSetRenderTargets(COUNT_OF_C_ARRAY(rtvs), rtvs, nullptr);
 
-	//auto pointLights = scene->getPointLights();
-	//for (auto model : models)
-	//{
-	//	auto mesh = model->getMesh();
-	//	for (auto pl : pointLights)
-	//	{
-	//		mesh->draw(model->getWorldMatrix(), camera, pl);
-	//	}
-	//}
+	auto pointLights = scene->getPointLights();
+	for (auto pl : pointLights)
+	{
+
+		{
+			// update view constant buffer
+			DX11ResourceMapGuard viewRes{ gfxContext.get(), _filterLightingViewBuffer.Get() };
+			MaterialCB::Lighting::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
+			DirectX::XMMATRIX mProjInv = camera->getInvProjectionMatrix();
+			DirectX::XMMATRIX mViewInv = camera->getInvViewMatrix();
+			DirectX::XMStoreFloat4x4(&dataPtr->g_mProjInv, DirectX::XMMatrixTranspose(mProjInv));
+			DirectX::XMStoreFloat4x4(&dataPtr->g_mViewInv, DirectX::XMMatrixTranspose(mViewInv));
+		}
+
+		{
+			// update material constant buffer
+			DX11ResourceMapGuard pointLightParamRes{ gfxContext.get(), _filterLightintPointLightBuffer.Get() };
+			MaterialCB::Lighting::PointLightParam* pointLightParamPtr = pointLightParamRes.getPtr<std::remove_pointer_t<decltype(pointLightParamPtr)>>();
+			DirectX::XMFLOAT3 intensity = pl->getIntensity();
+			DirectX::XMVECTOR position = pl->getPosition();
+			pointLightParamPtr->g_LightIntensity = DirectX::XMFLOAT4(intensity.x, intensity.y, intensity.z, 0.0f);
+			DirectX::XMStoreFloat4(&pointLightParamPtr->g_LightPosition, position);
+			pointLightParamPtr->g_RadiusStart = DirectX::XMFLOAT4(pl->getRadiusStart(), 0.0f, 0.0f, 0.0f);
+			pointLightParamPtr->g_RadiusEnd = DirectX::XMFLOAT4(pl->getRadiusEnd(), 0.0f, 0.0f, 0.0f);
+		}
+
+		ID3D11Buffer* cbuffers[] = { _filterLightingViewBuffer.Get(), _filterLightintPointLightBuffer.Get() };
+		gfxContext->PSSetConstantBuffers(0, 2, cbuffers);
+		ID3D11ShaderResourceView* gbuffers[] = { _gbuffer_Albedo_MatId->getTextureSRV().Get(), _gbuffer_Normal->getTextureSRV().Get(), _sceneDepthRT->getTextureSRV().Get() };
+		gfxContext->PSSetShaderResources(0, 3, gbuffers);
+		_filterLighting->apply(_sceneRT);
+	}
 }
 
 void DeferredRenderer::_renderDebugDisplay(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)

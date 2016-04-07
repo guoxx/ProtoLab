@@ -22,6 +22,26 @@ Filter2D::~Filter2D()
 {
 }
 
+void Filter2D::apply(std::shared_ptr<DX11RenderTarget> dest)
+{
+	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();
+
+	ID3D11RenderTargetView* rtvs[] = { dest->getRenderTarget().Get() };
+	gfxContext->OMSetRenderTargets(1, rtvs, nullptr);
+
+	ID3D11Buffer* vbuffers[] = { _vertexBuffer.Get() };
+	uint32_t strides[] = { sizeof(DirectX::VertexPositionTexture) };
+	uint32_t offsets[] = { 0 };
+	gfxContext->IASetVertexBuffers(0, 1, vbuffers, strides, offsets);
+	gfxContext->IASetInputLayout(_inputLayout.Get());
+	gfxContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	gfxContext->VSSetShader(_vertexShader.get(), nullptr, 0);
+	gfxContext->PSSetShader(_pixelShader.get(), nullptr, 0);
+	ID3D11SamplerState* samps[] = { _textureSamp.Get() };
+	gfxContext->PSSetSamplers(0, 1, samps);
+	gfxContext->draw(3, 0);
+}
+
 void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<DX11RenderTarget> dest)
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();

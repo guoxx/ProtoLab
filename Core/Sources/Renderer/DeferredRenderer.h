@@ -35,5 +35,9 @@ private:
 	std::shared_ptr<DX11RenderTarget>				_backbufferRT;
 
 	std::shared_ptr<Filter2D>						_filterIdentity;
+
+	std::shared_ptr<Filter2D>						_filterLighting;
+	ComPtr<ID3D11Buffer>							_filterLightingViewBuffer;
+	ComPtr<ID3D11Buffer>							_filterLightintPointLightBuffer;
 };
 
