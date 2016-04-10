@@ -44,7 +44,7 @@ float3 GBufferGetF0(GBuffer buf)
 	return buf.F0_Roughness.rgb;
 }
 
-float3 GBufferGetRoughness(GBuffer buf)
+float GBufferGetRoughness(GBuffer buf)
 {
 	return buf.F0_Roughness.a;
 }

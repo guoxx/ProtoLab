@@ -27,3 +27,25 @@ float3 pointLightIrradiance(float3 lightIntensity, float distance, float radiusS
 	float3 irradiance = lightIntensity * distanceFalloff;
 	return irradiance;	
 }
+
+int getFaceOfPointLightShadowMap(float3 lightPosition, float3 position)
+{
+	float3 LightVector = position - lightPosition;
+	float3 AbsLightVector = abs(LightVector);
+	float MaxCoordinate = max(AbsLightVector.x, max(AbsLightVector.y, AbsLightVector.z));
+	int CubeFaceIndex = 0;
+	if (MaxCoordinate == AbsLightVector.x)
+	{
+		CubeFaceIndex = AbsLightVector.x == LightVector.x ? 0 : 1;
+	}
+	else if (MaxCoordinate == AbsLightVector.y)
+	{
+		CubeFaceIndex = AbsLightVector.y == LightVector.y ? 2 : 3;
+	}
+	else
+	{
+		// we use right hand coordinate
+		CubeFaceIndex = AbsLightVector.z == LightVector.z ? 5 : 4;
+	}
+	return CubeFaceIndex;
+}

@@ -50,6 +50,8 @@ DeferredRenderer::DeferredRenderer()
 		_filterLightingViewBuffer = RHI::getInstance().getDevice()->createConstantBuffer(nullptr, sizeof(MaterialCB::Lighting::View));
 		_filterLightintPointLightBuffer = RHI::getInstance().getDevice()->createConstantBuffer(nullptr, sizeof(MaterialCB::Lighting::PointLightParam));
 	}
+
+	_pointCmpSampler = DX11RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_COMPARISON_LESS_EQUAL);
 }
 
 
@@ -187,7 +189,6 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 		}
 
 		{
-			// update material constant buffer
 			DX11ResourceMapGuard pointLightParamRes{ gfxContext.get(), _filterLightintPointLightBuffer.Get() };
 			MaterialCB::Lighting::PointLightParam* pointLightParamPtr = pointLightParamRes.getPtr<std::remove_pointer_t<decltype(pointLightParamPtr)>>();
 			DirectX::XMFLOAT3 intensity = pl->getIntensity();
@@ -196,6 +197,12 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 			DirectX::XMStoreFloat4(&pointLightParamPtr->g_LightPosition, position);
 			pointLightParamPtr->g_RadiusStart = DirectX::XMFLOAT4(pl->getRadiusStart(), 0.0f, 0.0f, 0.0f);
 			pointLightParamPtr->g_RadiusEnd = DirectX::XMFLOAT4(pl->getRadiusEnd(), 0.0f, 0.0f, 0.0f);
+
+			for (int i = 0; i < 6; ++i)
+			{
+				DirectX::XMMATRIX mViewProj = pl->getViewProj(static_cast<PointLight::AXIS>(i));
+				DirectX::XMStoreFloat4x4(&pointLightParamPtr->g_mViewProjInLightSpace[i], DirectX::XMMatrixTranspose(mViewProj));
+			}
 		}
 
 		ID3D11Buffer* cbuffers[] = { _filterLightingViewBuffer.Get(), _filterLightintPointLightBuffer.Get() };
@@ -204,9 +211,12 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 			_gbuffer_Albedo_MatId->getTextureSRV().Get(),
 			_gbuffer_F0_Roughness->getTextureSRV().Get(),
 			_gbuffer_Normal->getTextureSRV().Get(),
-			_sceneDepthRT->getTextureSRV().Get()
+			_sceneDepthRT->getTextureSRV().Get(),
+			pl->getShadowMapRenderTarget()->getTextureSRV().Get(),
 		};
 		gfxContext->PSSetShaderResources(0, COUNT_OF_C_ARRAY(gbuffers), gbuffers);
+		ID3D11SamplerState* samps[] = { _pointCmpSampler.Get() };
+		gfxContext->PSSetSamplers(1, COUNT_OF_C_ARRAY(samps), samps);
 		_filterLighting->apply(_sceneRT);
 	}
 }
