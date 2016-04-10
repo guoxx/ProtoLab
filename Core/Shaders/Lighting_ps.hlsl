@@ -27,7 +27,7 @@ PSOutput main(PSInput input)
 	float3 diffuse = Diffuse_Lambert(albedo) * E * cosThetaI;
 
 	// specular
-	float V = normalize(g_vCameraPosition.xyz - position);
+	float3 V = normalize(g_vCameraPosition.xyz - position);
 	float3 specular = MicrofacetSpecular(f0, roughness, V, normal, L) * E * cosThetaI;
 
 	output.color = float4(diffuse + specular, 1.0);
