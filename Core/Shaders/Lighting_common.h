@@ -2,6 +2,7 @@
 
 ConstantsBuffer(View, ps, 0)
 {
+	float4 g_vCameraPosition;
 	float4x4 g_mProjInv;
 	float4x4 g_mViewInv;
 };

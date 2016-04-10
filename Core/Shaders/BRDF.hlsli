@@ -45,10 +45,11 @@ float Distribution(float Roughness, float NdotH)
 	return m2 / (f * f);
 }
 
-float3 Fresnel(float3 SpecularColor, float VoH)
+float3 Fresnel(float3 F0, float VoH)
 {
+	// Schlick's approximation: https://en.wikipedia.org/wiki/Schlick%27s_approximation
 	float Fc = pow(1 - VoH, 5);
-	return SpecularColor + (1 - SpecularColor) * Fc;
+	return F0 + (1 - F0) * Fc;
 }
 
 float GeometricVisibility(float Roughness, float NdotL, float NdotV)
@@ -70,7 +71,7 @@ float GeometricVisibility(float Roughness, float NdotL, float NdotV)
 #endif
 }
 
-float3 MicrofacetSpecular(float3 SpecularColor, float Roughness, float3 V, float3 N, float3 L)
+float3 MicrofacetSpecular(float3 F0, float Roughness, float3 V, float3 N, float3 L)
 {
 	float3 H = normalize(V + L);
 	float NdotH = saturate(dot(N, H));
@@ -79,7 +80,7 @@ float3 MicrofacetSpecular(float3 SpecularColor, float Roughness, float3 V, float
 	float NdotV = abs( dot (N, V)) + 1e-5f;
 
 	float D = Distribution(Roughness, NdotH);
-	float3 F = Fresnel(SpecularColor, VdotH);
+	float3 F = Fresnel(F0, VdotH);
 	float G = GeometricVisibility(Roughness, NdotL, NdotV);
 	return D * F * G / PI;
 }

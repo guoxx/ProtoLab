@@ -30,6 +30,7 @@ DeferredRenderer::DeferredRenderer()
 	_backbufferRT = std::make_shared<DX11RenderTarget>(_swapChain);
 
 	_gbuffer_Albedo_MatId = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM);
+	_gbuffer_F0_Roughness = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM);
 	_gbuffer_Normal = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	_sceneRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8B8A8_TYPELESS, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -138,7 +139,11 @@ void DeferredRenderer::_renderGBuffer(std::shared_ptr<DX11GraphicContext> gfxCon
 
 	gfxContext->RSSetViewport(viewport.get());
 
-	ID3D11RenderTargetView* rtvs[] = { _gbuffer_Albedo_MatId->getRenderTarget().Get(), _gbuffer_Normal->getRenderTarget().Get() };
+	ID3D11RenderTargetView* rtvs[] = {
+		_gbuffer_Albedo_MatId->getRenderTarget().Get(),
+		_gbuffer_F0_Roughness->getRenderTarget().Get(),
+		_gbuffer_Normal->getRenderTarget().Get()
+	};
 	gfxContext->OMSetRenderTargets(COUNT_OF_C_ARRAY(rtvs), rtvs, _sceneDepthRT->getRenderTarget().Get());
 
 	auto models = scene->getModels();
@@ -176,6 +181,7 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 			MaterialCB::Lighting::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
 			DirectX::XMMATRIX mProjInv = camera->getInvProjectionMatrix();
 			DirectX::XMMATRIX mViewInv = camera->getInvViewMatrix();
+			DirectX::XMStoreFloat4(&dataPtr->g_vCameraPosition, camera->getPosition());
 			DirectX::XMStoreFloat4x4(&dataPtr->g_mProjInv, DirectX::XMMatrixTranspose(mProjInv));
 			DirectX::XMStoreFloat4x4(&dataPtr->g_mViewInv, DirectX::XMMatrixTranspose(mViewInv));
 		}
@@ -194,8 +200,13 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 
 		ID3D11Buffer* cbuffers[] = { _filterLightingViewBuffer.Get(), _filterLightintPointLightBuffer.Get() };
 		gfxContext->PSSetConstantBuffers(0, 2, cbuffers);
-		ID3D11ShaderResourceView* gbuffers[] = { _gbuffer_Albedo_MatId->getTextureSRV().Get(), _gbuffer_Normal->getTextureSRV().Get(), _sceneDepthRT->getTextureSRV().Get() };
-		gfxContext->PSSetShaderResources(0, 3, gbuffers);
+		ID3D11ShaderResourceView* gbuffers[] = {
+			_gbuffer_Albedo_MatId->getTextureSRV().Get(),
+			_gbuffer_F0_Roughness->getTextureSRV().Get(),
+			_gbuffer_Normal->getTextureSRV().Get(),
+			_sceneDepthRT->getTextureSRV().Get()
+		};
+		gfxContext->PSSetShaderResources(0, COUNT_OF_C_ARRAY(gbuffers), gbuffers);
 		_filterLighting->apply(_sceneRT);
 	}
 }

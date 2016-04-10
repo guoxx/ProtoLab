@@ -57,5 +57,7 @@ PSOutput main(GSOutput input)
 
 GBuffer main(VSOutput input)
 {
-	return EncodeGBuffer(MAT_BASE, diffuse.xyz, input.normal);
+	// TODO: test code
+	float Roughness = saturate((100 - shininess)/100);
+	return EncodeGBuffer(MAT_BASE, diffuse.xyz, specular.xyz, input.normal, Roughness);
 }

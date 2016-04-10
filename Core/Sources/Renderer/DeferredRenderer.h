@@ -26,6 +26,7 @@ private:
 
 private:
 	std::shared_ptr<DX11RenderTarget>				_gbuffer_Albedo_MatId;
+	std::shared_ptr<DX11RenderTarget>				_gbuffer_F0_Roughness;
 	std::shared_ptr<DX11RenderTarget>				_gbuffer_Normal;
 
 	std::shared_ptr<DX11RenderTarget>				_sceneRT;
