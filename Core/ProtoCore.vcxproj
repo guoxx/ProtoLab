@@ -66,6 +66,9 @@
     <PreBuildEvent>
       <Command>prebuild.bat "$(SolutionDir)" "$(ProjectDir)" "$(OutDir)" "$(FrameworkSdkDir)"</Command>
     </PreBuildEvent>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -88,6 +91,9 @@
       <Command>copy $(ProjectDir)Shaders\* $(OutDir)
 copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </PreBuildEvent>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Shaders\BaseMaterial_common.h" />
