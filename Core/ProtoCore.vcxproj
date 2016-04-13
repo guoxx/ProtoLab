@@ -57,6 +57,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>Sources;$(SolutionDir)/ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -79,6 +81,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Sources;$(SolutionDir)/ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -339,16 +342,16 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\BRDF.hlsli" />
-    <None Include="Shaders\GBuffer.hlsli" />
-    <None Include="Shaders\Lighting.hlsli" />
-    <None Include="Shaders\PointLight.hlsli" />
-    <None Include="Shaders\Utils.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ThirdParty\DirectXTK\DirectXTK_Desktop_2015.vcxproj">
       <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Common\BRDF.hlsli" />
+    <None Include="Shaders\Common\GBuffer.hlsli" />
+    <None Include="Shaders\Common\Lighting.hlsli" />
+    <None Include="Shaders\Common\PointLight.hlsli" />
+    <None Include="Shaders\Common\Utils.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

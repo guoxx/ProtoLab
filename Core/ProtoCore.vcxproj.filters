@@ -35,6 +35,9 @@
     <Filter Include="Sources\Material">
       <UniqueIdentifier>{5cbdec00-7832-40e8-a9d6-3868f1d7f22f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Common">
+      <UniqueIdentifier>{5dce119f-5ba2-41d9-8cb4-dd2edffb31d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sources/stdafx.h">
@@ -334,20 +337,20 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\PointLight.hlsli">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\Common\BRDF.hlsli">
+      <Filter>Shaders\Common</Filter>
     </None>
-    <None Include="Shaders\BRDF.hlsli">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\Common\GBuffer.hlsli">
+      <Filter>Shaders\Common</Filter>
     </None>
-    <None Include="Shaders\GBuffer.hlsli">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\Common\Lighting.hlsli">
+      <Filter>Shaders\Common</Filter>
     </None>
-    <None Include="Shaders\Lighting.hlsli">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\Common\PointLight.hlsli">
+      <Filter>Shaders\Common</Filter>
     </None>
-    <None Include="Shaders\Utils.hlsli">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\Common\Utils.hlsli">
+      <Filter>Shaders\Common</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -42,9 +42,9 @@ cbuffer typename : register (b##reg)
 const static float PI           = 3.141592654f;
 const static float DIVPI		= 0.318309886f;
 
-#include "BRDF.hlsli"
-#include "GBuffer.hlsli"
-#include "PointLight.hlsli"
-#include "Utils.hlsli"
+#include "Common/BRDF.hlsli"
+#include "Common/GBuffer.hlsli"
+#include "Common/PointLight.hlsli"
+#include "Common/Utils.hlsli"
 
 #endif
