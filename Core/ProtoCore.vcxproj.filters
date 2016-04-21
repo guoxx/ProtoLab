@@ -335,6 +335,9 @@
     <FxCompile Include="Shaders\Lighting_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\PointLightShadowMapMinFilter_cs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\Common\BRDF.hlsli">

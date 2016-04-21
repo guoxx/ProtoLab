@@ -114,7 +114,10 @@ void DeferredRenderer::_renderShadowMap(std::shared_ptr<Scene> scene)
 		{
 			// setup shadow map render target
 			DX11DepthStencilRenderTarget* shadowMapRT = pl->getShadowMapRenderTarget();
-			gfxContext->clear(shadowMapRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH);
+			for (int32_t i = 0; i < shadowMapRT->getNumOfMipmaps(); ++i)
+			{
+				gfxContext->clear(shadowMapRT->getRenderTarget(i).Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1);
+			}
 			gfxContext->OMSetRenderTargets(0, nullptr, shadowMapRT->getRenderTarget().Get());
 
 			gfxContext->RSSetViewport(0, 0, 256, 256);
