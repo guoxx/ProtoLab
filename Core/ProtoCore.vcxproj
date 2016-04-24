@@ -108,6 +108,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
     <ClInclude Include="Shaders\ShadowMapMaterial_common.h" />
     <ClInclude Include="Sources/stdafx.h" />
     <ClInclude Include="Sources/targetver.h" />
+    <ClInclude Include="Sources\DX11RHI\DX11SmallConstantBuffer.h" />
     <ClInclude Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.h" />
     <ClInclude Include="Sources\DX11RHI\DX11Device.h" />
     <ClInclude Include="Sources\DX11RHI\DX11GeometryShader.h" />
@@ -156,6 +157,7 @@ copy $(SolutionDir)Resources\* $(OutDir)</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11SmallConstantBuffer.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11DepthStencilRenderTarget.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11Device.cpp" />
     <ClCompile Include="Sources\DX11RHI\DX11GeometryShader.cpp" />

@@ -190,6 +190,9 @@
     <ClInclude Include="Shaders\Lighting_common.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Sources\DX11RHI\DX11SmallConstantBuffer.h">
+      <Filter>Sources\DX11RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -293,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="Sources\Material\Material.cpp">
       <Filter>Sources\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Sources\DX11RHI\DX11SmallConstantBuffer.cpp">
+      <Filter>Sources\DX11RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
