@@ -18,6 +18,9 @@ struct __declspec(align(16)) typename
 typedef DirectX::XMINT4		int4;
 typedef DirectX::XMINT3		int3;
 typedef DirectX::XMINT2		int2;
+typedef DirectX::XMUINT4	uint4;
+typedef DirectX::XMUINT3	uint3;
+typedef DirectX::XMUINT2	uint2;
 typedef DirectX::XMFLOAT4X4 float4x4;
 typedef DirectX::XMFLOAT4	float4;
 typedef DirectX::XMFLOAT3	float3;

@@ -33,6 +33,7 @@ using Microsoft::WRL::ComPtr;
 #include <string>
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 
 #include "Utils/utFuncs.h"
 #include "Utils/utDefines.h"

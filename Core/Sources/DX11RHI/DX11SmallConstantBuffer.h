@@ -6,10 +6,10 @@ public:
 	DX11SmallConstantBuffer(DX11Device* dev, void* mem, uint32_t sizeInBytes);
 	~DX11SmallConstantBuffer();
 
-	void setVectorF(DirectX::FXMVECTOR vec);
-	void setVectorI(DirectX::XMVECTORI32 vec);
-	void setVectorU(DirectX::XMVECTORU32 vec);
-	void setMatrix(DirectX::FXMMATRIX matrix);
+	void setVectorF(uint32_t reg, DirectX::FXMVECTOR vec);
+	void setVectorI(uint32_t reg, DirectX::XMVECTORI32 vec);
+	void setVectorU(uint32_t reg, DirectX::XMVECTORU32 vec);
+	void setMatrix(uint32_t reg, DirectX::FXMMATRIX matrix);
 
 	void commit(DX11GraphicContext* ctx);
 

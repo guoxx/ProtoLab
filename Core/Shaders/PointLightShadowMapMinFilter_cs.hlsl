@@ -1,6 +1,6 @@
 
 Texture2DArray<float> g_shadowMap : register(t0);
-RWTexture2DArray<float> g_mipmapShadowMap : register(1);
+RWTexture2DArray<float> g_mipmapShadowMap : register(t1);
 SamplerState g_pointSampler : register(s0);
 
 [numthreads(16, 16, 1)]
