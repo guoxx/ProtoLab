@@ -7,6 +7,8 @@ Output/
 ThirdParty/DirectXMesh/Meshconvert/Bin/
 ThirdParty/DirectXTK/Bin/
 
+Resources/*.exr
+
 Core/Shaders/*_vs.h
 Core/Shaders/*_gs.h
 Core/Shaders/*_ps.h
