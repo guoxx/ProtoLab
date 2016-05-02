@@ -3,9 +3,7 @@
 Texture2D<float4> tex;
 SamplerState texSampler;
 
-PSOutput main(PSInput input)
+float4 main(VSOutput input) : SV_Target
 {
-	PSOutput result;
-	result.color = tex.SampleLevel(texSampler, input.texcoord, 0);
-	return result;
+	return tex.SampleLevel(texSampler, input.texcoord, 0);
 }

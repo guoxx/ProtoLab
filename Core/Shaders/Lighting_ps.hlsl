@@ -10,10 +10,8 @@ TextureCube<float4> g_PointLightShadowMap : register(t4);
 SamplerState PointSampler;
 SamplerComparisonState PointCmpSampler;
 
-PSOutput main(PSInput input)
+float4 main(VSOutput input) : SV_TARGET
 {
-	PSOutput output;
-
 	GBuffer GData = DecodeGBuffer(GBuffer0, GBuffer1, GBuffer2, PointSampler, input.texcoord);
 	float3 albedo = GBufferGetAlbedo(GData);
 	float3 f0 = GBufferGetF0(GData);
@@ -45,7 +43,5 @@ PSOutput main(PSInput input)
 	NormalizedLightVector.z = -NormalizedLightVector.z;
 	float lightVisibility = g_PointLightShadowMap.SampleCmpLevelZero(PointCmpSampler, NormalizedLightVector, shadowDepth);
 
-	output.color = float4((diffuse + specular) * lightVisibility, 1.0);
-
-	return output;
+	return float4((diffuse + specular) * lightVisibility, 1.0);
 }

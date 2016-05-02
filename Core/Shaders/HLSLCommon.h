@@ -1,3 +1,5 @@
+#ifndef __HLSL_COMMON_H__
+#define __HLSL_COMMON_H__
 
 #ifndef __cplusplus
 #define __HLSL__
@@ -49,5 +51,7 @@ const static float DIVPI		= 0.318309886f;
 #include "Common/GBuffer.hlsli"
 #include "Common/PointLight.hlsli"
 #include "Common/Utils.hlsli"
+
+#endif
 
 #endif

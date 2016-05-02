@@ -193,6 +193,9 @@
     <ClInclude Include="Sources\DX11RHI\DX11SmallConstantBuffer.h">
       <Filter>Sources\DX11RHI</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders\PointLightShadowMapMinFilter_common.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sources/main.cpp">
@@ -342,6 +345,12 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\PointLightShadowMapMinFilter_cs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\PointLightShadowMapMinFilter_gs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\PointLightShadowMapMinFilter_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

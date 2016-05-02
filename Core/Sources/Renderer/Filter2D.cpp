@@ -4,8 +4,14 @@
 
 
 Filter2D::Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11PixelShader> ps)
-	: _vertexShader{vs}
-	, _pixelShader{ps}
+	: Filter2D(vs, nullptr, ps)
+{
+}
+
+Filter2D::Filter2D(std::shared_ptr<DX11VertexShader> vs, std::shared_ptr<DX11GeometryShader> gs, std::shared_ptr<DX11PixelShader> ps)
+	: _vertexShader{ vs }
+	, _geomShader{ gs }
+	, _pixelShader{ ps }
 {
 	DirectX::VertexPositionTexture vertexs[] = {
 		{DirectX::XMFLOAT3{-1,  3, 0}, DirectX::XMFLOAT2{0, -1}},
@@ -36,6 +42,10 @@ void Filter2D::apply(std::shared_ptr<DX11RenderTarget> dest)
 	gfxContext->IASetInputLayout(_inputLayout.Get());
 	gfxContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gfxContext->VSSetShader(_vertexShader.get(), nullptr, 0);
+	if (_geomShader)
+	{
+		gfxContext->GSSetShader(_geomShader.get(), nullptr, 0);
+	}
 	gfxContext->PSSetShader(_pixelShader.get(), nullptr, 0);
 	ID3D11SamplerState* samps[] = { _textureSamp.Get() };
 	gfxContext->PSSetSamplers(0, 1, samps);
@@ -56,6 +66,10 @@ void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<D
 	gfxContext->IASetInputLayout(_inputLayout.Get());
 	gfxContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	gfxContext->VSSetShader(_vertexShader.get(), nullptr, 0);
+	if (_geomShader)
+	{
+		gfxContext->GSSetShader(_geomShader.get(), nullptr, 0);
+	}
 	gfxContext->PSSetShader(_pixelShader.get(), nullptr, 0);
 	ID3D11ShaderResourceView* textures[] = {source->getTextureSRV().Get()};
 	gfxContext->PSSetShaderResources(0, 1, textures);
