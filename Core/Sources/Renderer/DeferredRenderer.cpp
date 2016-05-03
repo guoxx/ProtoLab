@@ -167,6 +167,7 @@ void DeferredRenderer::_renderDilatedShadowMap(std::shared_ptr<Scene> scene)
 			DX11RenderTarget* dilatedShadowMapRT = pl->getDilatedShadowMapRenderTarget();
 
 			gfxContext->clear(dilatedShadowMapRT->getRenderTarget().Get(), 1, 1, 1, 1);
+			gfxContext->RSSetViewport(0, 0, DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE);
 			_pointLightShadowMapMinFilter->apply2dArray(shadowMapRT, dilatedShadowMapRT);
 		}
 	}
