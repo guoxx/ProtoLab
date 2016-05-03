@@ -165,11 +165,9 @@ void DeferredRenderer::_renderDilatedShadowMap(std::shared_ptr<Scene> scene)
 		{
 			DX11DepthStencilRenderTarget* shadowMapRT = pl->getShadowMapRenderTarget();
 			DX11RenderTarget* dilatedShadowMapRT = pl->getDilatedShadowMapRenderTarget();
-			std::shared_ptr<DX11DepthStencilRenderTarget> src{ shadowMapRT };
-			std::shared_ptr<DX11RenderTarget> dest{ dilatedShadowMapRT };
 
 			gfxContext->clear(dilatedShadowMapRT->getRenderTarget().Get(), 1, 1, 1, 1);
-			_pointLightShadowMapMinFilter->apply(src, dest);
+			_pointLightShadowMapMinFilter->apply2dArray(shadowMapRT, dilatedShadowMapRT);
 		}
 	}
 }

@@ -9,6 +9,7 @@ public:
 	~DX11RenderTarget();
 
 	bool initializeAs2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT srvFormat, DXGI_FORMAT rtvFormat);
+	bool initializeAs2DArray(uint32_t width, uint32_t height, uint32_t arraySize, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT srvFormat, DXGI_FORMAT rtvFormat);
 	bool initializeAsCube(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, DXGI_FORMAT srvFormat, DXGI_FORMAT rtvFormat);
 
 	ComPtr<ID3D11ShaderResourceView> getTextureSRV() const;

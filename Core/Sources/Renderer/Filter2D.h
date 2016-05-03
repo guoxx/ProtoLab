@@ -10,7 +10,7 @@ public:
 	void apply(std::shared_ptr<DX11RenderTarget> dest);
 	void apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<DX11RenderTarget> dest);
 
-	void apply(std::shared_ptr<DX11DepthStencilRenderTarget> source, std::shared_ptr<DX11RenderTarget> dest);
+	void apply2dArray(DX11DepthStencilRenderTarget* source, DX11RenderTarget* dest);
 
 private:
 	ComPtr<ID3D11Buffer> _vertexBuffer;

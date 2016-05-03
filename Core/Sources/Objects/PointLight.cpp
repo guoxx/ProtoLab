@@ -94,7 +94,7 @@ DX11RenderTarget* PointLight::getDilatedShadowMapRenderTarget()
 	if (!_dilatedShadowMapRT)
 	{
 		_dilatedShadowMapRT = std::make_shared<DX11RenderTarget>();
-		_dilatedShadowMapRT->initializeAsCube(DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
+		_dilatedShadowMapRT->initializeAs2DArray(DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, 6, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_R32_FLOAT);
 	}
 
 	return _dilatedShadowMapRT.get();

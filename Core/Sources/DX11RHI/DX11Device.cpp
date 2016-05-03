@@ -148,6 +148,15 @@ ComPtr<ID3D11Texture2D> DX11Device::createTexture2DFromSwapChain(ComPtr<IDXGISwa
 	return tex;
 }
 
+ComPtr<ID3D11Texture2D> DX11Device::createTexture2DArray(uint32_t width, uint32_t height, uint32_t arraySize, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags)
+{
+	ComPtr<ID3D11Texture2D> tex;
+	D3D11_TEXTURE2D_DESC desc = createDx11Texture2dArrayDesc(width, height, arraySize, numMipmap, texFormat);
+	desc.BindFlags = bindFlags;
+	_device->CreateTexture2D(&desc, nullptr, tex.GetAddressOf());
+	return tex;
+}
+
 ComPtr<ID3D11ShaderResourceView> DX11Device::createShaderResourceViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT srvFormat, uint32_t numMipmap)
 {
 	ComPtr<ID3D11ShaderResourceView> textureSRV;
@@ -156,10 +165,26 @@ ComPtr<ID3D11ShaderResourceView> DX11Device::createShaderResourceViewTex2d(ComPt
 	return textureSRV;
 }
 
+ComPtr<ID3D11ShaderResourceView> DX11Device::createShaderResourceViewTex2dArray(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT srvFormat, uint32_t arraySize, uint32_t numMipmap)
+{
+	ComPtr<ID3D11ShaderResourceView> textureSRV;
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = createDx11ShaderResourceViewDescTex2dArray(srvFormat, arraySize, numMipmap);
+	_device->CreateShaderResourceView(texture.Get(), &srvDesc, textureSRV.GetAddressOf());
+	return textureSRV;
+}
+
 ComPtr<ID3D11RenderTargetView> DX11Device::createRenderTargetViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice)
 {
 	ComPtr<ID3D11RenderTargetView> rtv;
 	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2d(rtvFormat, mipSlice);
+	_device->CreateRenderTargetView(texture.Get(), &rtvDesc, rtv.GetAddressOf());
+	return rtv;
+}
+
+ComPtr<ID3D11RenderTargetView> DX11Device::createRenderTargetViewTex2dArray(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t arraySize, uint32_t mipSlice)
+{
+	ComPtr<ID3D11RenderTargetView> rtv;
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = createDx11RenderTargetViewDescTex2dArray(rtvFormat, arraySize, mipSlice);
 	_device->CreateRenderTargetView(texture.Get(), &rtvDesc, rtv.GetAddressOf());
 	return rtv;
 }

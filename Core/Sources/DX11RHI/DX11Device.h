@@ -32,8 +32,11 @@ public:
 	// number of mipmap levels include base
 	ComPtr<ID3D11Texture2D> createTexture2D(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags);
 	ComPtr<ID3D11Texture2D> createTexture2DFromSwapChain(ComPtr<IDXGISwapChain> swapChain);
+	ComPtr<ID3D11Texture2D> createTexture2DArray(uint32_t width, uint32_t height, uint32_t arraySize, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags);
 	ComPtr<ID3D11ShaderResourceView> createShaderResourceViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT srvFormat, uint32_t numMipmap);
+	ComPtr<ID3D11ShaderResourceView> createShaderResourceViewTex2dArray(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT srvFormat, uint32_t arraySize, uint32_t numMipmap);
 	ComPtr<ID3D11RenderTargetView> createRenderTargetViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t mipSlice);
+	ComPtr<ID3D11RenderTargetView> createRenderTargetViewTex2dArray(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT rtvFormat, uint32_t arraySize, uint32_t mipSlice);
 	ComPtr<ID3D11DepthStencilView> createDepthStencilViewTex2d(ComPtr<ID3D11Texture2D> texture, DXGI_FORMAT dsvFormat, uint32_t mipSlice);
 
 	ComPtr<ID3D11Texture2D> createTextureCube(uint32_t width, uint32_t height, uint32_t numMipmap, DXGI_FORMAT texFormat, uint32_t bindFlags);

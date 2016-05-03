@@ -78,7 +78,7 @@ void Filter2D::apply(std::shared_ptr<DX11RenderTarget> source, std::shared_ptr<D
 	gfxContext->draw(3, 0);
 }
 
-void Filter2D::apply(std::shared_ptr<DX11DepthStencilRenderTarget> source, std::shared_ptr<DX11RenderTarget> dest)
+void Filter2D::apply2dArray(DX11DepthStencilRenderTarget* source, DX11RenderTarget* dest)
 {
 	std::shared_ptr<DX11GraphicContext> gfxContext = RHI::getInstance().getContext();
 
@@ -97,7 +97,7 @@ void Filter2D::apply(std::shared_ptr<DX11DepthStencilRenderTarget> source, std::
 		gfxContext->GSSetShader(_geomShader.get(), nullptr, 0);
 	}
 	gfxContext->PSSetShader(_pixelShader.get(), nullptr, 0);
-	ID3D11ShaderResourceView* textures[] = { source->getTextureSRV().Get() };
+	ID3D11ShaderResourceView* textures[] = { source->getTextureSRV2dArray().Get() };
 	gfxContext->PSSetShaderResources(0, 1, textures);
 	ID3D11SamplerState* samps[] = { _textureSamp.Get() };
 	gfxContext->PSSetSamplers(0, 1, samps);
