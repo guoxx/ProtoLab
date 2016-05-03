@@ -32,6 +32,9 @@ public:
 	DirectX::XMMATRIX getViewProj(AXIS axis) const;
 
 	virtual DX11DepthStencilRenderTarget* getShadowMapRenderTarget() override final;
+
+	DX11RenderTarget* getDilatedShadowMapRenderTarget();
+
 	virtual void debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera) override final;
 
 private:
@@ -41,6 +44,7 @@ private:
 
 	std::shared_ptr<Mesh> _sphere;
 
-	std::shared_ptr<DX11DepthStencilRenderTarget> _shadowMapRT;
+	std::shared_ptr<DX11DepthStencilRenderTarget>	_shadowMapRT;
+	std::shared_ptr<DX11RenderTarget>				_dilatedShadowMapRT;
 };
 

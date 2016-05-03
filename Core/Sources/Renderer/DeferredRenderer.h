@@ -19,6 +19,7 @@ public:
 
 private:
 	void _renderShadowMap(std::shared_ptr<Scene> scene);
+	void _renderDilatedShadowMap(std::shared_ptr<Scene> scene);
 	void _renderGBuffer(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
 	void _lightsTileAssignment(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
 	void _lighting(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport);
@@ -42,5 +43,8 @@ private:
 	ComPtr<ID3D11Buffer>							_filterLightintPointLightBuffer;
 
 	ComPtr<ID3D11SamplerState>						_pointCmpSampler;
+
+	std::shared_ptr<Filter2D>						_pointLightShadowMapMinFilter;
+
 };
 

@@ -14,6 +14,9 @@
 #include "../../Shaders/FilterIdentity_ps.h"
 #include "../../Shaders/Lighting_ps.h"
 
+#include "../../Shaders/PointLightShadowMapMinFilter_gs.h"
+#include "../../Shaders/PointLightShadowMapMinFilter_ps.h"
+
 namespace MaterialCB
 {
 	namespace Lighting
@@ -52,6 +55,13 @@ DeferredRenderer::DeferredRenderer()
 	}
 
 	_pointCmpSampler = DX11RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_COMPARISON_LESS_EQUAL);
+
+	{
+		std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
+		std::shared_ptr<DX11GeometryShader> gs = std::make_shared<DX11GeometryShader>(g_PointLightShadowMapMinFilter_gs, sizeof(g_PointLightShadowMapMinFilter_gs));
+		std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_PointLightShadowMapMinFilter_ps, sizeof(g_PointLightShadowMapMinFilter_ps));
+		_pointLightShadowMapMinFilter = std::make_shared<Filter2D>(vs, gs, ps);
+	}
 }
 
 
@@ -77,6 +87,7 @@ void DeferredRenderer::render(std::shared_ptr<Camera> camera, std::shared_ptr<Sc
 	gfxContext->clear(_sceneDepthRT->getRenderTarget().Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1.0f);
 
 	_renderShadowMap(scene);
+	_renderDilatedShadowMap(scene);
 
 	_renderGBuffer(gfxContext, camera, scene, viewport);
 	_lighting(gfxContext, camera, scene, viewport);
@@ -114,7 +125,7 @@ void DeferredRenderer::_renderShadowMap(std::shared_ptr<Scene> scene)
 		{
 			// setup shadow map render target
 			DX11DepthStencilRenderTarget* shadowMapRT = pl->getShadowMapRenderTarget();
-			for (int32_t i = 0; i < shadowMapRT->getNumOfMipmaps(); ++i)
+			for (uint32_t i = 0; i < shadowMapRT->getNumOfMipmaps(); ++i)
 			{
 				gfxContext->clear(shadowMapRT->getRenderTarget(i).Get(), DX11GraphicContext::RHI_CLEAR_FLAG::RHI_CLEAR_DEPTH, 1);
 			}
@@ -134,6 +145,31 @@ void DeferredRenderer::_renderShadowMap(std::shared_ptr<Scene> scene)
 				auto mesh = model->getMesh();
 				mesh->drawShadowMap(model->getWorldMatrix(), mViewProj);
 			}
+		}
+	}
+}
+
+void DeferredRenderer::_renderDilatedShadowMap(std::shared_ptr<Scene> scene)
+{
+	auto gfxContext = RHI::getInstance().getContext();
+
+	GPU_MARKER(gfxContext.get(), ShadowMapMinFilterPass);
+
+	auto pointLights = scene->getPointLights();
+
+	for (auto light : pointLights)
+	{
+		PointLight* pl = dynamic_cast<PointLight*>(light.get());
+
+		if (pl != nullptr)
+		{
+			DX11DepthStencilRenderTarget* shadowMapRT = pl->getShadowMapRenderTarget();
+			DX11RenderTarget* dilatedShadowMapRT = pl->getDilatedShadowMapRenderTarget();
+			std::shared_ptr<DX11DepthStencilRenderTarget> src{ shadowMapRT };
+			std::shared_ptr<DX11RenderTarget> dest{ dilatedShadowMapRT };
+
+			gfxContext->clear(dilatedShadowMapRT->getRenderTarget().Get(), 1, 1, 1, 1);
+			_pointLightShadowMapMinFilter->apply(src, dest);
 		}
 	}
 }

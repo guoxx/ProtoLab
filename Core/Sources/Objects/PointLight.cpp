@@ -83,10 +83,21 @@ DX11DepthStencilRenderTarget* PointLight::getShadowMapRenderTarget()
 	if (!_shadowMapRT)
 	{
 		_shadowMapRT = std::make_shared<DX11DepthStencilRenderTarget>();
-		_shadowMapRT->initializeAsCube(DX11Limits::POINT_LIGHT_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_SHADOW_MAP_SIZE, 4, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
+		_shadowMapRT->initializeAsCube(DX11Limits::POINT_LIGHT_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_SHADOW_MAP_SIZE, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
 	}
 
 	return _shadowMapRT.get();
+}
+
+DX11RenderTarget* PointLight::getDilatedShadowMapRenderTarget()
+{
+	if (!_dilatedShadowMapRT)
+	{
+		_dilatedShadowMapRT = std::make_shared<DX11RenderTarget>();
+		_dilatedShadowMapRT->initializeAsCube(DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, 1, DXGI_FORMAT_R32_TYPELESS, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_D32_FLOAT);
+	}
+
+	return _dilatedShadowMapRT.get();
 }
 
 void PointLight::debugDraw(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera)
