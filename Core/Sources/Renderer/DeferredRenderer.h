@@ -46,6 +46,7 @@ private:
 
 	std::shared_ptr<DX11SmallConstantBuffer>		_pointLightShadowMapMinFilterCBuffer;
 	std::shared_ptr<Filter2D>						_pointLightShadowMapMinFilter;
+	std::shared_ptr<DX11RenderTarget>				_pointLightPenumbraRT;
 
 };
 

@@ -63,6 +63,8 @@ DeferredRenderer::DeferredRenderer()
 		_pointLightShadowMapMinFilter = std::make_shared<Filter2D>(vs, gs, ps);
 
 		_pointLightShadowMapMinFilterCBuffer = std::make_shared<DX11SmallConstantBuffer>(RHI::getInstance().getDevice().get(), nullptr, sizeof(float4)*2);
+
+		_pointLightPenumbraRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R16G16_TYPELESS, DXGI_FORMAT_R16G16_UNORM, DXGI_FORMAT_R16G16_UNORM);
 	}
 }
 
@@ -223,58 +225,65 @@ void DeferredRenderer::_lightsTileAssignment(std::shared_ptr<DX11GraphicContext>
 
 void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
 {
-	GPU_MARKER(gfxContext.get(), Lighting);
-
-	gfxContext->RSSetViewport(viewport.get());
-
-	ID3D11RenderTargetView* rtvs[] = { _sceneRT->getRenderTarget().Get() };
-	gfxContext->OMSetRenderTargets(COUNT_OF_C_ARRAY(rtvs), rtvs, nullptr);
-
-	auto pointLights = scene->getPointLights();
-	for (auto pl : pointLights)
 	{
+		GPU_MARKER(gfxContext.get(), Penumbra);
+		gfxContext->clear(_pointLightPenumbraRT->getRenderTarget().Get(), 0, 0, 0, 0);
+	}
 
+	{
+		GPU_MARKER(gfxContext.get(), Lighting);
+
+		gfxContext->RSSetViewport(viewport.get());
+
+		ID3D11RenderTargetView* rtvs[] = { _sceneRT->getRenderTarget().Get() };
+		gfxContext->OMSetRenderTargets(COUNT_OF_C_ARRAY(rtvs), rtvs, nullptr);
+
+		auto pointLights = scene->getPointLights();
+		for (auto pl : pointLights)
 		{
-			// update view constant buffer
-			DX11ResourceMapGuard viewRes{ gfxContext.get(), _filterLightingViewBuffer.Get() };
-			MaterialCB::Lighting::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
-			DirectX::XMMATRIX mProjInv = camera->getInvProjectionMatrix();
-			DirectX::XMMATRIX mViewInv = camera->getInvViewMatrix();
-			DirectX::XMStoreFloat4(&dataPtr->g_vCameraPosition, camera->getPosition());
-			DirectX::XMStoreFloat4x4(&dataPtr->g_mProjInv, DirectX::XMMatrixTranspose(mProjInv));
-			DirectX::XMStoreFloat4x4(&dataPtr->g_mViewInv, DirectX::XMMatrixTranspose(mViewInv));
-		}
 
-		{
-			DX11ResourceMapGuard pointLightParamRes{ gfxContext.get(), _filterLightintPointLightBuffer.Get() };
-			MaterialCB::Lighting::PointLightParam* pointLightParamPtr = pointLightParamRes.getPtr<std::remove_pointer_t<decltype(pointLightParamPtr)>>();
-			DirectX::XMFLOAT3 intensity = pl->getIntensity();
-			DirectX::XMVECTOR position = pl->getPosition();
-			pointLightParamPtr->g_LightIntensity = DirectX::XMFLOAT4(intensity.x, intensity.y, intensity.z, 0.0f);
-			DirectX::XMStoreFloat4(&pointLightParamPtr->g_LightPosition, position);
-			pointLightParamPtr->g_RadiusStart = DirectX::XMFLOAT4(pl->getRadiusStart(), 0.0f, 0.0f, 0.0f);
-			pointLightParamPtr->g_RadiusEnd = DirectX::XMFLOAT4(pl->getRadiusEnd(), 0.0f, 0.0f, 0.0f);
-
-			for (int i = 0; i < 6; ++i)
 			{
-				DirectX::XMMATRIX mViewProj = pl->getViewProj(static_cast<PointLight::AXIS>(i));
-				DirectX::XMStoreFloat4x4(&pointLightParamPtr->g_mViewProjInLightSpace[i], DirectX::XMMatrixTranspose(mViewProj));
+				// update view constant buffer
+				DX11ResourceMapGuard viewRes{ gfxContext.get(), _filterLightingViewBuffer.Get() };
+				MaterialCB::Lighting::View* dataPtr = viewRes.getPtr<std::remove_pointer_t<decltype(dataPtr)>>();
+				DirectX::XMMATRIX mProjInv = camera->getInvProjectionMatrix();
+				DirectX::XMMATRIX mViewInv = camera->getInvViewMatrix();
+				DirectX::XMStoreFloat4(&dataPtr->g_vCameraPosition, camera->getPosition());
+				DirectX::XMStoreFloat4x4(&dataPtr->g_mProjInv, DirectX::XMMatrixTranspose(mProjInv));
+				DirectX::XMStoreFloat4x4(&dataPtr->g_mViewInv, DirectX::XMMatrixTranspose(mViewInv));
 			}
-		}
 
-		ID3D11Buffer* cbuffers[] = { _filterLightingViewBuffer.Get(), _filterLightintPointLightBuffer.Get() };
-		gfxContext->PSSetConstantBuffers(0, 2, cbuffers);
-		ID3D11ShaderResourceView* gbuffers[] = {
-			_gbuffer_Albedo_MatId->getTextureSRV().Get(),
-			_gbuffer_F0_Roughness->getTextureSRV().Get(),
-			_gbuffer_Normal->getTextureSRV().Get(),
-			_sceneDepthRT->getTextureSRV().Get(),
-			pl->getShadowMapRenderTarget()->getTextureSRV().Get(),
-		};
-		gfxContext->PSSetShaderResources(0, COUNT_OF_C_ARRAY(gbuffers), gbuffers);
-		ID3D11SamplerState* samps[] = { _pointCmpSampler.Get() };
-		gfxContext->PSSetSamplers(1, COUNT_OF_C_ARRAY(samps), samps);
-		_filterLighting->apply(_sceneRT);
+			{
+				DX11ResourceMapGuard pointLightParamRes{ gfxContext.get(), _filterLightintPointLightBuffer.Get() };
+				MaterialCB::Lighting::PointLightParam* pointLightParamPtr = pointLightParamRes.getPtr<std::remove_pointer_t<decltype(pointLightParamPtr)>>();
+				DirectX::XMFLOAT3 intensity = pl->getIntensity();
+				DirectX::XMVECTOR position = pl->getPosition();
+				pointLightParamPtr->g_LightIntensity = DirectX::XMFLOAT4(intensity.x, intensity.y, intensity.z, 0.0f);
+				DirectX::XMStoreFloat4(&pointLightParamPtr->g_LightPosition, position);
+				pointLightParamPtr->g_RadiusStart = DirectX::XMFLOAT4(pl->getRadiusStart(), 0.0f, 0.0f, 0.0f);
+				pointLightParamPtr->g_RadiusEnd = DirectX::XMFLOAT4(pl->getRadiusEnd(), 0.0f, 0.0f, 0.0f);
+
+				for (int i = 0; i < 6; ++i)
+				{
+					DirectX::XMMATRIX mViewProj = pl->getViewProj(static_cast<PointLight::AXIS>(i));
+					DirectX::XMStoreFloat4x4(&pointLightParamPtr->g_mViewProjInLightSpace[i], DirectX::XMMatrixTranspose(mViewProj));
+				}
+			}
+
+			ID3D11Buffer* cbuffers[] = { _filterLightingViewBuffer.Get(), _filterLightintPointLightBuffer.Get() };
+			gfxContext->PSSetConstantBuffers(0, 2, cbuffers);
+			ID3D11ShaderResourceView* gbuffers[] = {
+				_gbuffer_Albedo_MatId->getTextureSRV().Get(),
+				_gbuffer_F0_Roughness->getTextureSRV().Get(),
+				_gbuffer_Normal->getTextureSRV().Get(),
+				_sceneDepthRT->getTextureSRV().Get(),
+				pl->getShadowMapRenderTarget()->getTextureSRV().Get(),
+			};
+			gfxContext->PSSetShaderResources(0, COUNT_OF_C_ARRAY(gbuffers), gbuffers);
+			ID3D11SamplerState* samps[] = { _pointCmpSampler.Get() };
+			gfxContext->PSSetSamplers(1, COUNT_OF_C_ARRAY(samps), samps);
+			_filterLighting->apply(_sceneRT);
+		}
 	}
 }
 
