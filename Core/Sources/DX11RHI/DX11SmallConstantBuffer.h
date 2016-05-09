@@ -19,6 +19,11 @@ public:
 
 	void commit(DX11GraphicContext* ctx);
 
+	ID3D11Buffer* getBuffer()
+	{
+		return _cbuffer.Get();
+	}
+
 private:
 	// aligned to 16 bytes boundaries for better memory copy performache
 	constexpr static size_t _cacheMemAlignment = 16;

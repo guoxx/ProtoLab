@@ -61,6 +61,8 @@ DeferredRenderer::DeferredRenderer()
 		std::shared_ptr<DX11GeometryShader> gs = std::make_shared<DX11GeometryShader>(g_PointLightShadowMapMinFilter_gs, sizeof(g_PointLightShadowMapMinFilter_gs));
 		std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_PointLightShadowMapMinFilter_ps, sizeof(g_PointLightShadowMapMinFilter_ps));
 		_pointLightShadowMapMinFilter = std::make_shared<Filter2D>(vs, gs, ps);
+
+		_pointLightShadowMapMinFilterCBuffer = std::make_shared<DX11SmallConstantBuffer>(RHI::getInstance().getDevice().get(), nullptr, sizeof(float4)*2);
 	}
 }
 
@@ -168,7 +170,24 @@ void DeferredRenderer::_renderDilatedShadowMap(std::shared_ptr<Scene> scene)
 
 			gfxContext->clear(dilatedShadowMapRT->getRenderTarget().Get(), 1, 1, 1, 1);
 			gfxContext->RSSetViewport(0, 0, DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE, DX11Limits::POINT_LIGHT_DILATED_SHADOW_MAP_SIZE);
-			_pointLightShadowMapMinFilter->apply2dArray(shadowMapRT, dilatedShadowMapRT);
+
+			{
+				_pointLightShadowMapMinFilterCBuffer->setVectorF(0, pl->getRadiusStart()*0.065);
+				_pointLightShadowMapMinFilterCBuffer->setVectorF(1, 1, 0);
+				_pointLightShadowMapMinFilterCBuffer->commit(gfxContext.get());
+				ID3D11Buffer* cbuffers[] = { _pointLightShadowMapMinFilterCBuffer->getBuffer() };
+				gfxContext->PSSetConstantBuffers(0, 1, cbuffers);
+				_pointLightShadowMapMinFilter->apply2dArray(shadowMapRT, dilatedShadowMapRT);
+			}
+
+			{
+				_pointLightShadowMapMinFilterCBuffer->setVectorF(0, pl->getRadiusStart()*0.065);
+				_pointLightShadowMapMinFilterCBuffer->setVectorF(1, 0, 1);
+				_pointLightShadowMapMinFilterCBuffer->commit(gfxContext.get());;
+				ID3D11Buffer* cbuffers[] = { _pointLightShadowMapMinFilterCBuffer->getBuffer() };
+				gfxContext->PSSetConstantBuffers(0, 1, cbuffers);
+				_pointLightShadowMapMinFilter->apply2dArray(shadowMapRT, dilatedShadowMapRT);
+			}
 		}
 	}
 }

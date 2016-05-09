@@ -44,6 +44,7 @@ private:
 
 	ComPtr<ID3D11SamplerState>						_pointCmpSampler;
 
+	std::shared_ptr<DX11SmallConstantBuffer>		_pointLightShadowMapMinFilterCBuffer;
 	std::shared_ptr<Filter2D>						_pointLightShadowMapMinFilter;
 
 };

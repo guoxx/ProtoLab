@@ -5,17 +5,26 @@ SamplerState g_pointSampler : register(s0);
 
 float main(GSOutput input) : SV_TARGET
 {
-	float minDepth = 1.0f;
-	int stepx = 256/32;
-	int stepy = 256/32/4;
-	for (int i = 0; i < stepx; ++i)
+	float2 step = g_sampleStep.x * g_dir.xy;
+
+	float2 offsets[10] = {
+		-5 * step,
+		-4 * step,
+		-3 * step,
+		-2 * step,
+		-1 * step,
+		 1 * step,
+		 2 * step,
+		 3 * step,
+		 4 * step,
+		 5 * step,
+	};
+
+	float minz = g_shadowMap.Sample(g_pointSampler, float3(input.texcoord, input.RTIndex)).x;
+	for (int i = 0; i < 10; ++i)
 	{
-		for (int j = 0; j < stepy; j = j + 4)
-		{
-			float4 v = g_shadowMap.GatherRed(g_pointSampler, float3(input.texcoord, input.RTIndex), int2(i, j), int2(i, j + 1), int2(i, j + 2), int2(i, j + 3));
-			minDepth = min(minDepth, min(v.x, min(v.y, min(v.z, v.w))));
-		}
+		minz = min(minz, g_shadowMap.Sample(g_pointSampler, float3(input.texcoord + offsets[i], input.RTIndex)).x);
 	}
 
-	return minDepth;
+	return minz;
 }
