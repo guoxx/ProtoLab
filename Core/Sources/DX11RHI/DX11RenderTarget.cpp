@@ -50,6 +50,7 @@ bool DX11RenderTarget::initializeAs2DArray(uint32_t width, uint32_t height, uint
 {
 	_texture = RHI::getInstance().getDevice()->createTexture2DArray(width, height, arraySize, numMipmap, texFormat, D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET);
 	_textureSRV = RHI::getInstance().getDevice()->createShaderResourceViewTex2dArray(_texture, srvFormat, arraySize, numMipmap);
+	_textureSRVCube = RHI::getInstance().getDevice()->createShaderResourceViewTexCube(_texture, srvFormat, numMipmap);
 	for (uint32_t mipSlice = 0; mipSlice < numMipmap; ++mipSlice)
 	{
 		ComPtr<ID3D11RenderTargetView> rtv = RHI::getInstance().getDevice()->createRenderTargetViewTex2dArray(_texture, rtvFormat, arraySize, mipSlice);
@@ -73,6 +74,11 @@ bool DX11RenderTarget::initializeAsCube(uint32_t width, uint32_t height, uint32_
 ComPtr<ID3D11ShaderResourceView> DX11RenderTarget::getTextureSRV() const
 {
 	return _textureSRV;
+}
+
+ComPtr<ID3D11ShaderResourceView> DX11RenderTarget::getTextureSRVCube() const
+{
+	return _textureSRVCube;
 }
 
 ComPtr<ID3D11RenderTargetView> DX11RenderTarget::getRenderTarget(uint32_t mipmap) const

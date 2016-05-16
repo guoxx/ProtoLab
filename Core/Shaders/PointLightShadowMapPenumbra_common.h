@@ -1,10 +1,12 @@
 #include "HLSLCommon.h"
 #include "FilterIdentity_common.h"
 
-ConstantsBuffer(LightData, ps, 0)
+ConstantsBuffer(CBuffer, ps, 0)
 {
-	float4 g_sampleStep;
-	float4 g_dir;
+	float4x4 mProjInv;
+	float4x4 mViewInv;
+	float4 g_LightPositionWS;
+	float4x4 g_mViewProjLight[6];
 };
 
 #ifdef __HLSL__

@@ -5,7 +5,7 @@
 DX11SmallConstantBuffer::DX11SmallConstantBuffer(DX11Device* dev, void* mem, uint32_t sizeInBytes)
 {
 	_bufferSizeInBytes = sizeInBytes;
-	_cache = (float4*)_aligned_malloc(_cacheMemAlignment, sizeInBytes);
+	_cache = (float4*)_aligned_malloc(sizeInBytes, _cacheMemAlignment);
 	_cbuffer = dev->createConstantBuffer(mem, sizeInBytes);
 }
 

@@ -119,7 +119,7 @@ D3D11_TEXTURE2D_DESC createDx11Texture2dArrayDesc(uint32_t width, uint32_t heigh
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = 0;
-	texDesc.MiscFlags = 0;
+	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 	return texDesc;
 }
 

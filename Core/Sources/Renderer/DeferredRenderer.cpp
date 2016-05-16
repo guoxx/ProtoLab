@@ -17,6 +17,8 @@
 #include "../../Shaders/PointLightShadowMapMinFilter_gs.h"
 #include "../../Shaders/PointLightShadowMapMinFilter_ps.h"
 
+#include "../../Shaders/PointLightShadowMapPenumbra_ps.h"
+
 namespace MaterialCB
 {
 	namespace Lighting
@@ -55,6 +57,7 @@ DeferredRenderer::DeferredRenderer()
 	}
 
 	_pointCmpSampler = DX11RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_COMPARISON_LESS_EQUAL);
+	_pointSampler = DX11RHI::getInstance().getDevice()->createSamplerState(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_COMPARISON_LESS_EQUAL);
 
 	{
 		std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
@@ -64,7 +67,16 @@ DeferredRenderer::DeferredRenderer()
 
 		_pointLightShadowMapMinFilterCBuffer = std::make_shared<DX11SmallConstantBuffer>(RHI::getInstance().getDevice().get(), nullptr, sizeof(float4)*2);
 
-		_pointLightPenumbraRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R16G16_TYPELESS, DXGI_FORMAT_R16G16_UNORM, DXGI_FORMAT_R16G16_UNORM);
+	}
+
+	{
+		_pointLightPenumbraCBuffer = std::make_shared<DX11SmallConstantBuffer>(RHI::getInstance().getDevice().get(), nullptr, sizeof(float4)*33);
+
+		std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
+		std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_PointLightShadowMapPenumbra_ps, sizeof(g_PointLightShadowMapPenumbra_ps));
+		_pointLightPenumbraFilter = std::make_shared<Filter2D>(vs, ps);
+
+		_pointLightPenumbraRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8_TYPELESS, DXGI_FORMAT_R8G8_UNORM, DXGI_FORMAT_R8G8_UNORM);
 	}
 }
 
@@ -226,11 +238,6 @@ void DeferredRenderer::_lightsTileAssignment(std::shared_ptr<DX11GraphicContext>
 void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext, std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, std::shared_ptr<Viewport> viewport)
 {
 	{
-		GPU_MARKER(gfxContext.get(), Penumbra);
-		gfxContext->clear(_pointLightPenumbraRT->getRenderTarget().Get(), 0, 0, 0, 0);
-	}
-
-	{
 		GPU_MARKER(gfxContext.get(), Lighting);
 
 		gfxContext->RSSetViewport(viewport.get());
@@ -241,6 +248,35 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 		auto pointLights = scene->getPointLights();
 		for (auto pl : pointLights)
 		{
+
+			{
+				GPU_MARKER(gfxContext.get(), Penumbra);
+				gfxContext->clear(_pointLightPenumbraRT->getRenderTarget().Get(), 0, 0, 0, 0);
+
+				{
+					// update view constant buffer
+					_pointLightPenumbraCBuffer->setMatrix(0, camera->getInvProjectionMatrix());
+					_pointLightPenumbraCBuffer->setMatrix(4, camera->getInvViewMatrix());
+					_pointLightPenumbraCBuffer->setVectorF(8, pl->getPosition());
+					for (int i = 0; i < 6; ++i)
+					{
+						_pointLightPenumbraCBuffer->setMatrix(9 + i * 4, pl->getViewProj((PointLight::AXIS)i));
+					}
+					_pointLightPenumbraCBuffer->commit(gfxContext.get());
+				}
+
+				ID3D11Buffer* cbuffers[] = { _pointLightPenumbraCBuffer->getBuffer() };
+				gfxContext->PSSetConstantBuffers(0, 1, cbuffers);
+				ID3D11ShaderResourceView* rtvs[] = {
+					pl->getShadowMapRenderTarget()->getTextureSRV().Get(),
+					pl->getDilatedShadowMapRenderTarget()->getTextureSRVCube().Get(),
+					_sceneDepthRT->getTextureSRV().Get(),
+				};
+				gfxContext->PSSetShaderResources(0, COUNT_OF_C_ARRAY(rtvs), rtvs);
+				ID3D11SamplerState* samps[] = { _pointSampler.Get() };
+				gfxContext->PSSetSamplers(1, COUNT_OF_C_ARRAY(samps), samps);
+				_pointLightPenumbraFilter->apply(_pointLightPenumbraRT);
+			}
 
 			{
 				// update view constant buffer
