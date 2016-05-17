@@ -29,6 +29,7 @@ public:
 	float getRadiusStart() const;
 	float getRadiusEnd() const;
 
+	void getViewNearFar(float& zNear, float& zFar) const;
 	DirectX::XMMATRIX getViewProj(AXIS axis) const;
 
 	virtual DX11DepthStencilRenderTarget* getShadowMapRenderTarget() override final;

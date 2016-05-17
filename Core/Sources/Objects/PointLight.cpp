@@ -40,6 +40,12 @@ float PointLight::getRadiusEnd() const
 	return _radiusEnd;
 }
 
+void PointLight::getViewNearFar(float& zNear, float& zFar) const
+{
+	zNear = 0.01f;
+	zFar = _radiusEnd;
+}
+
 DirectX::XMMATRIX PointLight::getViewProj(AXIS axis) const
 {
 	// tricks for seamless cubemap filtering

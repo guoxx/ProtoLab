@@ -8,7 +8,8 @@ SamplerState g_PointSampler : register(s0);
 
 float EstimatePenumbra(float zReceiver, float zBlocker)
 {
-	return (zReceiver - zBlocker) / zBlocker;
+	// linear z
+	return saturate((zReceiver - zBlocker) / zBlocker);
 }
 
 float4 main(VSOutput input) : SV_TARGET
@@ -20,6 +21,8 @@ float4 main(VSOutput input) : SV_TARGET
 	float3 normalizedLightVec = normalize(lightVec);
 	normalizedLightVec.z = -normalizedLightVec.z;
 	float zBlocker = g_PointLightDilatedShadowMap.Sample(g_PointSampler, normalizedLightVec);
+	// TODO: hard code depth bias
+	zBlocker += 0.0025;
 
 	int shadowMapFace = getFaceOfPointLightShadowMap(g_LightPositionWS.xyz, posWS);
 	float4 posLS = mul(float4(posWS, 1), g_mViewProjLight[shadowMapFace]);
@@ -27,7 +30,11 @@ float4 main(VSOutput input) : SV_TARGET
 
 	float4 outColor = float4(1, 1, 1, 1);
 	outColor.r = zBlocker > zReceiver ? 0 : 1;
-	outColor.g = EstimatePenumbra(zReceiver, zBlocker);
+
+	// TODO: debug
+	float linearZReceiver = GetLinearDepth(zReceiver, g_LightNearFar.x, g_LightNearFar.y);
+	float linearZBlocker = GetLinearDepth(zBlocker, g_LightNearFar.x, g_LightNearFar.y);
+	outColor.g = EstimatePenumbra(linearZReceiver, linearZBlocker) * g_LightSize.x * g_LightSize.x;
 
 	return outColor;
 }

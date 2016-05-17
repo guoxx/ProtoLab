@@ -70,13 +70,13 @@ DeferredRenderer::DeferredRenderer()
 	}
 
 	{
-		_pointLightPenumbraCBuffer = std::make_shared<DX11SmallConstantBuffer>(RHI::getInstance().getDevice().get(), nullptr, sizeof(float4)*33);
+		_pointLightPenumbraCBuffer = std::make_shared<DX11SmallConstantBuffer>(RHI::getInstance().getDevice().get(), nullptr, sizeof(float4)*35);
 
 		std::shared_ptr<DX11VertexShader> vs = std::make_shared<DX11VertexShader>(g_FilterIdentity_vs, sizeof(g_FilterIdentity_vs));
 		std::shared_ptr<DX11PixelShader> ps = std::make_shared<DX11PixelShader>(g_PointLightShadowMapPenumbra_ps, sizeof(g_PointLightShadowMapPenumbra_ps));
 		_pointLightPenumbraFilter = std::make_shared<Filter2D>(vs, ps);
 
-		_pointLightPenumbraRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R8G8_TYPELESS, DXGI_FORMAT_R8G8_UNORM, DXGI_FORMAT_R8G8_UNORM);
+		_pointLightPenumbraRT = std::make_shared<DX11RenderTarget>(WIN_WIDTH, WIN_HEIGHT, 1, DXGI_FORMAT_R32G32_TYPELESS, DXGI_FORMAT_R32G32_FLOAT, DXGI_FORMAT_R32G32_FLOAT);
 	}
 }
 
@@ -254,14 +254,19 @@ void DeferredRenderer::_lighting(std::shared_ptr<DX11GraphicContext> gfxContext,
 				gfxContext->clear(_pointLightPenumbraRT->getRenderTarget().Get(), 0, 0, 0, 0);
 
 				{
-					// update view constant buffer
-					_pointLightPenumbraCBuffer->setMatrix(0, camera->getInvProjectionMatrix());
-					_pointLightPenumbraCBuffer->setMatrix(4, camera->getInvViewMatrix());
-					_pointLightPenumbraCBuffer->setVectorF(8, pl->getPosition());
 					for (int i = 0; i < 6; ++i)
 					{
-						_pointLightPenumbraCBuffer->setMatrix(9 + i * 4, pl->getViewProj((PointLight::AXIS)i));
-					}
+						_pointLightPenumbraCBuffer->setMatrix(i * 4, pl->getViewProj((PointLight::AXIS)i));
+					}				// update view constant buffer
+					_pointLightPenumbraCBuffer->setMatrix(24, camera->getInvProjectionMatrix());
+					_pointLightPenumbraCBuffer->setMatrix(28, camera->getInvViewMatrix());
+					_pointLightPenumbraCBuffer->setVectorF(32, pl->getPosition());
+					float pointLightViewNear = 0;
+					float pointLightViewFar = 0;
+					pl->getViewNearFar(pointLightViewNear, pointLightViewFar);
+					_pointLightPenumbraCBuffer->setVectorF(33, pointLightViewNear, pointLightViewFar);
+					_pointLightPenumbraCBuffer->setVectorF(34, pl->getRadiusStart());
+
 					_pointLightPenumbraCBuffer->commit(gfxContext.get());
 				}
 
