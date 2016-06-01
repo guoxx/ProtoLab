@@ -15,6 +15,11 @@ float EstimatePenumbra(float zReceiver, float zBlocker)
 float4 main(VSOutput input) : SV_TARGET
 {
 	float depth = g_DepthBuffer.Sample(g_PointSampler, input.texcoord);
+	if (depth >= 1.0f)
+	{
+		return float4(0, 0, 0, 0);
+	}
+
 	float3 posWS = ReconstructWorldSpacePosition(input.positionSS, depth, mProjInv, mViewInv);
 
 	float3 lightVec = (posWS - g_LightPositionWS.xyz);
